@@ -3,7 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nithees Balaji | Lead DevOps Architect</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>Nithees Balaji | Senior DevOps Architect & Team Lead</title>
+    <meta name="title" content="Nithees Balaji | Senior DevOps Architect & Team Lead">
+    <meta name="description" content="Senior DevOps Architect with 9+ years experience specializing in Kubernetes, GCP/AWS Cost Optimization, and building resilient CI/CD pipelines. Based in Bangkok.">
+    <meta name="keywords" content="DevOps, Kubernetes, Terraform, GCP, AWS, Site Reliability Engineering, Bangkok, Team Lead, Cloud Architect, Cost Optimization">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="author" content="Nithees Balaji">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nitheesbalaji.vercel.app/">
+    <meta property="og:title" content="Nithees Balaji | Senior DevOps Architect">
+    <meta property="og:description" content="Transforming chaotic infrastructure into scalable, cost-effective engines. Specializing in Kubernetes and Cloud Cost Optimization.">
+    <meta property="og:image" content="https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://nitheesbalaji.vercel.app/">
+    <meta property="twitter:title" content="Nithees Balaji | Senior DevOps Architect">
+    <meta property="twitter:description" content="Transforming chaotic infrastructure into scalable, cost-effective engines. Specializing in Kubernetes and Cloud Cost Optimization.">
+    <meta property="twitter:image" content="https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512">
+
+    <!-- Structured Data (JSON-LD) for Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Nithees Balaji Mohan",
+      "jobTitle": "Senior DevOps Architect",
+      "url": "https://nitheesbalaji.vercel.app",
+      "image": "https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512",
+      "sameAs": [
+        "https://www.linkedin.com/in/nithees-balaji",
+        "https://github.com/nitheesb"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bangkok",
+        "addressCountry": "Thailand"
+      },
+      "description": "DevOps Team Lead with 9+ years experience in automating, scaling, and securing cloud-native infrastructure."
+    }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,11 +71,17 @@
             animation: {
               'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
               'marquee': 'marquee 25s linear infinite',
+              'glitch': 'glitch 1s linear infinite',
             },
             keyframes: {
               marquee: {
                 '0%': { transform: 'translateX(0%)' },
                 '100%': { transform: 'translateX(-100%)' },
+              },
+              glitch: {
+                '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+                '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+                '62%': { transform: 'translate(0,0) skew(5deg)' },
               }
             }
           }
@@ -56,6 +107,14 @@
       }
       ::-webkit-scrollbar-thumb:hover {
         background: #ff5e00;
+      }
+      
+      /* Hacker Mode Class */
+      .hacker-mode {
+        filter: hue-rotate(90deg) contrast(1.2);
+      }
+      .hacker-mode img {
+        filter: invert(1);
       }
     </style>
   <script type="importmap">

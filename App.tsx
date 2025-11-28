@@ -1,26 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Menu, X, Terminal as TerminalIcon, Github, Linkedin, Mail, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { PROJECTS } from './constants';
 import Terminal from './components/Terminal';
 import CursorCanvas from './components/CursorCanvas';
-import PhilosophySection from './components/PhilosophySection';
 import StatsSection from './components/StatsSection';
-import SkillsMatrix from './components/SkillsMatrix';
-import ServicesSection from './components/ServicesSection';
 import ScrambleText from './components/ScrambleText';
+import GlitchButton from './components/GlitchButton';
+
+// Lazy Load Heavy Components for Efficiency
+const PhilosophySection = lazy(() => import('./components/PhilosophySection'));
+const SkillsMatrix = lazy(() => import('./components/SkillsMatrix'));
+const ServicesSection = lazy(() => import('./components/ServicesSection'));
+
+// Konami Code Sequence
+const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
 const App: React.FC = () => {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [konamiIndex, setKonamiIndex] = useState(0);
 
   // Preloader Simulation
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Konami Code Listener
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === KONAMI_CODE[konamiIndex]) {
+        const nextIndex = konamiIndex + 1;
+        if (nextIndex === KONAMI_CODE.length) {
+          // Trigger Easter Egg
+          document.body.classList.toggle('hacker-mode');
+          alert('SYSTEM HACKED: GOD MODE ENABLED');
+          setKonamiIndex(0);
+        } else {
+          setKonamiIndex(nextIndex);
+        }
+      } else {
+        setKonamiIndex(0);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [konamiIndex]);
 
   if (isLoading) {
     return (
@@ -48,26 +77,26 @@ const App: React.FC = () => {
       <CursorCanvas />
       
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-40 bg-bg/90 backdrop-blur-md border-b border-border">
+      <header className="fixed top-0 w-full z-40 bg-bg/90 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="font-mono font-bold text-lg tracking-wider hover:text-primary transition-colors cursor-pointer group">
+          <div className="font-mono font-bold text-lg tracking-wider hover:text-primary transition-colors cursor-pointer group" aria-label="Logo">
             <span className="text-primary group-hover:text-white transition-colors">[</span> <ScrambleText text="NB.SYS" /> <span className="text-primary group-hover:text-white transition-colors">]</span>
           </div>
           
-          <div className="hidden md:flex gap-8 font-mono text-sm">
+          <nav className="hidden md:flex gap-8 font-mono text-sm">
             <a href="#skills" className="hover:text-primary transition-colors"><ScrambleText text="MODULES" /></a>
             <a href="#projects" className="hover:text-primary transition-colors"><ScrambleText text="LOGS" /></a>
             <a href="#services" className="hover:text-primary transition-colors"><ScrambleText text="SERVICES" /></a>
             <a href="#contact" className="border border-primary px-4 py-2 text-primary hover:bg-primary hover:text-black transition-all">
               INITIATE_CONTACT
             </a>
-          </div>
+          </nav>
 
-          <button className="md:hidden text-white" onClick={() => setIsMenuOpen(true)}>
+          <button className="md:hidden text-white" onClick={() => setIsMenuOpen(true)} aria-label="Open Menu">
             <Menu />
           </button>
         </div>
-      </nav>
+      </header>
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -78,7 +107,7 @@ const App: React.FC = () => {
             exit={{ opacity: 0, x: '100%' }}
             className="fixed inset-0 bg-black z-50 flex flex-col justify-center items-center gap-8"
           >
-            <button className="absolute top-6 right-6 text-gray-500" onClick={() => setIsMenuOpen(false)}>
+            <button className="absolute top-6 right-6 text-gray-500" onClick={() => setIsMenuOpen(false)} aria-label="Close Menu">
               <X size={32} />
             </button>
             <a href="#skills" onClick={() => setIsMenuOpen(false)} className="text-2xl font-display uppercase tracking-widest hover:text-primary">System_Modules</a>
@@ -141,6 +170,7 @@ const App: React.FC = () => {
                         src="https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512" 
                         alt="Nithees Balaji" 
                         className="w-full h-full object-cover filter grayscale contrast-125 hover:grayscale-0 transition-all duration-500"
+                        loading="eager"
                     />
                     
                     <div className="absolute bottom-[-40px] left-0 w-full text-center font-mono text-xs text-primary">
@@ -153,7 +183,9 @@ const App: React.FC = () => {
 
         <StatsSection />
         
-        <SkillsMatrix />
+        <Suspense fallback={<div className="h-96 flex items-center justify-center font-mono text-primary">LOADING MODULES...</div>}>
+            <SkillsMatrix />
+        </Suspense>
 
         {/* PROJECTS SECTION (Operational Logs) */}
         <section id="projects" className="py-20 container mx-auto px-6">
@@ -226,8 +258,8 @@ const App: React.FC = () => {
                             </div>
 
                             <div className="space-y-3 font-mono text-sm text-gray-400 bg-surface/50 p-3 rounded border border-border/50">
-                                <div><span className="text-white font-bold">» </span>{project.description.execution}</div>
-                                <div className="text-secondary"><span className="font-bold">✓ </span>{project.description.outcome}</div>
+                                <div><span className="text-white font-bold">&raquo; </span>{project.description.execution}</div>
+                                <div className="text-secondary"><span className="font-bold">&#10003; </span>{project.description.outcome}</div>
                             </div>
                         </div>
 
@@ -236,10 +268,15 @@ const App: React.FC = () => {
             </div>
         </section>
 
-        {/* SERVICES SECTION (Available Protocols) - Moved Here */}
-        <ServicesSection />
+        {/* SERVICES SECTION (Available Protocols) - Lazy Loaded */}
+        <Suspense fallback={<div className="h-20" />}>
+            <ServicesSection />
+        </Suspense>
 
-        <PhilosophySection />
+        {/* PHILOSOPHY SECTION - Lazy Loaded */}
+        <Suspense fallback={<div className="h-20" />}>
+            <PhilosophySection />
+        </Suspense>
 
         {/* CONTACT CTA SECTION */}
         <section id="contact" className="py-20 container mx-auto px-6 text-center border-t border-border mt-10 mb-10">
@@ -252,10 +289,11 @@ const App: React.FC = () => {
                     <Phone size={20} />
                     <span>+66 6611 77370</span>
                 </a>
-                <a href="mailto:nitheesbalaji@gmail.com" className="bg-primary text-black px-8 py-4 font-bold font-mono text-lg hover:bg-white transition-colors flex items-center gap-2">
-                    <Mail size={20} />
-                    INITIATE_HANDSHAKE
-                </a>
+                <GlitchButton 
+                    text="INITIATE_HANDSHAKE" 
+                    href="mailto:nitheesbalaji@gmail.com" 
+                    icon={<Mail size={20} />} 
+                />
             </div>
         </section>
       </main>
@@ -267,11 +305,11 @@ const App: React.FC = () => {
                 
                 {/* Contact Info Grid */}
                 <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-8 w-full md:w-auto">
-                    <a href="https://github.com/nitheesb" target="_blank" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors group">
+                    <a href="https://github.com/nitheesb" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors group">
                         <Github size={14} />
                         <span className="font-mono text-[10px] md:text-xs group-hover:underline">GITHUB</span>
                     </a>
-                    <a href="https://www.linkedin.com/in/nithees-balaji" target="_blank" className="flex items-center gap-2 text-gray-400 hover:text-[#0077b5] transition-colors group">
+                    <a href="https://www.linkedin.com/in/nithees-balaji" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-400 hover:text-[#0077b5] transition-colors group">
                         <Linkedin size={14} />
                         <span className="font-mono text-[10px] md:text-xs group-hover:underline">LINKEDIN</span>
                     </a>
@@ -292,7 +330,7 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Floating Terminal Button - Moved up to accommodate fixed footer */}
+      {/* Floating Terminal Button */}
       <button 
         onClick={() => setIsTerminalOpen(true)}
         className="fixed bottom-24 right-6 w-14 h-14 bg-black border border-primary text-primary rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(255,94,0,0.3)] hover:bg-primary hover:text-black hover:scale-110 transition-all z-[60]"
