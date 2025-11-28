@@ -16,9 +16,20 @@ export interface Project {
   }[];
 }
 
-export interface Skill {
-  name: string;
-  icon: string;
+export interface SkillCategory {
+  category: string;
+  items: {
+    name: string;
+    level: number; // 1-100
+  }[];
+}
+
+export interface Service {
+  id: string;
+  title: string;
+  icon: any; // LucideIcon
+  description: string;
+  features: string[];
 }
 
 export interface TerminalCommand {
@@ -30,8 +41,9 @@ export interface TerminalCommand {
 export enum SectionId {
   HERO = 'hero',
   STATS = 'stats',
-  STACK = 'stack',
-  PHILOSOPHY = 'philosophy',
+  SERVICES = 'services',
+  SKILLS = 'skills',
   PROJECTS = 'projects',
+  PHILOSOPHY = 'philosophy',
   CONTACT = 'contact'
 }

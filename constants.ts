@@ -1,38 +1,39 @@
-import { Project } from './types';
+import { Project, Service, SkillCategory } from './types';
 import { 
-  Cloud, 
-  Container, 
-  Code2, 
-  Terminal, 
   ShieldCheck, 
   Activity,
   Layers,
-  Cpu
+  Cloud,
+  Server,
+  Zap,
+  Code,
+  Database,
+  Lock
 } from 'lucide-react';
 
 export const PROJECTS: Project[] = [
   {
     id: "LOG_2023_PRESENT",
-    role: "Team Lead",
+    role: "DevOps Team Lead",
     company: "Rabbit Care",
-    period: "2023 - Present",
-    tags: ["GCP", "GKE", "Cost Optimization"],
+    period: "Mar 2023 - Present",
+    tags: ["GCP", "GKE", "Terraform", "Helm"],
     description: {
       mission: "Scale infrastructure for Thailand’s leading insurance marketplace while controlling budget bleed.",
       execution: "Orchestrated GKE migration and implemented automated rightsizing policies. Designed Disaster Recovery (DR) protocols.",
-      outcome: "Slashed GCP bills by 18%, achieved 99.99% availability, and mentored the junior DevOps squad."
+      outcome: "Slashed GCP bills by 18%, achieved 99.99% uptime, and reduced incident response time by 30%."
     },
     stats: [
       { label: "SAVINGS", value: "18%", color: "#00f2ff" },
-      { label: "ROLE", value: "LEAD", color: "#ffffff" },
-      { label: "STATUS", value: "ACTIVE", color: "#00ff00" }
+      { label: "UPTIME", value: "99.99%", color: "#00ff00" },
+      { label: "RESPONSE", value: "-30%", color: "#ff5e00" }
     ]
   },
   {
     id: "LOG_2022_2023",
     role: "DevOps Engineer",
     company: "Brikl",
-    period: "2022 - 2023",
+    period: "May 2022 - Jan 2023",
     tags: ["AWS", "Landing Zones", "GitHub Actions"],
     description: {
       mission: "Stabilize microservices deployments and secure the AWS perimeter.",
@@ -46,27 +47,158 @@ export const PROJECTS: Project[] = [
     ]
   },
   {
-    id: "LOG_2020_2022",
+    id: "LOG_2021_2022",
     role: "DevOps Engineer",
-    company: "Intertrust & BYJU'S",
-    period: "2020 - 2022",
-    tags: ["ECS", "Python", "Large Scale"],
+    company: "Intertrust",
+    period: "Aug 2021 - Apr 2022",
+    tags: ["AWS", "Terraform", "REST API"],
     description: {
-      mission: "Support massive scale EdTech and Security workloads.",
-      execution: "Managed ECS-based container workloads and automated environment spin-ups using Python & Terraform.",
-      outcome: "Enabled rapid environment provisioning for development teams, reducing wait times from days to minutes."
+      mission: "Enable rapid environment provisioning for multiple production services.",
+      execution: "Automated AWS infrastructure with Terraform for spin-up/down capability. Deployed resilient REST API microservices.",
+      outcome: "Boosted reliability and uptime while significantly reducing manual provisioning time."
     },
     stats: [
       { label: "SCALE", value: "HIGH", color: "#ff5e00" },
-      { label: "TYPE", value: "CONTAINER", color: "#ffffff" },
+      { label: "IAC", value: "100%", color: "#00f2ff" },
+      { label: "STATUS", value: "ARCHIVED", color: "#666666" }
+    ]
+  },
+  {
+    id: "LOG_2020_2021",
+    role: "DevOps Engineer",
+    company: "BYJU'S",
+    period: "Dec 2020 - Aug 2021",
+    tags: ["AWS", "ECS", "GCP DR"],
+    description: {
+      mission: "Support massive scale EdTech workloads and ensure disaster readiness.",
+      execution: "Orchestrated large-scale ECS container workloads. Created GCP replicas of key production services.",
+      outcome: "Tuned cloud resources to drive high performance and lower costs during peak traffic."
+    },
+    stats: [
+      { label: "SCALE", value: "MASSIVE", color: "#ff5e00" },
+      { label: "TYPE", value: "EDTECH", color: "#ffffff" },
+      { label: "STATUS", value: "ARCHIVED", color: "#666666" }
+    ]
+  },
+  {
+    id: "LOG_2016_2020",
+    role: "DevOps Engineer",
+    company: "Binfex Tech",
+    period: "Sep 2016 - Dec 2020",
+    tags: ["Jenkins", "Nagios", "Splunk"],
+    description: {
+      mission: "Design highly available CI/CD pipelines for cloud and on-premise infra.",
+      execution: "Implemented Jenkins pipelines and automated monitoring/alerting using Nagios and Splunk.",
+      outcome: "Ensured zero-downtime operations and established foundational DevOps practices."
+    },
+    stats: [
+      { label: "EXP", value: "4 YRS", color: "#00f2ff" },
+      { label: "CI/CD", value: "JENKINS", color: "#ffffff" },
       { label: "STATUS", value: "ARCHIVED", color: "#666666" }
     ]
   }
 ];
 
-export const TECH_STACK = [
-  "KUBERNETES", "GCP", "AWS", "TERRAFORM", "HELM", "ARGOCD", 
-  "GITHUB ACTIONS", "PYTHON", "PROMETHEUS", "ISTIO", "DOCKER", "LINUX"
+export const SKILL_CATEGORIES: SkillCategory[] = [
+  {
+    category: "CLOUD INFRASTRUCTURE",
+    items: [
+      { name: "AWS", level: 95 },
+      { name: "Google Cloud", level: 90 },
+      { name: "Azure", level: 75 },
+      { name: "Hybrid Cloud", level: 85 }
+    ]
+  },
+  {
+    category: "CONTAINER ORCHESTRATION",
+    items: [
+      { name: "Kubernetes (GKE/EKS)", level: 98 },
+      { name: "Docker", level: 95 },
+      { name: "Helm Charts", level: 92 },
+      { name: "Istio Service Mesh", level: 80 }
+    ]
+  },
+  {
+    category: "INFRASTRUCTURE AS CODE",
+    items: [
+      { name: "Terraform", level: 95 },
+      { name: "Ansible", level: 85 },
+      { name: "CloudFormation", level: 80 },
+      { name: "Pulumi", level: 70 }
+    ]
+  },
+  {
+    category: "CI/CD & AUTOMATION",
+    items: [
+      { name: "GitHub Actions", level: 95 },
+      { name: "Jenkins", level: 90 },
+      { name: "ArgoCD (GitOps)", level: 92 },
+      { name: "GitLab CI", level: 88 }
+    ]
+  },
+  {
+    category: "OBSERVABILITY",
+    items: [
+      { name: "Prometheus", level: 90 },
+      { name: "Grafana", level: 90 },
+      { name: "NewRelic", level: 85 },
+      { name: "ELK Stack", level: 80 }
+    ]
+  },
+  {
+    category: "LANGUAGES & SCRIPTING",
+    items: [
+      { name: "Python", level: 90 },
+      { name: "Bash/Shell", level: 95 },
+      { name: "Go", level: 75 },
+      { name: "SQL", level: 80 }
+    ]
+  }
+];
+
+export const SERVICES: Service[] = [
+  {
+    id: "SVC_CLOUD_ARCH",
+    title: "Cloud Architecture",
+    icon: Cloud,
+    description: "Designing resilient, scalable, and cost-efficient cloud environments on AWS, GCP, or Azure.",
+    features: ["Migration Strategy", "Multi-Cloud Design", "High Availability", "Disaster Recovery"]
+  },
+  {
+    id: "SVC_K8S",
+    title: "Kubernetes Ops",
+    icon: Server,
+    description: "Production-grade Kubernetes management. From cluster zero to service mesh hero.",
+    features: ["Cluster Hardening", "Helm Management", "Istio/Linkerd", "Auto-scaling"]
+  },
+  {
+    id: "SVC_CICD",
+    title: "CI/CD Automation",
+    icon: Zap,
+    description: "Building zero-touch deployment pipelines that ship code from commit to production in minutes.",
+    features: ["GitOps (ArgoCD)", "Automated Testing", "Canary Deployments", "Secret Management"]
+  },
+  {
+    id: "SVC_IAC",
+    title: "Infrastructure as Code",
+    icon: Code,
+    description: "Codifying your entire stack. Immutable infrastructure that prevents drift and enables rapid recovery.",
+    features: ["Terraform Modules", "State Management", "Policy as Code", "Drift Detection"]
+  },
+  {
+    id: "SVC_FINOPS",
+    title: "Cost Optimization",
+    icon: Database,
+    description: "Analyzing and reducing cloud spend without compromising on performance or reliability.",
+    features: ["Spot Instances", "Resource Rightsizing", "Budget Alerts", "Reserved Instances"]
+  },
+  {
+    id: "SVC_SEC",
+    title: "DevSecOps",
+    icon: Lock,
+    description: "Embedding security into every stage of the lifecycle. Shift-left security for modern stacks.",
+    features: ["Container Scanning", "Compliance Checks", "IAM Hardening", "Network Policies"]
+  }
 ];
 
 export const PHILOSOPHY_CARDS = [
@@ -87,11 +219,19 @@ export const PHILOSOPHY_CARDS = [
   }
 ];
 
-export const COST_DATA = [
-  { name: 'Jan', cost: 100 },
-  { name: 'Feb', cost: 95 },
-  { name: 'Mar', cost: 92 },
-  { name: 'Apr', cost: 88 },
-  { name: 'May', cost: 85 },
-  { name: 'Jun', cost: 82 },
+export const TECH_STACK = [
+  "Kubernetes",
+  "Terraform",
+  "AWS",
+  "Google Cloud",
+  "Docker",
+  "Python",
+  "Go",
+  "Jenkins",
+  "ArgoCD",
+  "Prometheus",
+  "Grafana",
+  "Ansible",
+  "Linux",
+  "GitOps"
 ];
