@@ -1,0 +1,124 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { Terminal as TerminalIcon, X, Minus, Square } from 'lucide-react';
+import { TerminalCommand } from '../types';
+
+interface TerminalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose }) => {
+  const [input, setInput] = useState('');
+  const [history, setHistory] = useState<TerminalCommand[]>([
+    { cmd: 'init', output: 'NitheesOS v3.0.1 initialized...', color: 'text-green-500' },
+    { cmd: '', output: 'Type "help" to see available commands.', color: 'text-gray-400' }
+  ]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (bodyRef.current) {
+      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+    }
+  }, [history]);
+
+  const handleCommand = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      const cmd = input.trim().toLowerCase();
+      let output = '';
+      let color = 'text-gray-300';
+
+      switch (cmd) {
+        case 'help':
+          output = 'Available commands: about, stack, contact, clear, status, exit';
+          break;
+        case 'about':
+          output = 'Senior DevOps Architect based in Bangkok. Obsessed with automation.';
+          break;
+        case 'stack':
+          output = 'K8s, Terraform, AWS, GCP, Python, ArgoCD';
+          break;
+        case 'contact':
+          output = 'Opening mail client...';
+          color = 'text-yellow-400';
+          setTimeout(() => window.location.href = "mailto:nitheesbalaji@gmail.com", 1000);
+          break;
+        case 'status':
+          output = 'System Operational. All zones green.';
+          color = 'text-green-500';
+          break;
+        case 'clear':
+          setHistory([]);
+          setInput('');
+          return;
+        case 'exit':
+          onClose();
+          return;
+        default:
+          output = `Command not found: ${cmd}`;
+          color = 'text-red-500';
+      }
+
+      setHistory(prev => [...prev, { cmd: input, output, color }]);
+      setInput('');
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+      <div className="w-full max-w-2xl bg-[#0d0d0d] border border-gray-800 rounded-lg shadow-2xl overflow-hidden font-mono flex flex-col h-[500px]">
+        {/* Header */}
+        <div className="bg-[#1a1a1a] px-4 py-2 flex items-center justify-between border-b border-gray-800">
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            <TerminalIcon size={14} />
+            <span>nithees@portfolio:~</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Minus size={14} className="text-gray-500 hover:text-white cursor-pointer" />
+            <Square size={12} className="text-gray-500 hover:text-white cursor-pointer" />
+            <X size={14} className="text-red-500 hover:text-red-400 cursor-pointer" onClick={onClose} />
+          </div>
+        </div>
+
+        {/* Body */}
+        <div ref={bodyRef} className="flex-1 p-4 overflow-y-auto font-mono text-sm space-y-2">
+          {history.map((entry, idx) => (
+            <div key={idx}>
+              {entry.cmd && (
+                <div className="flex gap-2 text-gray-400">
+                  <span className="text-primary">➜</span>
+                  <span>~ {entry.cmd}</span>
+                </div>
+              )}
+              <div className={`pl-5 ${entry.color || 'text-gray-300'}`}>{entry.output}</div>
+            </div>
+          ))}
+          
+          <div className="flex gap-2 items-center text-gray-100">
+             <span className="text-primary">➜</span>
+             <span className="text-secondary">~</span>
+             <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleCommand}
+              className="bg-transparent border-none outline-none flex-1 text-white"
+              autoFocus
+             />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Terminal;
