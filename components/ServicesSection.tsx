@@ -61,7 +61,7 @@ const ServicesSection: React.FC = () => {
                     <ul className="space-y-2">
                         {service.features.map((feature, fIndex) => (
                             <li key={fIndex} className="flex items-center gap-2 text-xs font-mono text-gray-500 group-hover:text-gray-300 transition-colors">
-                                <span className="text-primary opacity-50">>></span> {feature}
+                                <span className="text-primary opacity-50">&gt;&gt;</span> {feature}
                             </li>
                         ))}
                     </ul>
