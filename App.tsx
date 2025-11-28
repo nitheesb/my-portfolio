@@ -35,9 +35,9 @@ const App: React.FC = () => {
           />
         </div>
         <div className="mt-2 text-xs text-gray-500 font-mono">
-           > LOADING KERNEL MODULES<br/>
-           > ESTABLISHING SECURE CONNECTION<br/>
-           > ACCESS GRANTED
+           &gt; LOADING KERNEL MODULES<br/>
+           &gt; ESTABLISHING SECURE CONNECTION<br/>
+           &gt; ACCESS GRANTED
         </div>
       </div>
     );
