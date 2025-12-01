@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Menu, X, Terminal as TerminalIcon, Github, Linkedin, Mail, Phone, Cloud, Database, Server, Box, Layers, Code, Shield } from 'lucide-react';
+import { Menu, X, Terminal as TerminalIcon, Github, Linkedin, Mail, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { PROJECTS } from './constants';
@@ -121,60 +121,83 @@ const App: React.FC = () => {
 
       <main className="pt-[70px]"> {/* Offset for fixed header */}
         
-        {/* HERO SECTION */}
-        <section className="relative container mx-auto px-6 min-h-[calc(100vh-70px)] flex flex-col md:flex-row items-center justify-center gap-12 md:gap-4 lg:gap-12 py-12 md:py-0">
+        {/* ================= HERO SECTION (GRID LAYOUT) ================= */}
+        <section className="relative min-h-[calc(100vh-70px)] flex items-center overflow-hidden">
             
-            {/* LEFT: TEXT */}
-            <div className="flex-1 z-10 pt-4 md:pt-0">
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="inline-flex items-center gap-2 border border-green-500/30 bg-green-500/5 px-3 py-1 rounded-full text-[10px] md:text-xs font-mono text-green-400 mb-6"
-                >
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    SYSTEM OPERATIONAL // REGION: BANGKOK
-                </motion.div>
+            {/* Background Perspective Grid Floor */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-20 bg-[linear-gradient(transparent_0%,rgba(255,94,0,0.1)_1px,transparent_2px),linear-gradient(90deg,transparent_0%,rgba(255,94,0,0.1)_1px,transparent_2px)] bg-[size:60px_60px] [mask-image:linear-gradient(to_bottom,transparent_0%,black_40%,transparent_100%)]" style={{ transform: 'perspective(1000px) rotateX(20deg) scale(1.5)' }}></div>
+
+            <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center h-full py-12 lg:py-0">
                 
-                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold leading-[0.9] mb-6">
-                    <div className="overflow-hidden"><motion.div initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.5 }}>LEAD</motion.div></div>
-                    <div className="overflow-hidden"><motion.div initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="text-primary">DEVOPS</motion.div></div>
-                    <div className="overflow-hidden"><motion.div initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>ARCHITECT</motion.div></div>
-                </h1>
+                {/* --- LEFT COLUMN: TEXT CONTENT (Cols 1-7) --- */}
+                <div className="lg:col-span-7 flex flex-col justify-center relative">
+                    
+                    {/* Cyber Decor Line */}
+                    <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-gray-800 to-transparent hidden lg:block">
+                        <div className="absolute top-[20%] left-[-2px] w-[5px] h-[40px] bg-primary animate-pulse"></div>
+                    </div>
 
-                <motion.div 
-                    initial={{ opacity: 0 }} 
-                    animate={{ opacity: 1 }} 
-                    transition={{ delay: 0.5 }}
-                    className="border-l-2 border-primary pl-4 md:pl-6 max-w-xl"
-                >
-                    <p className="font-mono text-gray-400 text-sm md:text-base leading-relaxed">
-                        I transform chaotic infrastructure into scalable, cost-effective engines. Specializing in <strong className="text-gray-200">Kubernetes</strong>, <strong className="text-gray-200">Cloud Cost Optimization</strong>, and high-availability systems.
-                    </p>
-                </motion.div>
+                    <div className="lg:pl-10">
+                        <motion.div 
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full mb-8 backdrop-blur-sm"
+                        >
+                            <span className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                            </span>
+                            <span className="font-mono text-xs text-green-400 tracking-wider">SYSTEM ONLINE // BKK</span>
+                        </motion.div>
 
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }} 
-                    animate={{ opacity: 1, y: 0 }} 
-                    transition={{ delay: 0.8 }}
-                    className="mt-8 flex gap-4"
-                >
-                    <GlitchButton text="MISSION LOGS" href="#projects" className="text-sm md:text-base" />
-                    <a href="/resume.pdf" target="_blank" className="px-6 py-4 border border-gray-700 font-mono text-sm md:text-base text-gray-400 hover:text-white hover:border-white transition-colors">
-                        DOWNLOAD CV
-                    </a>
-                </motion.div>
+                        <h1 className="text-5xl sm:text-6xl md:text-7xl xl:text-8xl font-display font-bold leading-[0.85] mb-8 tracking-tighter">
+                            <div className="text-white hover:text-gray-300 transition-colors">
+                                <ScrambleText text="LEAD" autoStart={true} />
+                            </div>
+                            <div className="text-primary relative inline-block animate-glitch" data-text="DEVOPS">
+                                DEVOPS
+                            </div>
+                            <div className="text-white hover:text-gray-300 transition-colors">
+                                <ScrambleText text="ARCHITECT" autoStart={true} />
+                            </div>
+                        </h1>
+
+                        <motion.div 
+                            initial={{ opacity: 0 }} 
+                            animate={{ opacity: 1 }} 
+                            transition={{ delay: 0.5 }}
+                            className="max-w-xl border-l-2 border-primary/50 pl-6 mb-10"
+                        >
+                            <p className="font-mono text-gray-400 text-sm md:text-base leading-relaxed">
+                                I engineer resilience. Transforming chaotic infrastructure into scalable, cost-effective engines using <span className="text-white">Kubernetes</span> and <span className="text-white">GitOps</span>.
+                            </p>
+                        </motion.div>
+
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }} 
+                            animate={{ opacity: 1, y: 0 }} 
+                            transition={{ delay: 0.8 }}
+                            className="flex flex-wrap gap-4"
+                        >
+                            <GlitchButton text="MISSION LOGS" href="#projects" icon={<TerminalIcon size={18} />} />
+                            <a href="/resume.pdf" target="_blank" className="px-8 py-4 border border-gray-700 font-mono text-sm font-bold text-gray-400 hover:text-white hover:border-white transition-all hover:bg-white/5">
+                                DOWNLOAD CV
+                            </a>
+                        </motion.div>
+                    </div>
+                </div>
+
+                {/* --- RIGHT COLUMN: 3D TECH ORBIT (Cols 8-12) --- */}
+                <div className="lg:col-span-5 h-[500px] lg:h-[700px] flex items-center justify-center relative">
+                    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent opacity-30 rounded-full blur-3xl"></div>
+                    <TechOrbit />
+                </div>
+
             </div>
-
-            {/* RIGHT: 3D TECH ORBIT */}
-            <div className="flex-1 w-full flex justify-center items-center z-0">
-                <TechOrbit />
-            </div>
-
         </section>
 
         <StatsSection />
 
-        {/* Moved SkillsMatrix Here as requested */}
         <Suspense fallback={null}>
             <SkillsMatrix />
         </Suspense>
