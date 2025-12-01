@@ -68,31 +68,31 @@ const InfrastructureCode: React.FC = () => {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="inline-flex items-center gap-2 text-primary font-mono text-xs mb-4"
+                    className="inline-flex items-center gap-2 text-primary font-mono text-xs mb-4 font-bold"
                 >
                     <Terminal size={14} />
                     <span>INFRASTRUCTURE AS CODE</span>
                 </motion.div>
-                <h2 className="text-3xl md:text-5xl font-display font-bold uppercase mb-6 leading-tight">
+                <h2 className="text-3xl md:text-5xl font-display font-bold uppercase mb-6 leading-tight text-black">
                     DEFINING <br/> <span className="text-primary">REALITY</span> WITH CODE
                 </h2>
-                <p className="text-gray-400 font-mono text-sm leading-relaxed mb-8">
+                <p className="text-gray-600 font-mono text-sm leading-relaxed mb-8">
                     I don't just manage servers; I program them. My infrastructure is version-controlled, automated, and self-healing. Using Terraform and Kubernetes, I define entire data centers in a few lines of code.
                 </p>
                 
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-surface border border-gray-800 p-4 rounded">
-                        <div className="text-2xl font-bold text-white mb-1">100%</div>
-                        <div className="text-[10px] text-gray-500 font-mono uppercase">Reproducibility</div>
+                    <div className="bg-white border border-gray-200 p-4 rounded shadow-sm">
+                        <div className="text-2xl font-bold text-black mb-1">100%</div>
+                        <div className="text-[10px] text-gray-500 font-mono uppercase font-bold">Reproducibility</div>
                     </div>
-                    <div className="bg-surface border border-gray-800 p-4 rounded">
-                        <div className="text-2xl font-bold text-white mb-1">0</div>
-                        <div className="text-[10px] text-gray-500 font-mono uppercase">Manual Config</div>
+                    <div className="bg-white border border-gray-200 p-4 rounded shadow-sm">
+                        <div className="text-2xl font-bold text-black mb-1">0</div>
+                        <div className="text-[10px] text-gray-500 font-mono uppercase font-bold">Manual Config</div>
                     </div>
                 </div>
             </div>
 
-            {/* Right: Code Window */}
+            {/* Right: Code Window (Keep dark for contrast) */}
             <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}

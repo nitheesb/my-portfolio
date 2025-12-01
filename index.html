@@ -59,10 +59,10 @@
           extend: {
             colors: {
               primary: '#ff5e00',
-              secondary: '#00f2ff',
-              bg: '#050505',
-              surface: '#0d0d0d',
-              border: 'rgba(255, 255, 255, 0.1)',
+              secondary: '#1a1a1a', // Dark accent for light mode
+              bg: '#fafafa',        // White/Off-white background
+              surface: '#ffffff',   // Pure white surface
+              border: 'rgba(0, 0, 0, 0.1)', // Light border
             },
             fontFamily: {
               mono: ['"JetBrains Mono"', 'monospace'],
@@ -90,31 +90,31 @@
     </script>
     <style>
       body {
-        background-color: #050505;
-        color: #e0e0e0;
+        background-color: #fafafa;
+        color: #171717;
         overflow-x: hidden;
       }
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
-        width: 6px;
+        width: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #050505;
+        background: #f0f0f0;
       }
       ::-webkit-scrollbar-thumb {
-        background: #333;
-        border-radius: 3px;
+        background: #ccc;
+        border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
         background: #ff5e00;
       }
       
-      /* Hacker Mode Class */
+      /* Hacker Mode Class (Inverts for dark mode effect) */
       .hacker-mode {
-        filter: hue-rotate(90deg) contrast(1.2);
+        filter: invert(1) hue-rotate(180deg);
       }
-      .hacker-mode img {
-        filter: invert(1);
+      .hacker-mode img, .hacker-mode .no-invert {
+        filter: invert(1) hue-rotate(180deg);
       }
     </style>
   <script type="importmap">

@@ -61,7 +61,7 @@ const CursorCanvas: React.FC = () => {
       const { x, y } = mouseRef.current;
       
       // Draw crosshair
-      ctx.strokeStyle = 'rgba(0, 242, 255, 0.3)';
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)'; // Darker for light mode
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(x - 20, y);
@@ -100,7 +100,7 @@ const CursorCanvas: React.FC = () => {
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed top-0 left-0 w-full h-full pointer-events-none z-50 mix-blend-screen hidden md:block"
+      className="fixed top-0 left-0 w-full h-full pointer-events-none z-50 mix-blend-multiply hidden md:block"
     />
   );
 };

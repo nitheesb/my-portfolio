@@ -7,7 +7,7 @@ const ServicesSection: React.FC = () => {
   return (
     <section id="services" className="py-24 relative overflow-hidden bg-bg">
       {/* Background Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 flex items-end justify-between">
@@ -19,7 +19,7 @@ const ServicesSection: React.FC = () => {
                     // SELECT_MODULE_TO_EXECUTE
                 </div>
             </div>
-            <div className="hidden md:block font-mono text-xs text-gray-600 text-right">
+            <div className="hidden md:block font-mono text-xs text-gray-500 text-right">
                 <div>SYSTEM_CAPACITY: 100%</div>
                 <div>THREADS: AVAILABLE</div>
             </div>
@@ -33,7 +33,7 @@ const ServicesSection: React.FC = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    className="group relative bg-surface border border-gray-800 p-8 hover:border-primary transition-colors duration-300"
+                    className="group relative bg-white border border-gray-200 p-8 hover:border-primary hover:shadow-lg transition-all duration-300"
                 >
                     {/* Hover Corner Effect */}
                     <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -42,25 +42,25 @@ const ServicesSection: React.FC = () => {
                     <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
                     <div className="mb-6 flex justify-between items-start">
-                        <div className="p-3 bg-white/5 rounded text-primary group-hover:bg-primary group-hover:text-black transition-colors">
+                        <div className="p-3 bg-gray-50 rounded text-primary group-hover:bg-primary group-hover:text-black transition-colors">
                             <service.icon size={28} />
                         </div>
-                        <div className="font-mono text-xs text-gray-600 group-hover:text-primary transition-colors">
+                        <div className="font-mono text-xs text-gray-400 group-hover:text-primary transition-colors font-bold">
                             {service.id}
                         </div>
                     </div>
 
-                    <h3 className="text-2xl font-bold font-display mb-3 text-white group-hover:text-primary transition-colors">
+                    <h3 className="text-2xl font-bold font-display mb-3 text-black group-hover:text-primary transition-colors">
                         <ScrambleText text={service.title} hover={false} />
                     </h3>
                     
-                    <p className="text-gray-400 font-mono text-sm leading-relaxed mb-6">
+                    <p className="text-gray-500 font-mono text-sm leading-relaxed mb-6">
                         {service.description}
                     </p>
 
                     <ul className="space-y-2">
                         {service.features.map((feature, fIndex) => (
-                            <li key={fIndex} className="flex items-center gap-2 text-xs font-mono text-gray-500 group-hover:text-gray-300 transition-colors">
+                            <li key={fIndex} className="flex items-center gap-2 text-xs font-mono text-gray-400 group-hover:text-gray-600 transition-colors font-bold">
                                 <span className="text-primary opacity-50">&gt;&gt;</span> {feature}
                             </li>
                         ))}

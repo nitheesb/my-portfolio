@@ -11,11 +11,11 @@ const PhilosophySection: React.FC = () => {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="text-4xl md:text-5xl font-display font-bold uppercase"
+                className="text-4xl md:text-5xl font-display font-bold uppercase text-black"
             >
                 Architecting <span className="text-primary">Resilience</span>
             </motion.h2>
-            <p className="mt-4 text-gray-400 font-mono text-sm md:text-base max-w-2xl">
+            <p className="mt-4 text-gray-500 font-mono text-sm md:text-base max-w-2xl">
                 // ENGINEERING_PRINCIPLES.v2
             </p>
         </div>
@@ -28,15 +28,15 @@ const PhilosophySection: React.FC = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.2 }}
-                    className="group bg-surface/50 border border-border p-8 rounded-lg hover:border-primary/50 transition-colors backdrop-blur-sm"
+                    className="group bg-white border border-gray-200 p-8 rounded-lg hover:border-primary/50 hover:shadow-lg transition-all duration-300"
                 >
                     <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
                         <card.icon className="text-primary" size={24} />
                     </div>
-                    <h3 className="text-xl font-bold font-display uppercase tracking-wider mb-4 text-white group-hover:text-primary transition-colors">
+                    <h3 className="text-xl font-bold font-display uppercase tracking-wider mb-4 text-black group-hover:text-primary transition-colors">
                         {card.title}
                     </h3>
-                    <p className="text-gray-400 font-mono text-sm leading-relaxed text-justify">
+                    <p className="text-gray-600 font-mono text-sm leading-relaxed text-justify">
                         {card.desc}
                     </p>
                 </motion.div>
