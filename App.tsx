@@ -8,12 +8,13 @@ import CursorCanvas from './components/CursorCanvas';
 import StatsSection from './components/StatsSection';
 import ScrambleText from './components/ScrambleText';
 import GlitchButton from './components/GlitchButton';
-import TechOrbit from './components/TechOrbit';
+import HeroIdentity from './components/HeroIdentity';
 
 // Lazy Load Heavy Components for Efficiency
 const PhilosophySection = lazy(() => import('./components/PhilosophySection'));
 const SkillsMatrix = lazy(() => import('./components/SkillsMatrix'));
 const ServicesSection = lazy(() => import('./components/ServicesSection'));
+const InfrastructureCode = lazy(() => import('./components/InfrastructureCode'));
 
 // Konami Code Sequence
 const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -187,16 +188,19 @@ const App: React.FC = () => {
                     </div>
                 </div>
 
-                {/* --- RIGHT COLUMN: 3D TECH ORBIT (Cols 8-12) --- */}
-                <div className="lg:col-span-5 h-[500px] lg:h-[700px] flex items-center justify-center relative">
-                    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent opacity-30 rounded-full blur-3xl"></div>
-                    <TechOrbit />
+                {/* --- RIGHT COLUMN: 3D HERO VISUAL (Cols 8-12) --- */}
+                <div className="lg:col-span-5 flex items-center justify-center relative min-h-[500px]">
+                    <HeroIdentity />
                 </div>
 
             </div>
         </section>
 
         <StatsSection />
+        
+        <Suspense fallback={null}>
+            <InfrastructureCode />
+        </Suspense>
 
         <Suspense fallback={null}>
             <SkillsMatrix />
