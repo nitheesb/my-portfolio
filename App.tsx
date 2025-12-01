@@ -122,8 +122,7 @@ const App: React.FC = () => {
       <main className="pt-[70px]"> {/* Offset for fixed header */}
         
         {/* HERO SECTION */}
-        {/* Changed min-h-screen to min-h-[calc(100vh-70px)] to perfectly fit viewport below header */}
-        <section className="relative container mx-auto px-6 min-h-[calc(100vh-70px)] flex flex-col md:flex-row items-center justify-center gap-8 md:gap-4 lg:gap-12">
+        <section className="relative container mx-auto px-6 min-h-[calc(100vh-70px)] flex flex-col md:flex-row items-center justify-center gap-12 md:gap-4 lg:gap-12 py-12 md:py-0">
             
             {/* LEFT: TEXT */}
             <div className="flex-1 z-10 pt-4 md:pt-0">
@@ -136,7 +135,7 @@ const App: React.FC = () => {
                     SYSTEM OPERATIONAL // REGION: BANGKOK
                 </motion.div>
                 
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-display font-bold leading-[0.9] mb-6">
+                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold leading-[0.9] mb-6">
                     <div className="overflow-hidden"><motion.div initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.5 }}>LEAD</motion.div></div>
                     <div className="overflow-hidden"><motion.div initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="text-primary">DEVOPS</motion.div></div>
                     <div className="overflow-hidden"><motion.div initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>ARCHITECT</motion.div></div>
@@ -167,13 +166,18 @@ const App: React.FC = () => {
             </div>
 
             {/* RIGHT: 3D TECH ORBIT */}
-            <div className="flex-1 w-full flex justify-center items-center">
+            <div className="flex-1 w-full flex justify-center items-center z-0">
                 <TechOrbit />
             </div>
 
         </section>
 
         <StatsSection />
+
+        {/* Moved SkillsMatrix Here as requested */}
+        <Suspense fallback={null}>
+            <SkillsMatrix />
+        </Suspense>
 
         <Suspense fallback={<div className="h-40 flex items-center justify-center text-primary font-mono">LOADING LOGS...</div>}>
            <section id="projects" className="py-20 container mx-auto px-6">
@@ -267,10 +271,6 @@ const App: React.FC = () => {
 
         <Suspense fallback={null}>
             <ServicesSection />
-        </Suspense>
-
-        <Suspense fallback={null}>
-            <SkillsMatrix />
         </Suspense>
 
         <Suspense fallback={null}>
