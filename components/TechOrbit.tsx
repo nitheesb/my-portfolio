@@ -29,8 +29,8 @@ const TechOrbit: React.FC = () => {
       </motion.div>
 
       {/* ORBIT RING 1: Horizontal Flat - Foundation (Infrastructure) */}
-      <div className="absolute w-[340px] h-[340px] md:w-[480px] md:h-[480px] rounded-full border border-gray-800/50 animate-[spin_20s_linear_infinite]" 
-           style={{ transformStyle: 'preserve-3d', transform: 'rotateX(75deg)' }}>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] md:w-[500px] md:h-[500px] rounded-full border border-gray-800/50 animate-[spin_20s_linear_infinite]" 
+           style={{ transformStyle: 'preserve-3d', transform: 'translate(-50%, -50%) rotateX(75deg)' }}>
           {/* Orbital Path Glow */}
           <div className="absolute inset-0 rounded-full border border-primary/20 box-shadow-[0_0_10px_rgba(255,94,0,0.1)]"></div>
           
@@ -42,8 +42,8 @@ const TechOrbit: React.FC = () => {
       </div>
 
       {/* ORBIT RING 2: Tilted Right - Code & Application */}
-      <div className="absolute w-[360px] h-[360px] md:w-[540px] md:h-[540px] rounded-full border border-gray-800/50 animate-[spin_25s_linear_infinite_reverse]" 
-           style={{ transformStyle: 'preserve-3d', transform: 'rotateX(75deg) rotateY(60deg)' }}>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[560px] md:h-[560px] rounded-full border border-gray-800/50 animate-[spin_25s_linear_infinite_reverse]" 
+           style={{ transformStyle: 'preserve-3d', transform: 'translate(-50%, -50%) rotateX(75deg) rotateY(60deg)' }}>
            
            <div className="absolute top-1/2 left-0 w-2 h-2 bg-secondary rounded-full shadow-[0_0_10px_#00f2ff]"></div>
            
@@ -52,8 +52,8 @@ const TechOrbit: React.FC = () => {
       </div>
 
       {/* ORBIT RING 3: Tilted Left - Security & Data */}
-      <div className="absolute w-[360px] h-[360px] md:w-[540px] md:h-[540px] rounded-full border border-gray-800/50 animate-[spin_30s_linear_infinite]" 
-           style={{ transformStyle: 'preserve-3d', transform: 'rotateX(75deg) rotateY(-60deg)' }}>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[560px] md:h-[560px] rounded-full border border-gray-800/50 animate-[spin_30s_linear_infinite]" 
+           style={{ transformStyle: 'preserve-3d', transform: 'translate(-50%, -50%) rotateX(75deg) rotateY(-60deg)' }}>
            
            <div className="absolute bottom-0 left-1/2 w-2 h-2 bg-red-500 rounded-full shadow-[0_0_10px_#ef4444]"></div>
 

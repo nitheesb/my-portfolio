@@ -121,9 +121,9 @@ const App: React.FC = () => {
 
       <main className="pt-20">
         {/* HERO SECTION */}
-        <section className="min-h-screen flex items-center justify-center relative container mx-auto px-6 py-20">
+        <section className="min-h-[calc(100vh-80px)] flex items-center justify-center relative container mx-auto px-6 py-10 md:py-0">
            
-           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center relative z-10 w-full">
               {/* Text Content */}
               <div className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-left">
                 <motion.div 
@@ -163,7 +163,7 @@ const App: React.FC = () => {
               </div>
 
               {/* 3D TECH ORBIT GRAPHIC */}
-              <div className="order-1 lg:order-2 flex justify-center items-center py-10 lg:py-0">
+              <div className="order-1 lg:order-2 flex justify-center items-center py-6 lg:py-0">
                  <TechOrbit />
               </div>
            </div>
