@@ -9,6 +9,7 @@ import StatsSection from './components/StatsSection';
 import ScrambleText from './components/ScrambleText';
 import GlitchButton from './components/GlitchButton';
 import HeroHUD from './components/HeroHUD';
+import TechOrbit from './components/TechOrbit';
 
 // Lazy Load Heavy Components for Efficiency
 const PhilosophySection = lazy(() => import('./components/PhilosophySection'));
@@ -74,7 +75,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-bg text-gray-200 selection:bg-primary/30 selection:text-white relative pb-32">
+    <div className="min-h-screen bg-bg text-gray-200 selection:bg-primary/30 selection:text-white relative pb-32 overflow-x-hidden">
       <CursorCanvas />
       
       {/* Navigation */}
@@ -121,12 +122,13 @@ const App: React.FC = () => {
 
       <main className="pt-20">
         {/* HERO SECTION */}
-        <section className="min-h-screen flex items-center justify-center relative container mx-auto px-6 py-20 overflow-visible">
+        <section className="min-h-screen flex items-center justify-center relative container mx-auto px-6 py-20">
+           {/* HUD Background Layer */}
            <HeroHUD />
            
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
               {/* Text Content */}
-              <div className="order-2 md:order-1">
+              <div className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-left">
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -148,12 +150,12 @@ const App: React.FC = () => {
                     </motion.div>
                 </h1>
 
-                <p className="text-gray-400 font-mono max-w-lg leading-relaxed border-l-2 border-primary pl-4 mb-8">
+                <p className="text-gray-400 font-mono max-w-lg leading-relaxed border-t lg:border-t-0 lg:border-l-2 border-primary pt-4 lg:pt-0 lg:pl-4 mb-8">
                     I transform chaotic infrastructure into scalable, cost-effective engines. 
                     Specializing in Kubernetes, Cloud Cost Optimization, and high-availability systems.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                     <a href="#projects" className="bg-primary text-black font-mono font-bold px-6 py-3 hover:bg-white transition-colors text-center">
                         MISSION LOGS
                     </a>
@@ -164,61 +166,8 @@ const App: React.FC = () => {
               </div>
 
               {/* 3D TECH ORBIT GRAPHIC */}
-              <div className="relative flex justify-center items-center h-[500px] order-1 md:order-2 perspective-[1000px]">
-                 
-                 {/* Central Core (Profile) */}
-                 <motion.div 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 0.8, ease: "backOut" }}
-                    className="relative w-48 h-48 rounded-full border-4 border-primary/50 bg-black shadow-[0_0_50px_rgba(255,94,0,0.3)] z-20 overflow-hidden"
-                 >
-                    <img 
-                        src="https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512" 
-                        alt="Nithees Balaji" 
-                        className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
-                    />
-                    {/* Scanline Overlay */}
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)50%,rgba(0,0,0,0.25)50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_2px,3px_100%] pointer-events-none" />
-                 </motion.div>
-
-                 {/* Inner Orbit Ring (Code/Sec) - Tilted 3D Ring */}
-                 <div 
-                    className="absolute w-80 h-80 rounded-full border border-dashed border-primary/30 animate-[spin_10s_linear_infinite]"
-                    style={{ transformStyle: 'preserve-3d', transform: 'rotateX(75deg)' }}
-                 >
-                    {/* Orbiting Items - Counter Rotated to face user */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
-                        <Code className="text-secondary bg-black p-1 rounded" size={32} />
-                    </div>
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
-                        <Shield className="text-red-500 bg-black p-1 rounded" size={32} />
-                    </div>
-                 </div>
-
-                 {/* Outer Orbit Ring (Cloud/Infra) - Tilted Opposite way or same */}
-                 <div 
-                    className="absolute w-[450px] h-[450px] rounded-full border border-dotted border-secondary/30 animate-[spin_15s_linear_infinite_reverse]"
-                    style={{ transformStyle: 'preserve-3d', transform: 'rotateX(75deg) rotateY(10deg)' }}
-                 >
-                    {/* Orbiting Items */}
-                     <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
-                        <Cloud className="text-white bg-black p-1 rounded" size={40} />
-                    </div>
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
-                        <Database className="text-primary bg-black p-1 rounded" size={40} />
-                    </div>
-                    <div className="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
-                        <Box className="text-green-400 bg-black p-1 rounded" size={40} />
-                    </div>
-                    <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
-                        <Layers className="text-yellow-400 bg-black p-1 rounded" size={40} />
-                    </div>
-                 </div>
-
-                 {/* Ambient Glow */}
-                 <div className="absolute w-[600px] h-[200px] bg-primary/5 blur-[100px] rounded-full pointer-events-none -z-10" />
-
+              <div className="order-1 lg:order-2 flex justify-center items-center py-10 lg:py-0">
+                 <TechOrbit />
               </div>
            </div>
         </section>
