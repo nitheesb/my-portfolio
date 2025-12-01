@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Menu, X, Terminal as TerminalIcon, Github, Linkedin, Mail, Phone } from 'lucide-react';
+import { Menu, X, Terminal as TerminalIcon, Github, Linkedin, Mail, Phone, Cloud, Database, Server, Box, Layers, Code, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { PROJECTS } from './constants';
@@ -8,6 +8,7 @@ import CursorCanvas from './components/CursorCanvas';
 import StatsSection from './components/StatsSection';
 import ScrambleText from './components/ScrambleText';
 import GlitchButton from './components/GlitchButton';
+import HeroHUD from './components/HeroHUD';
 
 // Lazy Load Heavy Components for Efficiency
 const PhilosophySection = lazy(() => import('./components/PhilosophySection'));
@@ -120,8 +121,11 @@ const App: React.FC = () => {
 
       <main className="pt-20">
         {/* HERO SECTION */}
-        <section className="min-h-screen flex items-center justify-center relative container mx-auto px-6 py-20">
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <section className="min-h-screen flex items-center justify-center relative container mx-auto px-6 py-20 overflow-visible">
+           <HeroHUD />
+           
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
+              {/* Text Content */}
               <div className="order-2 md:order-1">
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
@@ -159,24 +163,62 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Profile Image / Graphic */}
-              <div className="relative flex justify-center order-1 md:order-2">
-                 <div className="relative w-64 h-80 md:w-80 md:h-96 border border-primary/30 p-2 bg-black/50 backdrop-blur-sm group">
-                    {/* Corners */}
-                    <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary transition-all duration-300 group-hover:w-16 group-hover:h-16" />
-                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-primary transition-all duration-300 group-hover:w-16 group-hover:h-16" />
-                    
+              {/* 3D TECH ORBIT GRAPHIC */}
+              <div className="relative flex justify-center items-center h-[500px] order-1 md:order-2 perspective-[1000px]">
+                 
+                 {/* Central Core (Profile) */}
+                 <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.8, ease: "backOut" }}
+                    className="relative w-48 h-48 rounded-full border-4 border-primary/50 bg-black shadow-[0_0_50px_rgba(255,94,0,0.3)] z-20 overflow-hidden"
+                 >
                     <img 
                         src="https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512" 
                         alt="Nithees Balaji" 
-                        className="w-full h-full object-cover filter grayscale contrast-125 hover:grayscale-0 transition-all duration-500"
-                        loading="eager"
+                        className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
                     />
-                    
-                    <div className="absolute bottom-[-40px] left-0 w-full text-center font-mono text-xs text-primary">
-                        ID: NITHEES_B <br/> ROLE: TEAM LEAD
+                    {/* Scanline Overlay */}
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)50%,rgba(0,0,0,0.25)50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_2px,3px_100%] pointer-events-none" />
+                 </motion.div>
+
+                 {/* Inner Orbit Ring (Code/Sec) - Tilted 3D Ring */}
+                 <div 
+                    className="absolute w-80 h-80 rounded-full border border-dashed border-primary/30 animate-[spin_10s_linear_infinite]"
+                    style={{ transformStyle: 'preserve-3d', transform: 'rotateX(75deg)' }}
+                 >
+                    {/* Orbiting Items - Counter Rotated to face user */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
+                        <Code className="text-secondary bg-black p-1 rounded" size={32} />
+                    </div>
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
+                        <Shield className="text-red-500 bg-black p-1 rounded" size={32} />
                     </div>
                  </div>
+
+                 {/* Outer Orbit Ring (Cloud/Infra) - Tilted Opposite way or same */}
+                 <div 
+                    className="absolute w-[450px] h-[450px] rounded-full border border-dotted border-secondary/30 animate-[spin_15s_linear_infinite_reverse]"
+                    style={{ transformStyle: 'preserve-3d', transform: 'rotateX(75deg) rotateY(10deg)' }}
+                 >
+                    {/* Orbiting Items */}
+                     <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
+                        <Cloud className="text-white bg-black p-1 rounded" size={40} />
+                    </div>
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
+                        <Database className="text-primary bg-black p-1 rounded" size={40} />
+                    </div>
+                    <div className="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
+                        <Box className="text-green-400 bg-black p-1 rounded" size={40} />
+                    </div>
+                    <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2" style={{ transform: 'rotateX(-75deg)' }}>
+                        <Layers className="text-yellow-400 bg-black p-1 rounded" size={40} />
+                    </div>
+                 </div>
+
+                 {/* Ambient Glow */}
+                 <div className="absolute w-[600px] h-[200px] bg-primary/5 blur-[100px] rounded-full pointer-events-none -z-10" />
+
               </div>
            </div>
         </section>
