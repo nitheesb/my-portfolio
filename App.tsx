@@ -8,7 +8,6 @@ import CursorCanvas from './components/CursorCanvas';
 import StatsSection from './components/StatsSection';
 import ScrambleText from './components/ScrambleText';
 import GlitchButton from './components/GlitchButton';
-import HeroHUD from './components/HeroHUD';
 import TechOrbit from './components/TechOrbit';
 
 // Lazy Load Heavy Components for Efficiency
@@ -123,8 +122,6 @@ const App: React.FC = () => {
       <main className="pt-20">
         {/* HERO SECTION */}
         <section className="min-h-screen flex items-center justify-center relative container mx-auto px-6 py-20">
-           {/* HUD Background Layer */}
-           <HeroHUD />
            
            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
               {/* Text Content */}
