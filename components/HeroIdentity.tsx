@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Scan, Fingerprint, Lock, ShieldCheck, Activity } from 'lucide-react';
+import { Scan, MapPin, Mail, Phone, Github, QrCode } from 'lucide-react';
 
 const HeroIdentity: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -14,8 +14,8 @@ const HeroIdentity: React.FC = () => {
   const mouseY = useSpring(y, { stiffness: 500, damping: 50 });
 
   // Map mouse position to rotation degrees
-  const rotateX = useTransform(mouseY, [-0.5, 0.5], ["15deg", "-15deg"]);
-  const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-15deg", "15deg"]);
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], ["10deg", "-10deg"]); // Subtle tilt
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-10deg", "10deg"]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
@@ -36,8 +36,8 @@ const HeroIdentity: React.FC = () => {
   };
 
   return (
-    <div className="relative flex justify-center items-center py-10 perspective-[1000px]">
-        
+    <div className="relative flex justify-center items-center py-10 perspective-[1200px] z-50">
+      
       <motion.div
         ref={ref}
         style={{
@@ -47,79 +47,101 @@ const HeroIdentity: React.FC = () => {
         }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="relative w-[300px] h-[350px] sm:w-[350px] sm:h-[400px] md:w-[400px] md:h-[450px] bg-black/40 border border-gray-800 rounded-xl backdrop-blur-md group"
+        className="relative w-[340px] h-[550px] sm:w-[500px] sm:h-[300px] bg-white rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] group border border-gray-200 select-none"
       >
-        {/* --- CARD CONTENT LAYERS --- */}
-        
-        {/* 1. Holographic Border & Glow */}
-        <div className="absolute inset-0 border border-primary/20 rounded-xl shadow-[0_0_30px_rgba(255,94,0,0.1)] group-hover:shadow-[0_0_50px_rgba(255,94,0,0.3)] transition-shadow duration-500 transform-style-3d"></div>
-        
-        {/* 2. Corner Brackets (HUD Style) */}
-        <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-primary/60 rounded-tl-lg"></div>
-        <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-primary/60 rounded-tr-lg"></div>
-        <div className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-primary/60 rounded-bl-lg"></div>
-        <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-primary/60 rounded-br-lg"></div>
-
-        {/* 3. The Image Container */}
-        <div 
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[75%] overflow-hidden bg-gray-900 border border-gray-700"
-            style={{ transform: "translateZ(20px) translate(-50%, -50%)" }}
-        >
-            <img 
-                src="https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512" 
-                alt="Nithees Balaji" 
-                className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500"
-            />
+        {/* --- CARD CONTENT --- */}
+        <div className="absolute inset-0 rounded-xl overflow-hidden flex flex-col sm:flex-row bg-surface">
             
-            {/* Image Overlay (Scanlines) */}
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
-            <div className="absolute inset-0 bg-[linear-gradient(transparent_2px,#000_3px)] bg-[size:100%_4px] opacity-20 pointer-events-none"></div>
-            
-            {/* Scanning Laser */}
-            <div className="absolute top-0 left-0 w-full h-[2px] bg-primary/80 shadow-[0_0_15px_#ff5e00] animate-[scan_4s_ease-in-out_infinite]"></div>
+            {/* LEFT: PHOTO SECTION (Top on mobile, Left on desktop) */}
+            <div className="w-full sm:w-[40%] h-[40%] sm:h-full relative overflow-hidden bg-gray-900 border-b sm:border-b-0 sm:border-r border-gray-100">
+                <img 
+                    src="https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512" 
+                    alt="Nithees Balaji" 
+                    className="w-full h-full object-cover filter grayscale-0 group-hover:grayscale contrast-110 transition-all duration-500"
+                />
+                
+                {/* Overlays */}
+                <div className="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-primary/50 shadow-[0_0_10px_#ff5e00]"></div>
+                
+                {/* ID Badge on Image */}
+                 <div className="absolute bottom-4 left-4 text-[10px] font-mono text-white/90 bg-black/60 px-2 py-1 rounded backdrop-blur-sm border border-white/10 shadow-lg">
+                    ID: NB_2025
+                 </div>
+            </div>
+
+            {/* RIGHT: INFO SECTION */}
+            <div className="w-full sm:w-[60%] h-[60%] sm:h-full p-6 flex flex-col justify-between relative bg-white">
+                
+                {/* Header */}
+                <div className="relative z-10">
+                    <h2 className="text-2xl font-display font-bold text-black tracking-tight uppercase leading-none">Nithees Balaji</h2>
+                    <div className="text-primary font-mono text-xs font-bold tracking-widest uppercase mt-1">DevOps Architect</div>
+                    <div className="h-0.5 w-8 bg-gray-200 mt-3 group-hover:w-full group-hover:bg-primary transition-all duration-500"></div>
+                </div>
+
+                {/* Tech Decor: Sim Chip */}
+                <div className="flex items-center gap-6 my-2 opacity-100">
+                    {/* Simulated SIM Chip */}
+                    <div className="w-10 h-8 bg-gradient-to-br from-yellow-200 to-yellow-500 rounded-md border border-yellow-600 relative overflow-hidden shadow-inner flex-shrink-0">
+                        <div className="absolute top-0 left-1/3 w-[1px] h-full bg-yellow-700/50"></div>
+                        <div className="absolute top-0 right-1/3 w-[1px] h-full bg-yellow-700/50"></div>
+                        <div className="absolute top-1/2 left-0 w-full h-[1px] bg-yellow-700/50"></div>
+                    </div>
+                    
+                    {/* Wireless Icon / NFC */}
+                    <Scan size={24} className="text-gray-300 group-hover:text-primary transition-colors duration-300" />
+                </div>
+
+                {/* Contact Info */}
+                <div className="space-y-2 relative z-10 mt-auto">
+                     <div className="flex items-center gap-3 text-[11px] font-mono text-gray-500 font-bold group-hover:text-black transition-colors">
+                        <MapPin size={12} className="flex-shrink-0 text-primary" />
+                        <span>Sathorn, Bangkok, TH</span>
+                     </div>
+                     <div className="flex items-center gap-3 text-[11px] font-mono text-gray-500 font-bold group-hover:text-black transition-colors">
+                        <Mail size={12} className="flex-shrink-0 text-primary" />
+                        <span>nitheesbalaji@gmail.com</span>
+                     </div>
+                     <div className="flex items-center gap-3 text-[11px] font-mono text-gray-500 font-bold group-hover:text-black transition-colors">
+                        <Phone size={12} className="flex-shrink-0 text-primary" />
+                        <span>+66 6611 77370</span>
+                     </div>
+                     <div className="flex items-center gap-3 text-[11px] font-mono text-gray-500 font-bold group-hover:text-black transition-colors">
+                        <Github size={12} className="flex-shrink-0 text-primary" />
+                        <span>github.com/nitheesb</span>
+                     </div>
+                </div>
+
+                {/* Barcode/QR Bottom Right */}
+                 <div className="absolute bottom-6 right-6 opacity-10 group-hover:opacity-100 transition-opacity duration-500">
+                    <QrCode size={48} className="text-black" />
+                 </div>
+
+                 {/* Background pattern */}
+                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 pointer-events-none"></div>
+            </div>
         </div>
 
-        {/* 4. Floating UI Elements (Parallax) */}
+        {/* --- HOLOGRAPHIC EFFECTS --- */}
+        {/* Border Glow */}
+        <div 
+            className="absolute -inset-[2px] rounded-xl bg-gradient-to-br from-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+            style={{ transform: "translateZ(-10px)" }}
+        />
         
-        {/* Badge: ID Verified */}
+        {/* Floating holographic elements */}
         <div 
-            className="absolute top-8 right-8 flex items-center gap-2 bg-green-500/10 border border-green-500/30 px-3 py-1 rounded text-[10px] font-mono text-green-400"
-            style={{ transform: "translateZ(40px)" }}
+            className="absolute top-4 right-4 text-[9px] font-mono text-gray-300 font-bold tracking-widest group-hover:text-primary transition-colors"
+             style={{ transform: "translateZ(20px)" }}
         >
-            <ShieldCheck size={12} />
-            <span>CLEARANCE: L5</span>
-        </div>
-
-        {/* Badge: Biometrics */}
-        <div 
-            className="absolute bottom-8 left-8 flex items-center gap-2 text-primary"
-            style={{ transform: "translateZ(30px)" }}
-        >
-            <Fingerprint size={32} className="opacity-80 animate-pulse" />
-        </div>
-
-        {/* Floating Data Text */}
-        <div 
-             className="absolute bottom-8 right-8 text-right font-mono text-[9px] text-gray-500 leading-tight"
-             style={{ transform: "translateZ(25px)" }}
-        >
-             <div>ID: NITHEES_B</div>
-             <div>ROLE: ARCHITECT</div>
-             <div>LOC: BANGKOK</div>
-        </div>
-        
-        {/* Animated Reticle Center */}
-        <div 
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100px] h-[100px] border border-primary/10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-             style={{ transform: "translateZ(50px) translate(-50%, -50%)" }}
-        >
-             <Scan size={40} className="text-primary/50" />
+            ACCESS_LEVEL_5
         </div>
 
       </motion.div>
       
-      {/* Floor Reflection/Shadow */}
-      <div className="absolute bottom-[-40px] w-[80%] h-[20px] bg-primary/20 blur-[50px] rounded-[100%]"></div>
+      {/* Shadow */}
+      <div className="absolute bottom-[-20px] w-[80%] h-[20px] bg-black/20 blur-[30px] rounded-[100%] transition-all duration-300 group-hover:w-[90%] group-hover:bg-primary/20 group-hover:blur-[40px]"></div>
     </div>
   );
 };
