@@ -78,8 +78,8 @@ const App: React.FC = () => {
       <CursorCanvas />
       
       {/* Navigation */}
-      <header className="fixed top-0 w-full z-40 bg-bg/90 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+      <header className="fixed top-0 w-full z-40 bg-bg/90 backdrop-blur-md border-b border-border h-[70px]">
+        <div className="container mx-auto px-6 h-full flex justify-between items-center">
           <div className="font-mono font-bold text-lg tracking-wider hover:text-primary transition-colors cursor-pointer group" aria-label="Logo">
             <span className="text-primary group-hover:text-white transition-colors">[</span> <ScrambleText text="NB.SYS" /> <span className="text-primary group-hover:text-white transition-colors">]</span>
           </div>
@@ -114,221 +114,204 @@ const App: React.FC = () => {
             <a href="#skills" onClick={() => setIsMenuOpen(false)} className="text-2xl font-display uppercase tracking-widest hover:text-primary">System_Modules</a>
             <a href="#projects" onClick={() => setIsMenuOpen(false)} className="text-2xl font-display uppercase tracking-widest hover:text-primary">Mission_Logs</a>
             <a href="#services" onClick={() => setIsMenuOpen(false)} className="text-2xl font-display uppercase tracking-widest hover:text-primary">Services</a>
-            <a href="#contact" onClick={() => setIsMenuOpen(false)} className="text-2xl font-display uppercase tracking-widest text-primary">Contact</a>
+            <a href="#contact" onClick={() => setIsMenuOpen(false)} className="text-2xl font-display uppercase tracking-widest hover:text-primary">Contact</a>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <main className="pt-20">
+      <main className="pt-[70px]"> {/* Offset for fixed header */}
+        
         {/* HERO SECTION */}
-        <section className="min-h-[calc(100vh-80px)] flex items-center justify-center relative container mx-auto px-6 py-10 md:py-0">
-           
-           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center relative z-10 w-full">
-              {/* Text Content */}
-              <div className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-left">
+        {/* Changed min-h-screen to min-h-[calc(100vh-70px)] to perfectly fit viewport below header */}
+        <section className="relative container mx-auto px-6 min-h-[calc(100vh-70px)] flex flex-col md:flex-row items-center justify-center gap-8 md:gap-4 lg:gap-12">
+            
+            {/* LEFT: TEXT */}
+            <div className="flex-1 z-10 pt-4 md:pt-0">
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-green-500/30 bg-green-900/10 text-green-400 font-mono text-xs mb-6"
+                    className="inline-flex items-center gap-2 border border-green-500/30 bg-green-500/5 px-3 py-1 rounded-full text-[10px] md:text-xs font-mono text-green-400 mb-6"
                 >
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                     SYSTEM OPERATIONAL // REGION: BANGKOK
                 </motion.div>
                 
-                <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[0.9] mb-6">
-                    <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
-                        <ScrambleText text="LEAD" />
-                    </motion.div>
-                    <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }} className="text-primary">
-                        <ScrambleText text="DEVOPS" />
-                    </motion.div>
-                    <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
-                        <ScrambleText text="ARCHITECT" />
-                    </motion.div>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-display font-bold leading-[0.9] mb-6">
+                    <div className="overflow-hidden"><motion.div initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.5 }}>LEAD</motion.div></div>
+                    <div className="overflow-hidden"><motion.div initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="text-primary">DEVOPS</motion.div></div>
+                    <div className="overflow-hidden"><motion.div initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>ARCHITECT</motion.div></div>
                 </h1>
 
-                <p className="text-gray-400 font-mono max-w-lg leading-relaxed border-t lg:border-t-0 lg:border-l-2 border-primary pt-4 lg:pt-0 lg:pl-4 mb-8">
-                    I transform chaotic infrastructure into scalable, cost-effective engines. 
-                    Specializing in Kubernetes, Cloud Cost Optimization, and high-availability systems.
-                </p>
+                <motion.div 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    transition={{ delay: 0.5 }}
+                    className="border-l-2 border-primary pl-4 md:pl-6 max-w-xl"
+                >
+                    <p className="font-mono text-gray-400 text-sm md:text-base leading-relaxed">
+                        I transform chaotic infrastructure into scalable, cost-effective engines. Specializing in <strong className="text-gray-200">Kubernetes</strong>, <strong className="text-gray-200">Cloud Cost Optimization</strong>, and high-availability systems.
+                    </p>
+                </motion.div>
 
-                <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                    <a href="#projects" className="bg-primary text-black font-mono font-bold px-6 py-3 hover:bg-white transition-colors text-center">
-                        MISSION LOGS
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }} 
+                    animate={{ opacity: 1, y: 0 }} 
+                    transition={{ delay: 0.8 }}
+                    className="mt-8 flex gap-4"
+                >
+                    <GlitchButton text="MISSION LOGS" href="#projects" className="text-sm md:text-base" />
+                    <a href="/resume.pdf" target="_blank" className="px-6 py-4 border border-gray-700 font-mono text-sm md:text-base text-gray-400 hover:text-white hover:border-white transition-colors">
+                        DOWNLOAD CV
                     </a>
-                    <a href="/resume.pdf" target="_blank" className="border border-gray-600 text-gray-400 font-mono px-6 py-3 hover:border-white hover:text-white transition-colors text-center group">
-                        DOWNLOAD CV <span className="hidden group-hover:inline">↓</span>
-                    </a>
-                </div>
-              </div>
+                </motion.div>
+            </div>
 
-              {/* 3D TECH ORBIT GRAPHIC */}
-              <div className="order-1 lg:order-2 flex justify-center items-center py-6 lg:py-0">
-                 <TechOrbit />
-              </div>
-           </div>
+            {/* RIGHT: 3D TECH ORBIT */}
+            <div className="flex-1 w-full flex justify-center items-center">
+                <TechOrbit />
+            </div>
+
         </section>
 
         <StatsSection />
-        
-        <Suspense fallback={<div className="h-96 flex items-center justify-center font-mono text-primary">LOADING MODULES...</div>}>
-            <SkillsMatrix />
-        </Suspense>
 
-        {/* PROJECTS SECTION (Operational Logs) */}
-        <section id="projects" className="py-20 container mx-auto px-6">
-            <h2 className="text-4xl font-display font-bold mb-12 flex items-center gap-2">
-                <span className="text-primary">//</span> <ScrambleText text="OPERATION_LOGS" />
-            </h2>
-            <div className="space-y-8">
-                {PROJECTS.map((project, index) => (
-                    <motion.div 
-                        key={project.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 }}
-                        className="group relative"
-                    >
-                         {/* Desktop Layout */}
-                        <div className="hidden md:grid grid-cols-[120px_1fr_150px] gap-6 p-6 border-t border-border hover:bg-surface/50 transition-colors">
-                            <div className="font-mono text-xs text-primary opacity-70 mt-2">{project.period}</div>
-                            <div>
-                                <h3 className="text-2xl font-bold font-display mb-2 group-hover:text-primary transition-colors">{project.company}</h3>
-                                <div className="text-sm text-gray-400 font-mono mb-2">{project.role}</div>
-                                <div className="flex flex-wrap gap-2 mb-4">
+        <Suspense fallback={<div className="h-40 flex items-center justify-center text-primary font-mono">LOADING LOGS...</div>}>
+           <section id="projects" className="py-20 container mx-auto px-6">
+              <div className="flex items-center gap-4 mb-16">
+                  <h2 className="text-3xl md:text-4xl font-display font-bold uppercase">// OPERATION_LOGS</h2>
+                  <div className="h-[1px] bg-gray-800 flex-1"></div>
+                  <div className="font-mono text-xs text-gray-600">CONFIDENTIALITY: LOW</div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-8">
+                  {PROJECTS.map((project, index) => (
+                      <motion.div
+                          key={project.id}
+                          initial={{ opacity: 0, y: 50 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-100px" }}
+                          transition={{ delay: index * 0.1 }}
+                          className="bg-surface border border-gray-800 p-0 md:p-8 rounded-none md:rounded-lg overflow-hidden group hover:border-gray-700 transition-all"
+                      >
+                         {/* Mobile Card Layout */}
+                         <div className="md:hidden">
+                            <div className="bg-gray-900/50 p-4 border-b border-gray-800 flex justify-between items-center">
+                                <span className="font-mono text-xs text-primary">{project.id}</span>
+                                <span className="text-[10px] bg-white/5 px-2 py-1 rounded text-gray-400">{project.period}</span>
+                            </div>
+                            <div className="p-5">
+                                <h3 className="text-xl font-bold text-white mb-1">{project.company}</h3>
+                                <div className="text-primary text-sm font-mono mb-4">{project.role}</div>
+                                
+                                <div className="flex flex-wrap gap-2 mb-6">
                                     {project.tags.map(tag => (
-                                        <span key={tag} className="px-2 py-1 border border-gray-800 rounded text-xs font-mono text-gray-500 group-hover:border-gray-600 transition-colors">
+                                        <span key={tag} className="text-[10px] px-2 py-1 border border-gray-700 text-gray-400 rounded-sm">
                                             {tag}
                                         </span>
                                     ))}
                                 </div>
-                                <div className="space-y-2 text-sm text-gray-400 font-mono pl-4 border-l border-gray-800 group-hover:border-primary/50 transition-colors">
-                                    <p><strong className="text-gray-200">Mission:</strong> {project.description.mission}</p>
-                                    <p><strong className="text-gray-200">Action:</strong> {project.description.execution}</p>
-                                    <p><strong className="text-secondary">Result:</strong> {project.description.outcome}</p>
+
+                                <div className="space-y-4 font-mono text-sm text-gray-400">
+                                    <div><strong className="text-gray-300">Mission:</strong> {project.description.mission}</div>
+                                    <div><strong className="text-gray-300">Outcome:</strong> {project.description.outcome}</div>
+                                </div>
+
+                                <div className="mt-6 grid grid-cols-3 gap-2 border-t border-gray-800 pt-4">
+                                    {project.stats.map((stat, sIdx) => (
+                                        <div key={sIdx} className="text-center">
+                                            <div className="text-lg font-bold" style={{ color: stat.color }}>{stat.value}</div>
+                                            <div className="text-[9px] text-gray-600 uppercase">{stat.label}</div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
-                            <div className="space-y-4 text-right">
-                                 {project.stats.map((stat, i) => (
-                                     <div key={i} className="font-mono text-xs">
-                                         <span className="text-gray-600 block">{stat.label}</span>
-                                         <span style={{ color: stat.color }} className="font-bold text-base">{stat.value}</span>
+                         </div>
+
+                         {/* Desktop Layout */}
+                         <div className="hidden md:grid md:grid-cols-[150px_1fr_200px] gap-8">
+                             <div className="font-mono text-sm text-gray-500 pt-2">
+                                 <div className="text-primary mb-2">{project.id}</div>
+                                 <div>{project.period}</div>
+                             </div>
+                             
+                             <div>
+                                 <h3 className="text-2xl font-bold font-display mb-2 group-hover:text-primary transition-colors">{project.company} <span className="text-gray-500 font-normal">/ {project.role}</span></h3>
+                                 <div className="flex gap-2 mb-4">
+                                     {project.tags.map(tag => (
+                                         <span key={tag} className="px-2 py-0.5 border border-gray-700 rounded text-xs text-gray-400 font-mono">
+                                             {tag}
+                                         </span>
+                                     ))}
+                                 </div>
+                                 <div className="space-y-2 text-gray-400 font-mono text-sm leading-relaxed">
+                                     <p><span className="text-white font-bold">&gt; Mission:</span> {project.description.mission}</p>
+                                     <p><span className="text-white font-bold">&gt; Execution:</span> {project.description.execution}</p>
+                                     <p><span className="text-white font-bold">&gt; Outcome:</span> {project.description.outcome}</p>
+                                 </div>
+                             </div>
+
+                             <div className="flex flex-col justify-center gap-4 border-l border-gray-800 pl-8">
+                                 {project.stats.map((stat, sIdx) => (
+                                     <div key={sIdx}>
+                                         <div className="text-2xl font-display font-bold" style={{ color: stat.color }}>{stat.value}</div>
+                                         <div className="text-xs font-mono text-gray-600 tracking-wider">{stat.label}</div>
                                      </div>
                                  ))}
-                            </div>
-                        </div>
+                             </div>
+                         </div>
+                      </motion.div>
+                  ))}
+              </div>
+           </section>
+        </Suspense>
 
-                        {/* Mobile Layout Card */}
-                        <div className="md:hidden bg-[#0a0a0a] border border-border p-5 rounded-sm relative overflow-hidden">
-                            <div className="absolute top-0 left-0 w-1 h-full bg-primary/20"></div>
-                            
-                            <div className="flex justify-between items-start mb-4">
-                                <div>
-                                    <div className="font-mono text-xs text-primary mb-1">{project.period}</div>
-                                    <h3 className="text-xl font-bold font-display text-white">{project.company}</h3>
-                                    <div className="text-sm text-gray-500 font-mono">{project.role}</div>
-                                </div>
-                                <div className="text-right">
-                                     <div className="font-mono text-[10px] text-gray-600">STATUS</div>
-                                     <div style={{ color: project.stats.find(s => s.label === "STATUS")?.color || '#fff' }} className="font-mono font-bold text-sm">
-                                        {project.stats.find(s => s.label === "STATUS")?.value}
-                                     </div>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-wrap gap-2 mb-4">
-                                {project.tags.slice(0, 3).map(tag => (
-                                    <span key={tag} className="px-2 py-1 bg-surface rounded text-[10px] font-mono text-gray-400 border border-gray-800">
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-
-                            <div className="space-y-3 font-mono text-sm text-gray-400 bg-surface/50 p-3 rounded border border-border/50">
-                                <div><span className="text-white font-bold">&raquo; </span>{project.description.execution}</div>
-                                <div className="text-secondary"><span className="font-bold">&#10003; </span>{project.description.outcome}</div>
-                            </div>
-                        </div>
-
-                    </motion.div>
-                ))}
-            </div>
-        </section>
-
-        {/* SERVICES SECTION (Available Protocols) - Lazy Loaded */}
-        <Suspense fallback={<div className="h-20" />}>
+        <Suspense fallback={null}>
             <ServicesSection />
         </Suspense>
 
-        {/* PHILOSOPHY SECTION - Lazy Loaded */}
-        <Suspense fallback={<div className="h-20" />}>
+        <Suspense fallback={null}>
+            <SkillsMatrix />
+        </Suspense>
+
+        <Suspense fallback={null}>
             <PhilosophySection />
         </Suspense>
 
-        {/* CONTACT CTA SECTION */}
-        <section id="contact" className="py-20 container mx-auto px-6 text-center border-t border-border mt-10 mb-10">
-            <p className="font-mono text-primary mb-4">// READY TO OPTIMIZE?</p>
-            <h2 className="text-4xl md:text-6xl font-display font-bold max-w-4xl mx-auto mb-12">
-                NEED A TEAM LEAD WHO SPEAKS CLOUD NATIVE?
-            </h2>
-            <div className="flex flex-col md:flex-row justify-center items-center gap-6">
-                <a href="tel:+66661177370" className="flex items-center gap-2 px-6 py-4 border border-gray-700 hover:border-white transition-colors">
-                    <Phone size={20} />
-                    <span>+66 6611 77370</span>
-                </a>
-                <GlitchButton 
-                    text="INITIATE_HANDSHAKE" 
-                    href="mailto:nitheesbalaji@gmail.com" 
-                    icon={<Mail size={20} />} 
-                />
-            </div>
-        </section>
       </main>
 
-      {/* FOOTER - Fixed to Bottom */}
-      <footer className="fixed bottom-0 left-0 w-full border-t border-primary/20 bg-[#020202]/90 backdrop-blur-md py-4 z-50">
-        <div className="container mx-auto px-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                
-                {/* Contact Info Grid */}
-                <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-8 w-full md:w-auto">
-                    <a href="https://github.com/nitheesb" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors group">
-                        <Github size={14} />
-                        <span className="font-mono text-[10px] md:text-xs group-hover:underline">GITHUB</span>
-                    </a>
-                    <a href="https://www.linkedin.com/in/nithees-balaji" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-400 hover:text-[#0077b5] transition-colors group">
-                        <Linkedin size={14} />
-                        <span className="font-mono text-[10px] md:text-xs group-hover:underline">LINKEDIN</span>
-                    </a>
-                    <a href="mailto:nitheesbalaji@gmail.com" className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors group">
-                        <Mail size={14} />
-                        <span className="font-mono text-[10px] md:text-xs group-hover:underline">EMAIL</span>
-                    </a>
-                    <a href="tel:+66661177370" className="flex items-center gap-2 text-gray-400 hover:text-green-400 transition-colors group">
-                        <Phone size={14} />
-                        <span className="font-mono text-[10px] md:text-xs group-hover:underline">+66 6611 77370</span>
-                    </a>
-                </div>
+      {/* Floating Elements */}
+      <button 
+        onClick={() => setIsTerminalOpen(true)}
+        className="fixed bottom-24 right-6 z-40 bg-black border border-primary text-primary p-4 rounded-full shadow-[0_0_20px_rgba(255,94,0,0.3)] hover:scale-110 hover:bg-primary hover:text-black transition-all duration-300 group"
+        aria-label="Open Terminal"
+      >
+        <TerminalIcon size={24} className="group-hover:rotate-12 transition-transform" />
+      </button>
 
-                <div className="font-mono text-[10px] text-gray-600 text-center md:text-right hidden md:block">
-                    SYSTEM_ID: NB_PF_2025 // LOCATION: BANGKOK, TH
-                </div>
+      <Terminal isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} />
+
+      {/* FOOTER */}
+      <footer className="fixed bottom-0 w-full z-50 bg-bg/80 backdrop-blur-lg border-t border-gray-800 py-3 md:py-4">
+        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
+            <div className="flex gap-6">
+                <a href="https://github.com/nitheesb" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-white transition-colors">
+                    <Github size={14} /> GITHUB
+                </a>
+                <a href="https://www.linkedin.com/in/nithees-balaji" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-white transition-colors">
+                    <Linkedin size={14} /> LINKEDIN
+                </a>
+                <a href="mailto:nitheesbalaji@gmail.com" className="flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-white transition-colors">
+                    <Mail size={14} /> EMAIL
+                </a>
+                <a href="tel:+66661177370" className="flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-white transition-colors">
+                    <Phone size={14} /> +66 6611 77370
+                </a>
+            </div>
+            <div className="font-mono text-[10px] text-gray-600 hidden md:block">
+                SYSTEM_ID: NB_PF_2025 // LOCATION: BANGKOK, TH
             </div>
         </div>
       </footer>
-
-      {/* Floating Terminal Button */}
-      <button 
-        onClick={() => setIsTerminalOpen(true)}
-        className="fixed bottom-24 right-6 w-14 h-14 bg-black border border-primary text-primary rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(255,94,0,0.3)] hover:bg-primary hover:text-black hover:scale-110 transition-all z-[60]"
-        aria-label="Open Terminal"
-      >
-        <TerminalIcon size={24} />
-      </button>
-
-      {/* Terminal Modal */}
-      <Terminal isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} />
     </div>
   );
 };
