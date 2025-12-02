@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+const MotionDiv = motion.div as any;
+
 const HeroHUD: React.FC = () => {
   return (
     <div className="absolute inset-0 pointer-events-none select-none z-0 overflow-hidden">
@@ -47,7 +49,7 @@ const HeroHUD: React.FC = () => {
              <div key={i} className="flex gap-2 items-center">
                  <div className="text-[8px] font-mono text-primary">0{i}</div>
                  <div className="w-8 h-[2px] bg-gray-200">
-                    <motion.div 
+                    <MotionDiv 
                         className="h-full bg-primary" 
                         animate={{ width: ['0%', '100%', '40%'] }}
                         transition={{ duration: 2 + i, repeat: Infinity }}

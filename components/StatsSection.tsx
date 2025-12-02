@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+const MotionDiv = motion.div as any;
+
 const StatsSection: React.FC = () => {
   const stats = [
     { val: "18%", label: "COST REDUCTION", color: "text-black", border: "border-black/10" },
@@ -23,7 +25,7 @@ const StatsSection: React.FC = () => {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12 w-full md:w-4/5">
               {stats.map((stat, i) => (
-                  <motion.div 
+                  <MotionDiv 
                       key={i}
                       initial={{ opacity: 0, y: 10 }}
                       whileInView={{ opacity: 1, y: 0 }}
@@ -33,7 +35,7 @@ const StatsSection: React.FC = () => {
                   >
                       <span className={`block text-3xl md:text-4xl font-bold font-display ${stat.color} mb-1`}>{stat.val}</span>
                       <span className="text-[10px] md:text-xs font-mono text-gray-500 block tracking-widest uppercase font-semibold">{stat.label}</span>
-                  </motion.div>
+                  </MotionDiv>
               ))}
           </div>
 

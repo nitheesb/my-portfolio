@@ -8,7 +8,15 @@ import {
   Zap,
   Code,
   Database,
-  Lock
+  Lock,
+  Home,
+  Briefcase,
+  Terminal,
+  Cpu,
+  Mail,
+  Github,
+  Linkedin,
+  FileText
 } from 'lucide-react';
 
 export const PROJECTS: Project[] = [
@@ -19,7 +27,7 @@ export const PROJECTS: Project[] = [
     period: "Mar 2023 - Present",
     tags: ["GCP", "GKE", "Terraform", "Helm"],
     description: {
-      mission: "Scale infrastructure for Thailand’s leading insurance marketplace while controlling budget bleed.",
+      mission: "Scale infrastructure for Thailand’s leading insurance marketplace.",
       execution: "Orchestrated GKE migration and implemented automated rightsizing policies. Designed Disaster Recovery (DR) protocols.",
       outcome: "Slashed GCP bills by 18%, achieved 99.99% uptime, and reduced incident response time by 30%."
     },
@@ -27,7 +35,8 @@ export const PROJECTS: Project[] = [
       { label: "SAVINGS", value: "18%", color: "#00f2ff" },
       { label: "UPTIME", value: "99.99%", color: "#00ff00" },
       { label: "RESPONSE", value: "-30%", color: "#ff5e00" }
-    ]
+    ],
+    colSpan: "md:col-span-2" // Bento Feature Card
   },
   {
     id: "LOG_2022_2023",
@@ -36,15 +45,15 @@ export const PROJECTS: Project[] = [
     period: "May 2022 - Jan 2023",
     tags: ["AWS", "Landing Zones", "GitHub Actions"],
     description: {
-      mission: "Stabilize microservices deployments and secure the AWS perimeter.",
+      mission: "Stabilize microservices deployments.",
       execution: "Built AWS Landing Zones using Terraform. Standardized CI/CD pipelines to enforce testing gates before production.",
-      outcome: "Reduced deployment failure rate by 60% and secured the platform against common vulnerabilities."
+      outcome: "Reduced deployment failure rate by 60% and secured the platform."
     },
     stats: [
       { label: "ERRORS", value: "-60%", color: "#ff5e00" },
-      { label: "STACK", value: "AWS", color: "#ffffff" },
-      { label: "STATUS", value: "ARCHIVED", color: "#666666" }
-    ]
+      { label: "STACK", value: "AWS", color: "#171717" }
+    ],
+    colSpan: "md:col-span-1"
   },
   {
     id: "LOG_2021_2022",
@@ -53,15 +62,15 @@ export const PROJECTS: Project[] = [
     period: "Aug 2021 - Apr 2022",
     tags: ["AWS", "Terraform", "REST API"],
     description: {
-      mission: "Enable rapid environment provisioning for multiple production services.",
-      execution: "Automated AWS infrastructure with Terraform for spin-up/down capability. Deployed resilient REST API microservices.",
+      mission: "Enable rapid environment provisioning.",
+      execution: "Automated AWS infrastructure with Terraform for spin-up/down capability.",
       outcome: "Boosted reliability and uptime while significantly reducing manual provisioning time."
     },
     stats: [
       { label: "SCALE", value: "HIGH", color: "#ff5e00" },
-      { label: "IAC", value: "100%", color: "#00f2ff" },
-      { label: "STATUS", value: "ARCHIVED", color: "#666666" }
-    ]
+      { label: "IAC", value: "100%", color: "#00f2ff" }
+    ],
+    colSpan: "md:col-span-1"
   },
   {
     id: "LOG_2020_2021",
@@ -70,15 +79,15 @@ export const PROJECTS: Project[] = [
     period: "Dec 2020 - Aug 2021",
     tags: ["AWS", "ECS", "GCP DR"],
     description: {
-      mission: "Support massive scale EdTech workloads and ensure disaster readiness.",
+      mission: "Support massive scale EdTech workloads.",
       execution: "Orchestrated large-scale ECS container workloads. Created GCP replicas of key production services.",
-      outcome: "Tuned cloud resources to drive high performance and lower costs during peak traffic."
+      outcome: "Tuned cloud resources to drive high performance."
     },
     stats: [
       { label: "SCALE", value: "MASSIVE", color: "#ff5e00" },
-      { label: "TYPE", value: "EDTECH", color: "#ffffff" },
-      { label: "STATUS", value: "ARCHIVED", color: "#666666" }
-    ]
+      { label: "TYPE", value: "EDTECH", color: "#171717" }
+    ],
+    colSpan: "md:col-span-2"
   },
   {
     id: "LOG_2016_2020",
@@ -87,15 +96,15 @@ export const PROJECTS: Project[] = [
     period: "Sep 2016 - Dec 2020",
     tags: ["Jenkins", "Nagios", "Splunk"],
     description: {
-      mission: "Design highly available CI/CD pipelines for cloud and on-premise infra.",
-      execution: "Implemented Jenkins pipelines and automated monitoring/alerting using Nagios and Splunk.",
-      outcome: "Ensured zero-downtime operations and established foundational DevOps practices."
+      mission: "Design highly available CI/CD pipelines.",
+      execution: "Implemented Jenkins pipelines and automated monitoring/alerting.",
+      outcome: "Ensured zero-downtime operations."
     },
     stats: [
       { label: "EXP", value: "4 YRS", color: "#00f2ff" },
-      { label: "CI/CD", value: "JENKINS", color: "#ffffff" },
-      { label: "STATUS", value: "ARCHIVED", color: "#666666" }
-    ]
+      { label: "CI/CD", value: "JENKINS", color: "#171717" }
+    ],
+    colSpan: "md:col-span-1"
   }
 ];
 
@@ -234,4 +243,16 @@ export const TECH_STACK = [
   "Ansible",
   "Linux",
   "GitOps"
+];
+
+export const DOCK_ITEMS = [
+  { icon: Home, label: 'Home', href: '#hero' },
+  { icon: Cpu, label: 'Skills', href: '#skills' },
+  { icon: Terminal, label: 'Code', href: '#infrastructure' },
+  { icon: Briefcase, label: 'Projects', href: '#projects' },
+  { icon: Cloud, label: 'Services', href: '#services' },
+  { icon: Mail, label: 'Contact', href: 'mailto:nitheesbalaji@gmail.com' },
+  { icon: Github, label: 'GitHub', href: 'https://github.com/nitheesb', external: true },
+  { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/nithees-balaji', external: true },
+  { icon: FileText, label: 'Resume', href: '/resume.pdf', external: true },
 ];

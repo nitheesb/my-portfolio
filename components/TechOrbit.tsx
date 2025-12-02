@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Cloud, Database, Server, Code, Shield, Cpu, Globe, Zap, GitBranch } from 'lucide-react';
 
+const MotionDiv = motion.div as any;
+
 const TechOrbit: React.FC = () => {
   return (
     <div className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] flex justify-center items-center perspective-[1200px] overflow-visible">
@@ -26,7 +28,7 @@ const TechOrbit: React.FC = () => {
 
         {/* --- CENTRAL CORE (Profile) --- */}
         <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 z-20">
-            <motion.div 
+            <MotionDiv 
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 1, type: "spring" }}
@@ -47,7 +49,7 @@ const TechOrbit: React.FC = () => {
                 {/* Tech Rings close to profile */}
                 <div className="absolute inset-[-15px] border-2 border-dashed border-primary/30 rounded-full animate-[spin_20s_linear_infinite]"></div>
                 <div className="absolute inset-[-8px] border border-white/10 rounded-full animate-[spin_10s_linear_infinite_reverse]"></div>
-            </motion.div>
+            </MotionDiv>
         </div>
 
         {/* --- ORBIT 1: CODE LAYER (Flat) --- */}
@@ -127,7 +129,7 @@ const OrbitIcon = ({ icon: Icon, color, bg, angle }: { icon: any, color: string,
 }
 
 const FloatingParticle = ({ icon: Icon, x, y, delay, color }: { icon: any, x: number, y: number, delay: number, color: string }) => (
-    <motion.div
+    <MotionDiv
         animate={{ 
             x: [x, x + 20, x],
             y: [y, y - 20, y],
@@ -138,7 +140,7 @@ const FloatingParticle = ({ icon: Icon, x, y, delay, color }: { icon: any, x: nu
         className={`absolute top-0 left-0 ${color} pointer-events-none z-0`}
     >
         <Icon size={20} />
-    </motion.div>
+    </MotionDiv>
 );
 
 export default TechOrbit;

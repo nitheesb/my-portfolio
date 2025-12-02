@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
+const MotionDiv = motion.div as any;
+
 interface SectionWrapperProps {
   children: React.ReactNode;
   id?: string;
@@ -19,14 +21,14 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({ children, id, className
 
   return (
     <section id={id} className={`relative ${className}`} ref={ref}>
-      <motion.div
+      <MotionDiv
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         {children}
-      </motion.div>
+      </MotionDiv>
     </section>
   );
 };

@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { SERVICES } from '../constants';
 import ScrambleText from './ScrambleText';
 
+const MotionDiv = motion.div as any;
+
 const ServicesSection: React.FC = () => {
   return (
     <section id="services" className="py-24 relative overflow-hidden bg-bg">
@@ -27,7 +29,7 @@ const ServicesSection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {SERVICES.map((service, index) => (
-                <motion.div
+                <MotionDiv
                     key={service.id}
                     initial={{ opacity: 0, scale: 0.95 }}
                     whileInView={{ opacity: 1, scale: 1 }}
@@ -65,7 +67,7 @@ const ServicesSection: React.FC = () => {
                             </li>
                         ))}
                     </ul>
-                </motion.div>
+                </MotionDiv>
             ))}
         </div>
       </div>

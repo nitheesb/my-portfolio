@@ -2,19 +2,22 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { PHILOSOPHY_CARDS } from '../constants';
 
+const MotionH2 = motion.h2 as any;
+const MotionDiv = motion.div as any;
+
 const PhilosophySection: React.FC = () => {
   return (
     <section id="philosophy" className="py-20 relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-12 md:mb-20">
-            <motion.h2 
+            <MotionH2 
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 className="text-4xl md:text-5xl font-display font-bold uppercase text-black"
             >
                 Architecting <span className="text-primary">Resilience</span>
-            </motion.h2>
+            </MotionH2>
             <p className="mt-4 text-gray-500 font-mono text-sm md:text-base max-w-2xl">
                 // ENGINEERING_PRINCIPLES.v2
             </p>
@@ -22,7 +25,7 @@ const PhilosophySection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {PHILOSOPHY_CARDS.map((card, index) => (
-                <motion.div
+                <MotionDiv
                     key={index}
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -39,7 +42,7 @@ const PhilosophySection: React.FC = () => {
                     <p className="text-gray-600 font-mono text-sm leading-relaxed text-justify">
                         {card.desc}
                     </p>
-                </motion.div>
+                </MotionDiv>
             ))}
         </div>
       </div>

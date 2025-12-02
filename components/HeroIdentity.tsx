@@ -1,6 +1,9 @@
+
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Scan, MapPin, Mail, Phone, Github, QrCode } from 'lucide-react';
+
+const MotionDiv = motion.div as any;
 
 const HeroIdentity: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -38,7 +41,7 @@ const HeroIdentity: React.FC = () => {
   return (
     <div className="relative flex justify-center items-center py-10 perspective-[1200px] z-50">
       
-      <motion.div
+      <MotionDiv
         ref={ref}
         style={{
           rotateX,
@@ -55,7 +58,11 @@ const HeroIdentity: React.FC = () => {
             {/* LEFT: PHOTO SECTION (Top on mobile, Left on desktop) */}
             <div className="w-full sm:w-[40%] h-[40%] sm:h-full relative overflow-hidden bg-gray-900 border-b sm:border-b-0 sm:border-r border-gray-100">
                 <img 
-                    src="https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512" 
+                    src="/profile.png" 
+                    onError={(e) => {
+                        // Fallback to a professional placeholder if local file is missing
+                        e.currentTarget.src = "https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512"; 
+                    }}
                     alt="Nithees Balaji" 
                     className="w-full h-full object-cover filter grayscale-0 group-hover:grayscale contrast-110 transition-all duration-500"
                 />
@@ -138,7 +145,7 @@ const HeroIdentity: React.FC = () => {
             ACCESS_LEVEL_5
         </div>
 
-      </motion.div>
+      </MotionDiv>
       
       {/* Shadow */}
       <div className="absolute bottom-[-20px] w-[80%] h-[20px] bg-black/20 blur-[30px] rounded-[100%] transition-all duration-300 group-hover:w-[90%] group-hover:bg-primary/20 group-hover:blur-[40px]"></div>

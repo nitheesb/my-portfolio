@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { SKILL_CATEGORIES } from '../constants';
 import { Cpu, Terminal, Layers } from 'lucide-react';
 
+const MotionDiv = motion.div as any;
+
 const SkillsMatrix: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState(0);
 
@@ -55,7 +57,7 @@ const SkillsMatrix: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                     {SKILL_CATEGORIES[activeCategory].items.map((skill, index) => (
-                        <motion.div
+                        <MotionDiv
                             key={`${activeCategory}-${skill.name}`}
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -73,14 +75,14 @@ const SkillsMatrix: React.FC = () => {
                             
                             {/* Progress Bar */}
                             <div className="h-1 w-full bg-gray-100 mt-1 overflow-hidden rounded-full">
-                                <motion.div 
+                                <MotionDiv 
                                     initial={{ width: 0 }}
                                     animate={{ width: `${skill.level}%` }}
                                     transition={{ duration: 0.8, delay: 0.1 + (index * 0.05) }}
                                     className="h-full bg-primary"
                                 />
                             </div>
-                        </motion.div>
+                        </MotionDiv>
                     ))}
                 </div>
 

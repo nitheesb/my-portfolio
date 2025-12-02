@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Terminal, Check, Play, Copy } from 'lucide-react';
 
+const MotionDiv = motion.div as any;
+
 const CODE_LINES = [
   { text: 'resource "google_container_cluster" "primary" {', indent: 0, color: 'text-purple-400' },
   { text: 'name     = "nithees-prod-cluster"', indent: 1, color: 'text-green-300' },
@@ -64,7 +66,7 @@ const InfrastructureCode: React.FC = () => {
             
             {/* Left: Explanation */}
             <div>
-                <motion.div 
+                <MotionDiv 
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -72,7 +74,7 @@ const InfrastructureCode: React.FC = () => {
                 >
                     <Terminal size={14} />
                     <span>INFRASTRUCTURE AS CODE</span>
-                </motion.div>
+                </MotionDiv>
                 <h2 className="text-3xl md:text-5xl font-display font-bold uppercase mb-6 leading-tight text-black">
                     DEFINING <br/> <span className="text-primary">REALITY</span> WITH CODE
                 </h2>
@@ -93,7 +95,7 @@ const InfrastructureCode: React.FC = () => {
             </div>
 
             {/* Right: Code Window (Keep dark for contrast) */}
-            <motion.div 
+            <MotionDiv 
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -123,7 +125,7 @@ const InfrastructureCode: React.FC = () => {
                     
                     {/* Cursor */}
                     {visibleLines < CODE_LINES.length && (
-                        <motion.div 
+                        <MotionDiv 
                             animate={{ opacity: [1, 0] }}
                             transition={{ repeat: Infinity, duration: 0.8 }}
                             className="w-2 h-4 bg-primary inline-block ml-1 align-middle"
@@ -148,7 +150,7 @@ const InfrastructureCode: React.FC = () => {
                         </div>
                     )}
                 </div>
-            </motion.div>
+            </MotionDiv>
 
         </div>
     </section>

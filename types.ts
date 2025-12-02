@@ -14,6 +14,7 @@ export interface Project {
     value: string;
     color: string;
   }[];
+  colSpan?: string; // e.g., "md:col-span-2"
 }
 
 export interface SkillCategory {
