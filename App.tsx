@@ -176,7 +176,7 @@ const App: React.FC = () => {
                             className="flex flex-wrap gap-4"
                         >
                             <GlitchButton text="MISSION LOGS" href="#projects" icon={<TerminalIcon size={18} />} />
-                            <a href="/resume.pdf" target="_blank" className="px-8 py-4 border border-gray-300 font-mono text-sm font-bold text-gray-500 hover:text-black hover:border-black transition-all hover:bg-gray-50">
+                            <a href="https://drive.google.com/file/d/1oU43XtO0xSjEs0uk-5vBNXsn5FRsXbI_/view?usp=sharing" target="_blank" className="px-8 py-4 border border-gray-300 font-mono text-sm font-bold text-gray-500 hover:text-black hover:border-black transition-all hover:bg-gray-50">
                                 DOWNLOAD CV
                             </a>
                         </MotionDiv>

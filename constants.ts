@@ -254,5 +254,5 @@ export const DOCK_ITEMS = [
   { icon: Mail, label: 'Contact', href: 'mailto:nitheesbalaji@gmail.com' },
   { icon: Github, label: 'GitHub', href: 'https://github.com/nitheesb', external: true },
   { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/nithees-balaji', external: true },
-  { icon: FileText, label: 'Resume', href: '/resume.pdf', external: true },
+  { icon: FileText, label: 'Resume', href: 'https://drive.google.com/file/d/1oU43XtO0xSjEs0uk-5vBNXsn5FRsXbI_/view?usp=sharing', external: true },
 ];

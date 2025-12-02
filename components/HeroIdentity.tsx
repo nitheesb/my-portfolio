@@ -58,7 +58,7 @@ const HeroIdentity: React.FC = () => {
             {/* LEFT: PHOTO SECTION (Top on mobile, Left on desktop) */}
             <div className="w-full sm:w-[40%] h-[40%] sm:h-full relative overflow-hidden bg-gray-900 border-b sm:border-b-0 sm:border-r border-gray-100">
                 <img 
-                    src="/profile.png" 
+                    src="https://i.ibb.co/mCwSdtvZ/profile.png" 
                     onError={(e) => {
                         // Fallback to a professional placeholder if local file is missing
                         e.currentTarget.src = "https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512"; 
