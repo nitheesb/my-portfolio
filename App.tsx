@@ -12,6 +12,7 @@ import HeroHUD from './components/HeroHUD';
 import SectionWrapper from './components/SectionWrapper';
 import FloatingDock from './components/FloatingDock';
 import BentoGrid from './components/BentoGrid';
+import TechStack from './components/TechStack';
 
 // Lazy Load Heavy Components
 const PhilosophySection = lazy(() => import('./components/PhilosophySection'));
@@ -74,6 +75,15 @@ const App: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [konamiIndex]);
+
+  const handleTerminalAction = (action: string) => {
+    if (action === 'reload') {
+        setIsTerminalOpen(false);
+        setIsLoading(true);
+        // Simulate reload delay
+        setTimeout(() => setIsLoading(false), 2500);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -224,6 +234,11 @@ const App: React.FC = () => {
             </Suspense>
         </SectionWrapper>
 
+        {/* Tech Stack Marquee */}
+        <SectionWrapper>
+             <TechStack />
+        </SectionWrapper>
+
       </main>
 
       {/* Floating Elements */}
@@ -235,7 +250,11 @@ const App: React.FC = () => {
         <TerminalIcon size={24} className="group-hover:rotate-12 transition-transform" />
       </button>
 
-      <Terminal isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} />
+      <Terminal 
+        isOpen={isTerminalOpen} 
+        onClose={() => setIsTerminalOpen(false)} 
+        onAction={handleTerminalAction}
+      />
     </div>
   );
 };

@@ -5,9 +5,10 @@ import { TerminalCommand } from '../types';
 interface TerminalProps {
   isOpen: boolean;
   onClose: () => void;
+  onAction?: (action: string) => void;
 }
 
-const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose }) => {
+const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose, onAction }) => {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<TerminalCommand[]>([
     { cmd: 'init', output: 'NitheesOS v3.0.1 initialized...', color: 'text-green-500' },
@@ -33,10 +34,11 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose }) => {
       const cmd = input.trim().toLowerCase();
       let output = '';
       let color = 'text-gray-300';
+      let immediate = true;
 
       switch (cmd) {
         case 'help':
-          output = 'Available commands: about, stack, contact, clear, status, exit';
+          output = 'Available commands: about, stack, contact, clear, status, pull, exit';
           break;
         case 'about':
           output = 'Senior DevOps Architect based in Bangkok. Obsessed with automation.';
@@ -53,6 +55,36 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose }) => {
           output = 'System Operational. All zones green.';
           color = 'text-green-500';
           break;
+        case 'pull':
+        case 'git pull':
+          immediate = false;
+          setHistory(prev => [...prev, { cmd: input, output: 'remote: Enumerating objects: 14, done.', color: 'text-gray-400' }]);
+          
+          setTimeout(() => {
+             setHistory(prev => [...prev, { cmd: '', output: 'remote: Counting objects: 100% (14/14), done.', color: 'text-gray-400' }]);
+             setTimeout(() => {
+                setHistory(prev => [...prev, { cmd: '', output: 'remote: Compressing objects: 100% (10/10), done.', color: 'text-gray-400' }]);
+                setTimeout(() => {
+                    setHistory(prev => [...prev, { cmd: '', output: 'Unpacking objects: 100% (14/14), 4.20 KiB | 2.10 MiB/s, done.', color: 'text-gray-400' }]);
+                    setTimeout(() => {
+                        setHistory(prev => [...prev, { cmd: '', output: 'From github.com:nitheesb/portfolio', color: 'text-gray-400' }]);
+                        setTimeout(() => {
+                             setHistory(prev => [...prev, { cmd: '', output: ' * branch            main       -> FETCH_HEAD', color: 'text-gray-400' }]);
+                             setTimeout(() => {
+                                 setHistory(prev => [...prev, { cmd: '', output: 'Updating 4f2a1b..9c3d4e', color: 'text-green-500' }]);
+                                 setTimeout(() => {
+                                     setHistory(prev => [...prev, { cmd: '', output: 'Fast-forward', color: 'text-green-500' }]);
+                                     setTimeout(() => {
+                                         if(onAction) onAction('reload');
+                                     }, 800);
+                                 }, 600);
+                             }, 500);
+                        }, 500);
+                    }, 500);
+                }, 500);
+             }, 500);
+          }, 300);
+          break;
         case 'clear':
           setHistory([]);
           setInput('');
@@ -65,7 +97,9 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose }) => {
           color = 'text-red-500';
       }
 
-      setHistory(prev => [...prev, { cmd: input, output, color }]);
+      if (immediate) {
+        setHistory(prev => [...prev, { cmd: input, output, color }]);
+      }
       setInput('');
     }
   };
