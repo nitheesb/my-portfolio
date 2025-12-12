@@ -9,7 +9,7 @@ const HeroIdentity: React.FC = () => {
   const [isImgLoaded, setIsImgLoaded] = useState(false);
 
   return (
-    <div className="relative w-full max-w-[450px] mx-auto z-50">
+    <div className="relative w-full max-w-[550px] mx-auto z-50">
       
       {/* --- BACKDROP GLOW --- */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/20 blur-[80px] rounded-full pointer-events-none"></div>
@@ -52,13 +52,18 @@ const HeroIdentity: React.FC = () => {
             <div className="flex flex-col sm:flex-row h-full">
                 
                 {/* PHOTO SECTION */}
-                <div className="w-full sm:w-[160px] h-[200px] sm:h-auto relative overflow-hidden rounded-xl sm:rounded-l-xl sm:rounded-r-none group">
+                {/* 
+                   Responsive Radius Logic:
+                   - Mobile: rounded-t-xl (top corners), bottom corners square to meet details.
+                   - Desktop (sm): rounded-l-xl (left corners), right corners square to meet details.
+                */}
+                <div className="w-full sm:w-[200px] h-[250px] sm:h-auto relative overflow-hidden rounded-t-xl sm:rounded-l-xl sm:rounded-tr-none group flex-shrink-0">
                     
-                     {/* Loading Placeholder with Tech Design */}
+                     {/* Loading Placeholder */}
                      {!isImgLoaded && (
                         <div className="absolute inset-0 bg-gray-900 flex flex-col items-center justify-center z-20">
                             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
-                            <span className="text-[8px] font-mono text-primary font-bold animate-pulse">LOADING_BIOMETRICS...</span>
+                            <span className="text-[8px] font-mono text-primary font-bold animate-pulse">LOADING...</span>
                         </div>
                      )}
 
@@ -66,7 +71,7 @@ const HeroIdentity: React.FC = () => {
                         src="https://i.ibb.co/mCwSdtvZ/profile.png" 
                         onLoad={() => setIsImgLoaded(true)}
                         loading="eager"
-                        // @ts-ignore - React types might not fully support fetchPriority yet
+                        // @ts-ignore
                         fetchPriority="high"
                         onError={(e) => {
                             e.currentTarget.src = "https://ca.slack-edge.com/T0DAXU939-U04TCM739QQ-9d709b5f8bd1-512"; 
@@ -91,7 +96,12 @@ const HeroIdentity: React.FC = () => {
                 </div>
 
                 {/* DETAILS SECTION */}
-                <div className="flex-1 p-6 flex flex-col justify-center bg-white rounded-r-xl">
+                {/* 
+                   Responsive Radius Logic:
+                   - Mobile: rounded-b-xl (bottom corners).
+                   - Desktop (sm): rounded-r-xl (right corners), bottom-left becomes square to meet image.
+                */}
+                <div className="flex-1 p-6 flex flex-col justify-center bg-white rounded-b-xl sm:rounded-r-xl sm:rounded-bl-none min-h-[250px] sm:min-h-0">
                     
                     <div className="mb-6">
                         <h2 className="text-2xl font-display font-bold text-gray-900 leading-none mb-1">NITHEES BALAJI</h2>
