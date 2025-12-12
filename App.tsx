@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Terminal as TerminalIcon } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
@@ -117,14 +118,14 @@ const App: React.FC = () => {
       <main> 
         
         {/* ================= HERO SECTION ================= */}
-        <section id="hero" className="relative min-h-[calc(100vh)] flex items-center overflow-hidden">
+        <section id="hero" className="relative min-h-[100vh] lg:h-screen flex items-center overflow-hidden">
              <HeroHUD />
              {/* Logo Top Left */}
              <div className="absolute top-6 left-6 font-mono font-bold text-lg tracking-wider z-40" aria-label="Logo">
                 <span className="text-primary">[</span> <ScrambleText text="NB.SYS" className="text-black" /> <span className="text-primary">]</span>
              </div>
 
-            <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center h-full py-12 lg:py-0">
+            <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center h-full py-24 lg:py-0">
                 
                 {/* --- LEFT COLUMN --- */}
                 <div className="lg:col-span-7 flex flex-col justify-center relative">
@@ -176,7 +177,7 @@ const App: React.FC = () => {
                             className="flex flex-wrap gap-4"
                         >
                             <GlitchButton text="MISSION LOGS" href="#projects" icon={<TerminalIcon size={18} />} />
-                            <a href="https://drive.google.com/file/d/1oU43XtO0xSjEs0uk-5vBNXsn5FRsXbI_/view?usp=sharing" target="_blank" className="px-8 py-4 border border-gray-300 font-mono text-sm font-bold text-gray-500 hover:text-black hover:border-black transition-all hover:bg-gray-50">
+                            <a href="https://drive.google.com/file/d/1oU43XtO0xSjEs0uk-5vBNXsn5FRsXbI_/view?usp=sharing" target="_blank" className="px-8 py-4 border border-gray-300 font-mono text-sm font-bold text-gray-500 hover:text-black hover:border-black transition-all hover:bg-gray-50 bg-white/50 backdrop-blur">
                                 DOWNLOAD CV
                             </a>
                         </MotionDiv>
@@ -184,7 +185,7 @@ const App: React.FC = () => {
                 </div>
 
                 {/* --- RIGHT COLUMN --- */}
-                <div className="lg:col-span-5 flex items-center justify-center relative min-h-[500px]">
+                <div className="lg:col-span-5 flex items-center justify-center relative min-h-[400px] lg:min-h-full">
                     <HeroIdentity />
                 </div>
             </div>
