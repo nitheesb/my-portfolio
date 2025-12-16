@@ -118,23 +118,28 @@ const App: React.FC = () => {
       <main> 
         
         {/* ================= HERO SECTION ================= */}
-        <section id="hero" className="relative min-h-[100vh] lg:h-screen flex items-center overflow-hidden">
+        <section id="hero" className="relative min-h-[100vh] lg:min-h-screen flex items-center overflow-hidden pt-20 lg:pt-0">
              <HeroHUD />
-             {/* Logo Top Left */}
-             <div className="absolute top-6 left-6 font-mono font-bold text-lg tracking-wider z-40" aria-label="Logo">
-                <span className="text-primary">[</span> <ScrambleText text="NB.SYS" className="text-black" /> <span className="text-primary">]</span>
+             
+             {/* Logo - Aligned with Container */}
+             <div className="absolute top-6 left-0 w-full z-50 pointer-events-none">
+                <div className="container mx-auto px-6">
+                    <div className="font-mono font-bold text-lg tracking-wider pointer-events-auto inline-block bg-bg/50 backdrop-blur-sm px-2 rounded border border-transparent hover:border-primary/20 transition-colors" aria-label="Logo">
+                        <span className="text-primary">[</span> <ScrambleText text="NB.SYS" className="text-black" /> <span className="text-primary">]</span>
+                    </div>
+                </div>
              </div>
 
-            <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center h-full py-24 lg:py-0">
+            <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-24 items-center h-full pb-20 lg:pb-0">
                 
                 {/* --- LEFT COLUMN --- */}
-                <div className="lg:col-span-7 flex flex-col justify-center relative">
-                    {/* Decor Line */}
-                    <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gray-200 hidden lg:block">
+                <div className="flex flex-col justify-center relative order-2 lg:order-1">
+                    {/* Decor Line (Only on XL screens to avoid clutter) */}
+                    <div className="absolute -left-8 top-0 bottom-0 w-[1px] bg-gray-200 hidden xl:block">
                         <div className="absolute top-[20%] left-[-2px] w-[5px] h-[40px] bg-primary animate-pulse"></div>
                     </div>
 
-                    <div className="lg:pl-10">
+                    <div>
                         <MotionDiv 
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -185,7 +190,7 @@ const App: React.FC = () => {
                 </div>
 
                 {/* --- RIGHT COLUMN --- */}
-                <div className="lg:col-span-5 flex items-center justify-center relative min-h-[400px] lg:min-h-full">
+                <div className="flex items-center justify-center relative order-1 lg:order-2">
                     <HeroIdentity />
                 </div>
             </div>

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 
@@ -14,16 +15,16 @@ const StatsSection: React.FC = () => {
   return (
     <section className="py-10 border-y border-border bg-white/50 backdrop-blur-sm relative z-20">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12">
           
           {/* Label */}
-          <div className="flex items-center gap-3 md:w-1/5">
+          <div className="flex items-center gap-3 shrink-0">
              <div className="w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_10px_#ff5e00]"></div>
              <span className="font-mono text-xs text-primary tracking-[0.2em] font-bold">LIVE_TELEMETRY</span>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12 w-full md:w-4/5">
+          <div className="flex-grow w-full grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
               {stats.map((stat, i) => (
                   <MotionDiv 
                       key={i}

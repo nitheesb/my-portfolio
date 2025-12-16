@@ -54,10 +54,11 @@ const HeroIdentity: React.FC = () => {
                 {/* PHOTO SECTION */}
                 {/* 
                    Responsive Radius Logic:
-                   - Mobile: rounded-t-xl (top corners), bottom corners square to meet details.
-                   - Desktop (sm): rounded-l-xl (left corners), right corners square to meet details.
+                   - Mobile: rounded-t-xl
+                   - Desktop (sm): rounded-l-xl
+                   Adjusted width to 180px on desktop to give more room for text
                 */}
-                <div className="w-full sm:w-[200px] h-[250px] sm:h-auto relative overflow-hidden rounded-t-xl sm:rounded-l-xl sm:rounded-tr-none group flex-shrink-0">
+                <div className="w-full sm:w-[180px] h-[250px] sm:h-auto relative overflow-hidden rounded-t-xl sm:rounded-l-xl sm:rounded-tr-none group flex-shrink-0">
                     
                      {/* Loading Placeholder */}
                      {!isImgLoaded && (
@@ -96,12 +97,7 @@ const HeroIdentity: React.FC = () => {
                 </div>
 
                 {/* DETAILS SECTION */}
-                {/* 
-                   Responsive Radius Logic:
-                   - Mobile: rounded-b-xl (bottom corners).
-                   - Desktop (sm): rounded-r-xl (right corners), bottom-left becomes square to meet image.
-                */}
-                <div className="flex-1 p-6 flex flex-col justify-center bg-white rounded-b-xl sm:rounded-r-xl sm:rounded-bl-none min-h-[250px] sm:min-h-0">
+                <div className="flex-1 p-5 md:p-6 flex flex-col justify-center bg-white rounded-b-xl sm:rounded-r-xl sm:rounded-bl-none min-h-[250px] sm:min-h-0">
                     
                     <div className="mb-6">
                         <h2 className="text-2xl font-display font-bold text-gray-900 leading-none mb-1">NITHEES BALAJI</h2>
@@ -146,12 +142,12 @@ const HeroIdentity: React.FC = () => {
 
 const InfoRow = ({ icon: Icon, label, value }: { icon: any, label: string, value: string }) => (
     <div className="flex items-center gap-3">
-        <div className="w-6 h-6 rounded bg-gray-50 flex items-center justify-center text-gray-400">
+        <div className="w-6 h-6 rounded bg-gray-50 flex items-center justify-center text-gray-400 shrink-0">
             <Icon size={12} />
         </div>
-        <div>
+        <div className="overflow-hidden">
             <div className="text-[9px] text-gray-400 font-mono font-bold leading-none mb-0.5">{label}</div>
-            <div className="text-xs text-gray-700 font-medium leading-none">{value}</div>
+            <div className="text-xs text-gray-700 font-medium leading-none truncate">{value}</div>
         </div>
     </div>
 );
@@ -160,7 +156,7 @@ const SocialBtn = ({ icon: Icon, href }: { icon: any, href: string }) => (
     <a 
         href={href} 
         target="_blank" 
-        className="w-8 h-8 rounded border border-gray-200 flex items-center justify-center text-gray-500 hover:text-white hover:bg-black hover:border-black transition-all duration-300"
+        className="w-8 h-8 rounded border border-gray-200 flex items-center justify-center text-gray-500 hover:text-white hover:bg-black hover:border-black transition-all duration-300 shrink-0"
     >
         <Icon size={14} />
     </a>

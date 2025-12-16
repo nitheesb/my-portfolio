@@ -67,8 +67,8 @@ const HeroHUD: React.FC = () => {
           </div>
       </div>
 
-      {/* 4. Side Data Columns */}
-      <div className="absolute top-1/2 left-6 md:left-8 -translate-y-1/2 hidden lg:flex flex-col gap-2 opacity-60">
+      {/* 4. Side Data Columns - ONLY ON XL SCREENS */}
+      <div className="absolute top-1/2 left-6 md:left-8 -translate-y-1/2 hidden xl:flex flex-col gap-2 opacity-60">
          {[...Array(6)].map((_, i) => (
              <div key={i} className="flex gap-2 items-center">
                  <div className="text-[8px] font-mono text-primary">0{i}</div>
