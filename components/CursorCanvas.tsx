@@ -1,88 +1,80 @@
+
 import React, { useEffect, useRef } from 'react';
 
 const CursorCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef = useRef({ x: 0, y: 0 });
-  
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let particles: { x: number; y: number; vx: number; vy: number; life: number }[] = [];
-    let animationFrameId: number;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    
+    // Config
+    const TRAIL_LENGTH = 35;
+    const DOT_COLOR = '#ff5e00'; // Primary Orange
+    
+    // State
+    const mouse = { x: width / 2, y: height / 2 };
+    // Initialize dots at center
+    const dots = Array.from({ length: TRAIL_LENGTH }, () => ({ 
+      x: width / 2, 
+      y: height / 2 
+    }));
 
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    const onResize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
     };
     
-    window.addEventListener('resize', resize);
-    resize();
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
-      // Add particles on move
-      for (let i = 0; i < 2; i++) {
-        particles.push({
-          x: e.clientX,
-          y: e.clientY,
-          vx: (Math.random() - 0.5) * 2,
-          vy: (Math.random() - 0.5) * 2,
-          life: 1.0
-        });
-      }
+    const onMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', onResize);
+    window.addEventListener('mousemove', onMouseMove);
+    onResize();
+
+    let animationFrameId: number;
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, width, height);
       
-      // Update and draw particles
-      particles.forEach((p, index) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 0.02;
-        
-        if (p.life <= 0) {
-          particles.splice(index, 1);
-        } else {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 94, 0, ${p.life})`;
-          ctx.fill();
-        }
-      });
-
-      // Draw connections to mouse
-      const { x, y } = mouseRef.current;
+      // Update dots
+      // Instead of simple follow-the-leader, we use a spring-like ease for the whole chain
+      // to make it feel like a fluid string.
       
-      // Draw crosshair
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)'; // Darker for light mode
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(x - 20, y);
-      ctx.lineTo(x + 20, y);
-      ctx.moveTo(x, y - 20);
-      ctx.lineTo(x, y + 20);
-      ctx.stroke();
+      let targetX = mouse.x;
+      let targetY = mouse.y;
 
-      // Connect nearby particles to mouse
-      particles.forEach(p => {
-        const dx = p.x - x;
-        const dy = p.y - y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+      dots.forEach((dot, index) => {
+        // The first dot follows mouse, others follow previous dot
+        // We use a constant easing factor to create the fluid "drag" effect
+        const ease = 0.25; 
         
-        if (dist < 100) {
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(p.x, p.y);
-          ctx.strokeStyle = `rgba(255, 94, 0, ${p.life * 0.5})`;
-          ctx.stroke();
-        }
+        dot.x += (targetX - dot.x) * ease;
+        dot.y += (targetY - dot.y) * ease;
+        
+        // Update target for next dot (so dot[i+1] follows dot[i])
+        targetX = dot.x;
+        targetY = dot.y;
+        
+        // Style Dot
+        // Head is larger, tail is smaller
+        const size = Math.max(0.5, (TRAIL_LENGTH - index) * 0.25); 
+        // Head is opaque, tail fades out
+        const opacity = Math.max(0.1, 1 - (index / TRAIL_LENGTH)); 
+        
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, size + 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = hexToRgba(DOT_COLOR, opacity);
+        ctx.fill();
       });
 
       animationFrameId = requestAnimationFrame(animate);
@@ -91,8 +83,8 @@ const CursorCanvas: React.FC = () => {
     animate();
 
     return () => {
-      window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('mousemove', onMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -100,9 +92,17 @@ const CursorCanvas: React.FC = () => {
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed top-0 left-0 w-full h-full pointer-events-none z-50 mix-blend-multiply hidden md:block"
+      className="fixed top-0 left-0 w-full h-full pointer-events-none z-[100] hidden md:block mix-blend-screen"
     />
   );
 };
+
+// Helper to convert hex to rgba for opacity control
+function hexToRgba(hex: string, alpha: number) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
 export default CursorCanvas;

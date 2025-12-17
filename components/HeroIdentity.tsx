@@ -1,30 +1,84 @@
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { MapPin, Mail, Github, Linkedin, ShieldCheck, Activity, Terminal } from 'lucide-react';
-
-const MotionDiv = motion.div as any;
+import React, { useState, useRef } from 'react';
+import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'framer-motion';
+import { MapPin, Mail, Github, Linkedin, ShieldCheck, Terminal } from 'lucide-react';
 
 const HeroIdentity: React.FC = () => {
   const [isImgLoaded, setIsImgLoaded] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // --- 3D TILT LOGIC ---
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Physics: Stiffness 150 / Damping 15 creates a "heavy" but responsive object feel
+  const mouseX = useSpring(x, { stiffness: 150, damping: 15 });
+  const mouseY = useSpring(y, { stiffness: 150, damping: 15 });
+
+  // Map mouse (-0.5 to 0.5) to rotation degrees
+  // X axis rotation is driven by Y mouse movement (up/down tilts card along X axis)
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], ["12deg", "-12deg"]); 
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-12deg", "12deg"]);
+
+  // Dynamic Light Source (Glare)
+  // The light follows the mouse but slightly offset to feel natural
+  const glareX = useTransform(mouseX, [-0.5, 0.5], ["0%", "100%"]);
+  const glareY = useTransform(mouseY, [-0.5, 0.5], ["0%", "100%"]);
+  const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX} ${glareY}, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 60%)`;
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    
+    const width = rect.width;
+    const height = rect.height;
+    
+    // Calculate mouse position relative to center of card (-0.5 to 0.5)
+    const mouseXFromCenter = (e.clientX - rect.left) / width - 0.5;
+    const mouseYFromCenter = (e.clientY - rect.top) / height - 0.5;
+
+    x.set(mouseXFromCenter);
+    y.set(mouseYFromCenter);
+  };
+
+  const handleMouseLeave = () => {
+    // Reset to center on leave
+    x.set(0);
+    y.set(0);
+  };
 
   return (
-    <div className="relative w-full z-50">
+    <div className="relative w-full z-50 perspective-[1200px]" style={{ perspective: 1200 }}>
       
-      {/* --- BACKDROP DECORATION --- */}
+      {/* --- BACKDROP DECORATION (Static) --- */}
+      {/* Keeping these outside the tilt preserves the "floating" illusion */}
       <div className="absolute -top-6 -right-6 w-32 h-32 border-r border-t border-primary/20 rounded-tr-3xl"></div>
       <div className="absolute -bottom-6 -left-6 w-32 h-32 border-l border-b border-primary/20 rounded-bl-3xl"></div>
 
-      {/* --- MAIN CARD CONTAINER --- */}
-      <MotionDiv 
+      {/* --- MAIN CARD CONTAINER (Tilting) --- */}
+      <motion.div 
+        ref={ref}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
+        style={{
+            rotateX,
+            rotateY,
+            transformStyle: "preserve-3d",
+        }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative bg-white border border-gray-200 shadow-2xl overflow-hidden max-w-full"
+        className="relative bg-white border border-gray-200 shadow-2xl overflow-hidden max-w-full transform-gpu cursor-none md:cursor-auto"
       >
         
+        {/* --- DYNAMIC GLARE OVERLAY --- */}
+        <motion.div 
+            className="absolute inset-0 z-50 pointer-events-none mix-blend-overlay opacity-30"
+            style={{ background: glareBackground }}
+        />
+
         {/* --- HEADER BAR --- */}
-        <div className="bg-[#f4f4f5] border-b border-gray-200 px-4 py-2 md:px-6 md:py-3 flex justify-between items-center">
+        <div className="bg-[#f4f4f5] border-b border-gray-200 px-4 py-2 md:px-6 md:py-3 flex justify-between items-center relative z-10">
             <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
                 <div className="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
@@ -37,7 +91,7 @@ const HeroIdentity: React.FC = () => {
         </div>
 
         {/* --- CONTENT BODY --- */}
-        <div className="flex flex-col sm:flex-row h-full">
+        <div className="flex flex-col sm:flex-row h-full relative z-10 bg-white">
             
             {/* PHOTO SECTION */}
             <div className="w-full sm:w-[180px] md:w-[200px] relative overflow-hidden group border-b sm:border-b-0 sm:border-r border-gray-200 bg-gray-100">
@@ -87,7 +141,7 @@ const HeroIdentity: React.FC = () => {
             </div>
         </div>
 
-      </MotionDiv>
+      </motion.div>
     </div>
   );
 };

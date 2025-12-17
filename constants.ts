@@ -1,3 +1,4 @@
+
 import { Project, Service, SkillCategory } from './types';
 import { 
   ShieldCheck, 
@@ -207,6 +208,13 @@ export const SERVICES: Service[] = [
     icon: Lock,
     description: "Embedding security into every stage of the lifecycle. Shift-left security for modern stacks.",
     features: ["Container Scanning", "Compliance Checks", "IAM Hardening", "Network Policies"]
+  },
+  {
+    id: "SVC_IOT",
+    title: "IoT Systems",
+    icon: Cpu,
+    description: "Architecting reliable backends for large-scale IoT networks with real-time data processing.",
+    features: ["MQTT Brokers", "Edge Computing", "Device Management", "Real-time Telemetry"]
   }
 ];
 
@@ -248,7 +256,6 @@ export const TECH_STACK = [
 export const DOCK_ITEMS = [
   { icon: Home, label: 'Home', href: '#hero' },
   { icon: Cpu, label: 'Skills', href: '#skills' },
-  { icon: Terminal, label: 'Code', href: '#infrastructure' },
   { icon: Briefcase, label: 'Projects', href: '#projects' },
   { icon: Cloud, label: 'Services', href: '#services' },
   { icon: Mail, label: 'Contact', href: 'mailto:nitheesbalaji@gmail.com' },

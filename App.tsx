@@ -14,17 +14,15 @@ import BentoGrid from './components/BentoGrid';
 import TechStack from './components/TechStack';
 import SkillsMatrix from './components/SkillsMatrix';
 import ServicesSection from './components/ServicesSection';
-import InfrastructureCode from './components/InfrastructureCode';
-import PhilosophySection from './components/PhilosophySection';
 
 // --- CONFIG ---
 // How many virtual pixels constitute one full page transition
-const SCROLL_PER_PAGE = 1000;
+// Increased from 1000 to 1600 to make the transition feel "longer" and less instant
+const SCROLL_PER_PAGE = 1600;
 
 const SECTIONS = [
   { id: 'hero', title: 'HOME', component: HeroSection },
   { id: 'skills', title: 'SYSTEMS', component: SkillsWrapper },
-  { id: 'infrastructure', title: 'CODE', component: InfraSection },
   { id: 'projects', title: 'LOGS', component: ProjectsSection },
   { id: 'services', title: 'CORE', component: ServicesWrapper },
 ];
@@ -38,8 +36,8 @@ function App() {
   const scrollY = useMotionValue(0);
   
   // INDUSTRY STANDARD SMOOTH SCROLL PHYSICS
-  // Stiffness 200 / Damping 40 gives a weighted, premium feel (less twitchy)
-  const smoothScrollY = useSpring(scrollY, { damping: 40, stiffness: 200, mass: 1 });
+  // Increased Damping (friction) and Mass to make it feel "heavier" and slower to settle
+  const smoothScrollY = useSpring(scrollY, { damping: 50, stiffness: 180, mass: 1.2 });
 
   // Refs for scroll physics
   const lastDelta = useRef(0);
@@ -102,8 +100,8 @@ function App() {
         const current = scrollY.get();
         
         // SENSITIVITY CALIBRATION
-        // Reduced to 0.6 for better control on trackpads/fast wheels
-        const delta = e.deltaY * 0.6; 
+        // Reduced to 0.4 (from 0.6) to make the scroll require more effort/movement
+        const delta = e.deltaY * 0.4; 
         lastDelta.current = delta; // Track direction for snap logic
         
         const newPos = Math.max(0, Math.min(current + delta, maxScroll));
@@ -124,8 +122,8 @@ function App() {
 
             // Helper to animate
             const snapTo = (target: number) => {
-                // Slower duration for auto-snap to feel deliberate
-                animate(scrollY, target, { duration: 0.8, ease: [0.22, 1, 0.36, 1] });
+                // Increased duration to 1.2s (from 0.8s) for a slower, smoother glide
+                animate(scrollY, target, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
             };
 
             // SCROLLING DOWN
@@ -161,7 +159,8 @@ function App() {
 
 
   const navigateTo = (index: number) => {
-      animate(scrollY, index * SCROLL_PER_PAGE, { duration: 0.8, ease: [0.22, 1, 0.36, 1] });
+      // Slower programmatic navigation as well
+      animate(scrollY, index * SCROLL_PER_PAGE, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
   };
 
   if (isLoading) {
@@ -222,8 +221,7 @@ const SectionPanel = ({ index, total, scrollY, Component }: { index: number, tot
     
     // Logic:
     // Page 0 is base.
-    // Page 1 reveals over Page 0 when scroll is between 0 and 1000.
-    // Page 2 reveals over Page 1 when scroll is between 1000 and 2000.
+    // Page 1 reveals over Page 0 when scroll is between 0 and 1000 (now 1600).
     
     // The "start" of this page's reveal animation
     const startRange = (index - 1) * SCROLL_PER_PAGE;
@@ -375,19 +373,7 @@ function SkillsWrapper() {
     );
 }
 
-// 3. CODE PAGE (Alignment Fixed)
-function InfraSection() {
-    return (
-    <div className="h-full w-full overflow-y-auto bg-[#f4f4f5] scrollable-content custom-scrollbar-hide">
-        {/* Min-h-full ensures vertically centered if content is small, but scrolls if tall */}
-        <div className="min-h-full flex flex-col justify-center w-full py-24 md:py-0">
-            <InfrastructureCode />
-        </div>
-    </div>
-    );
-}
-
-// 4. LOGS PAGE
+// 3. LOGS PAGE
 function ProjectsSection() {
     return (
     <div className="h-full w-full overflow-y-auto bg-bg custom-scrollbar-hide scrollable-content pt-24 pb-0 flex flex-col">
@@ -420,15 +406,12 @@ function ProjectsSection() {
     );
 }
 
-// 5. SERVICES & CORE
+// 4. SERVICES & CORE
 function ServicesWrapper() {
     return (
     <div className="h-full w-full overflow-y-auto bg-white flex flex-col scrollable-content">
          <div className="w-full pt-20 pb-10 flex-grow">
             <ServicesSection />
-         </div>
-         <div className="w-full bg-bg border-t border-gray-200">
-             <PhilosophySection />
          </div>
     </div>
     );
