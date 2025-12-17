@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Terminal as TerminalIcon } from 'lucide-react';
+import { Terminal as TerminalIcon, Download } from 'lucide-react';
 import { motion, useMotionValue, useTransform, animate, useSpring } from 'framer-motion';
 
 import Terminal from './components/Terminal';
@@ -36,8 +36,10 @@ function App() {
   
   // Global virtual scroll position (0 to TotalPages * SCROLL_PER_PAGE)
   const scrollY = useMotionValue(0);
-  // Smooth spring for the scroll to eliminate jitter but keep it responsive
-  const smoothScrollY = useSpring(scrollY, { damping: 20, stiffness: 100, mass: 0.5 });
+  
+  // INDUSTRY STANDARD SMOOTH SCROLL PHYSICS
+  // Stiffness 200 / Damping 40 gives a weighted, premium feel (less twitchy)
+  const smoothScrollY = useSpring(scrollY, { damping: 40, stiffness: 200, mass: 1 });
 
   // Refs for scroll physics
   const lastDelta = useRef(0);
@@ -98,8 +100,10 @@ function App() {
         e.preventDefault();
         
         const current = scrollY.get();
-        // INCREASED SENSITIVITY BY 20% (1.0 -> 1.2)
-        const delta = e.deltaY * 1.2; 
+        
+        // SENSITIVITY CALIBRATION
+        // Reduced to 0.6 for better control on trackpads/fast wheels
+        const delta = e.deltaY * 0.6; 
         lastDelta.current = delta; // Track direction for snap logic
         
         const newPos = Math.max(0, Math.min(current + delta, maxScroll));
@@ -120,7 +124,8 @@ function App() {
 
             // Helper to animate
             const snapTo = (target: number) => {
-                animate(scrollY, target, { duration: 0.6, ease: [0.22, 1, 0.36, 1] });
+                // Slower duration for auto-snap to feel deliberate
+                animate(scrollY, target, { duration: 0.8, ease: [0.22, 1, 0.36, 1] });
             };
 
             // SCROLLING DOWN
@@ -145,7 +150,7 @@ function App() {
                     snapTo(pageIndex * SCROLL_PER_PAGE);
                  }
             }
-        }, 120); // 120ms pause considered as "Stop"
+        }, 100); // Quick check
     }
   }, [scrollY, isTerminalOpen, isLoading, maxScroll]);
 
@@ -330,8 +335,15 @@ function HeroSection() {
                         Building self-healing infrastructure. Transforming chaotic systems into scalable, cost-effective engines using Kubernetes & Terraform.
                     </p>
                     
+                    {/* BUTTONS ROW */}
                     <div className="flex gap-4">
                         <GlitchButton text="PROJECTS" icon={<TerminalIcon size={16} />} />
+                        <GlitchButton 
+                            text="DOWNLOAD CV" 
+                            icon={<Download size={16} />} 
+                            href="https://drive.google.com/file/d/1oU43XtO0xSjEs0uk-5vBNXsn5FRsXbI_/view?usp=sharing"
+                            className="bg-white text-black border-black/10 hover:bg-gray-100"
+                        />
                     </div>
                  </motion.div>
             </div>
@@ -363,11 +375,14 @@ function SkillsWrapper() {
     );
 }
 
-// 3. CODE PAGE
+// 3. CODE PAGE (Alignment Fixed)
 function InfraSection() {
     return (
-    <div className="h-full w-full overflow-hidden flex items-center bg-[#f4f4f5] scrollable-content">
-        <InfrastructureCode />
+    <div className="h-full w-full overflow-y-auto bg-[#f4f4f5] scrollable-content custom-scrollbar-hide">
+        {/* Min-h-full ensures vertically centered if content is small, but scrolls if tall */}
+        <div className="min-h-full flex flex-col justify-center w-full py-24 md:py-0">
+            <InfrastructureCode />
+        </div>
     </div>
     );
 }
