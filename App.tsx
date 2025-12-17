@@ -39,6 +39,10 @@ function App() {
   // Smooth spring for the scroll to eliminate jitter but keep it responsive
   const smoothScrollY = useSpring(scrollY, { damping: 20, stiffness: 100, mass: 0.5 });
 
+  // Refs for scroll physics
+  const lastDelta = useRef(0);
+  const scrollTimeout = useRef<number | null>(null);
+
   const maxScroll = (SECTIONS.length - 1) * SCROLL_PER_PAGE;
 
   // Preloader
@@ -94,12 +98,54 @@ function App() {
         e.preventDefault();
         
         const current = scrollY.get();
-        // Standardize delta for different input devices (trackpad vs mouse)
         // INCREASED SENSITIVITY BY 20% (1.0 -> 1.2)
         const delta = e.deltaY * 1.2; 
+        lastDelta.current = delta; // Track direction for snap logic
         
         const newPos = Math.max(0, Math.min(current + delta, maxScroll));
         scrollY.set(newPos);
+
+        // --- SNAP & KICK LOGIC ---
+        // Debounce: Wait for scroll to stop before checking for snaps
+        if (scrollTimeout.current) window.clearTimeout(scrollTimeout.current);
+        
+        scrollTimeout.current = window.setTimeout(() => {
+            const y = scrollY.get();
+            const p = (y % SCROLL_PER_PAGE) / SCROLL_PER_PAGE;
+            const pageIndex = Math.floor(y / SCROLL_PER_PAGE);
+            
+            // "Less than 5%" logic
+            const kickThreshold = 0.05; // 5% start
+            const snapFinishThreshold = 0.95; // 95% done
+
+            // Helper to animate
+            const snapTo = (target: number) => {
+                animate(scrollY, target, { duration: 0.6, ease: [0.22, 1, 0.36, 1] });
+            };
+
+            // SCROLLING DOWN
+            if (lastDelta.current > 0) {
+                // Kick: User moved > 0% but < 5% -> Treat as "Go Next"
+                if (p > 0 && p < kickThreshold) {
+                    snapTo((pageIndex + 1) * SCROLL_PER_PAGE);
+                } 
+                // Snap Finish: User moved > 95% -> Finish the job
+                else if (p > snapFinishThreshold) {
+                    snapTo((pageIndex + 1) * SCROLL_PER_PAGE);
+                }
+            } 
+            // SCROLLING UP
+            else if (lastDelta.current < 0) {
+                 // Kick Back: User moved up slightly from bottom (progress > 95%) -> Treat as "Go Prev"
+                 if (p > snapFinishThreshold) {
+                    snapTo(pageIndex * SCROLL_PER_PAGE);
+                 }
+                 // Snap Finish Back: User moved up almost to top (< 5%) -> Finish
+                 else if (p < kickThreshold) {
+                    snapTo(pageIndex * SCROLL_PER_PAGE);
+                 }
+            }
+        }, 120); // 120ms pause considered as "Stop"
     }
   }, [scrollY, isTerminalOpen, isLoading, maxScroll]);
 
