@@ -13,29 +13,29 @@ const StatsSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-10 border-y border-border bg-white/50 backdrop-blur-sm relative z-20">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12">
+    <section className="py-6 md:py-8 w-full">
+      <div className="container mx-auto px-6 md:px-12">
+        <div className="flex flex-col xl:flex-row items-center gap-6 md:gap-12">
           
           {/* Label */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="hidden xl:flex items-center gap-3 shrink-0">
              <div className="w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_10px_#ff5e00]"></div>
              <span className="font-mono text-xs text-primary tracking-[0.2em] font-bold">LIVE_TELEMETRY</span>
           </div>
 
           {/* Stats Grid */}
-          <div className="flex-grow w-full grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4">
               {stats.map((stat, i) => (
                   <MotionDiv 
                       key={i}
                       initial={{ opacity: 0, y: 10 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                      className={`relative p-4 border-l-2 ${stat.border} bg-gradient-to-r from-gray-50 to-transparent`}
+                      transition={{ delay: 0.5 + (i * 0.1) }}
+                      className={`relative pl-4 border-l-2 ${stat.border} flex flex-col justify-center`}
                   >
-                      <span className={`block text-3xl md:text-4xl font-bold font-display ${stat.color} mb-1`}>{stat.val}</span>
-                      <span className="text-[10px] md:text-xs font-mono text-gray-500 block tracking-widest uppercase font-semibold">{stat.label}</span>
+                      <span className={`block text-2xl md:text-3xl font-bold font-display ${stat.color} mb-0.5`}>{stat.val}</span>
+                      <span className="text-[9px] md:text-[10px] font-mono text-gray-500 block tracking-widest uppercase font-semibold">{stat.label}</span>
                   </MotionDiv>
               ))}
           </div>
