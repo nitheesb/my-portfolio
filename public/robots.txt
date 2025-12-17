@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nithees.io/sitemap.xml
+Sitemap: https://nithees.vercel.app/sitemap.xml
