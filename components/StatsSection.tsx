@@ -1,15 +1,18 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 
 const MotionDiv = motion.div as any;
 
-const StatsSection: React.FC = () => {
+interface StatsSectionProps {
+  dark?: boolean;
+}
+
+const StatsSection: React.FC<StatsSectionProps> = ({ dark = false }) => {
   const stats = [
-    { val: "18%", label: "COST REDUCTION", color: "text-black", border: "border-black/10" },
+    { val: "18%", label: "COST REDUCTION", color: dark ? "text-white" : "text-black", border: dark ? "border-white/10" : "border-black/10" },
     { val: "99.99%", label: "UPTIME (GKE)", color: "text-primary", border: "border-primary/30" },
-    { val: "-60%", label: "DEPLOY ERRORS", color: "text-green-600", border: "border-green-500/30" },
-    { val: "9+", label: "YEARS EXP", color: "text-black", border: "border-black/10" },
+    { val: "-60%", label: "DEPLOY ERRORS", color: "text-green-500", border: "border-green-500/30" },
+    { val: "9+", label: "YEARS EXP", color: dark ? "text-white" : "text-black", border: dark ? "border-white/10" : "border-black/10" },
   ];
 
   return (

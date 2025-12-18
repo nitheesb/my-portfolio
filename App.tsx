@@ -13,7 +13,6 @@ import BentoGrid from './components/BentoGrid';
 import TechStack from './components/TechStack';
 import SkillsMatrix from './components/SkillsMatrix';
 import ServicesSection from './components/ServicesSection';
-import ClusterVisual from './components/ClusterVisual';
 import { useAudioFeedback } from './hooks/useAudioFeedback';
 
 const SCROLL_PER_PAGE = 1600;
@@ -143,13 +142,13 @@ function App() {
   }
 
   return (
-    <div className="w-screen h-screen bg-[#050505] text-gray-800 overflow-hidden relative font-sans selection:bg-primary selection:text-white">
+    <div className="w-screen h-screen bg-bg text-gray-800 overflow-hidden relative font-sans selection:bg-primary selection:text-white">
       <CursorCanvas />
       
       {/* 9. SVG Power-Line Scroll Progress */}
-      <div className="fixed left-6 top-1/2 -translate-y-1/2 h-[70vh] w-4 z-40 hidden md:flex items-center justify-center pointer-events-none">
+      <div className="fixed left-6 top-1/2 -translate-y-1/2 h-[70vh] w-4 z-[100] hidden md:flex items-center justify-center pointer-events-none">
           <svg width="6" height="100%" viewBox="0 0 6 1000" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
-              <path d="M3 0V1000" stroke="rgba(255, 94, 0, 0.05)" strokeWidth="1" />
+              <path d="M3 0V1000" stroke="rgba(255, 94, 0, 0.1)" strokeWidth="1" />
               <motion.path 
                 d="M3 0V1000" 
                 stroke="#ff5e00" 
@@ -171,7 +170,7 @@ function App() {
                         <circle 
                             cx="3" 
                             cy={i * (1000 / (SECTIONS.length - 1))} 
-                            r="8" 
+                            r={8} 
                             stroke="#ff5e00"
                             strokeWidth="1"
                             className="animate-ping opacity-20"
@@ -202,6 +201,7 @@ function App() {
                 total={SECTIONS.length}
                 scrollY={smoothScrollY}
                 Component={section.component}
+                onNavigate={navigateTo}
              />
          ))}
       </main>
@@ -224,7 +224,7 @@ function App() {
   );
 }
 
-const SectionPanel = ({ index, total, scrollY, Component }: { index: number, total: number, scrollY: any, Component: any }) => {
+const SectionPanel = ({ index, total, scrollY, Component, onNavigate }: { index: number, total: number, scrollY: any, Component: any, onNavigate: (i: number) => void }) => {
     const startRange = (index - 1) * SCROLL_PER_PAGE;
     const endRange = index * SCROLL_PER_PAGE;
     const exitRange = (index + 1) * SCROLL_PER_PAGE;
@@ -261,21 +261,18 @@ const SectionPanel = ({ index, total, scrollY, Component }: { index: number, tot
              )}
              
              <div className="w-full h-full relative overflow-hidden">
-                <Component />
+                <Component onNavigate={onNavigate} />
              </div>
         </motion.div>
     );
 };
 
-function HeroSection() {
+function HeroSection({ onNavigate }: { onNavigate: (i: number) => void }) {
+    const { playClick } = useAudioFeedback();
     return (
     <section className="h-full w-full relative flex flex-col overflow-hidden bg-bg">
         <HeroHUD />
         
-        <div className="absolute inset-0 z-0 pointer-events-none">
-            <ClusterVisual />
-        </div>
-
         <div className="absolute top-16 left-6 md:top-8 md:left-8 z-30">
             <div className="font-mono font-bold text-sm md:text-lg tracking-wider pointer-events-auto inline-block bg-white/50 backdrop-blur-sm px-3 py-1 rounded border border-transparent">
                 <span className="text-primary">[</span> <ScrambleText text="NBM.SYS" className="text-black" /> <span className="text-primary">]</span>
@@ -306,7 +303,12 @@ function HeroSection() {
                     </p>
                     
                     <div className="flex gap-4">
-                        <GlitchButton text="MISSION LOGS" icon={<TerminalIcon size={16} />} aria-label="View Projects" />
+                        <GlitchButton 
+                            text="MISSION LOGS" 
+                            icon={<TerminalIcon size={16} />} 
+                            aria-label="View Projects" 
+                            onClick={() => { playClick(); onNavigate(2); }} 
+                        />
                         <GlitchButton 
                             text="GET RESUME" 
                             icon={<Download size={16} />} 
