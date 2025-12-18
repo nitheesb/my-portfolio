@@ -13,10 +13,12 @@ import BentoGrid from './components/BentoGrid';
 import TechStack from './components/TechStack';
 import SkillsMatrix from './components/SkillsMatrix';
 import ServicesSection from './components/ServicesSection';
+import ClusterVisual from './components/ClusterVisual';
+import { useAudioFeedback } from './hooks/useAudioFeedback';
 
 const SCROLL_PER_PAGE = 1600;
-const SCROLL_COOLDOWN = 800; // Time in ms before next section jump is allowed
-const THRESHOLD_TO_SNAP = 300; // Delta required to trigger a snap
+const SCROLL_COOLDOWN = 800; 
+const THRESHOLD_TO_SNAP = 300; 
 
 const SECTIONS = [
   { id: 'hero', title: 'HOME', component: HeroSection },
@@ -29,6 +31,7 @@ function App() {
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { playClick, playHover } = useAudioFeedback();
   
   const scrollY = useMotionValue(0);
   const smoothScrollY = useSpring(scrollY, { damping: 50, stiffness: 180, mass: 1.2 });
@@ -38,6 +41,10 @@ function App() {
   const accumulatedDelta = useRef(0);
 
   const maxScroll = (SECTIONS.length - 1) * SCROLL_PER_PAGE;
+
+  // Power-Line SVG path logic
+  const powerLineProgress = useTransform(smoothScrollY, [0, maxScroll], [0, 1000]);
+  const powerLineOffset = useTransform(powerLineProgress, (v) => 1000 - v);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2000);
@@ -81,7 +88,6 @@ function App() {
     const target = e.target as HTMLElement;
     const scrollable = target.closest('.scrollable-content');
     
-    // Internal scrolling detection
     if (scrollable) {
         const el = scrollable as HTMLElement;
         const isAtTop = el.scrollTop <= 5; 
@@ -89,9 +95,7 @@ function App() {
         const isOverflowing = el.scrollHeight > el.clientHeight;
 
         if (isOverflowing) {
-            // If we are moving down and haven't reached bottom, let internal scroll work
             if (e.deltaY > 0 && !isAtBottom) return;
-            // If we are moving up and haven't reached top, let internal scroll work
             if (e.deltaY < 0 && !isAtTop) return;
         }
     }
@@ -99,7 +103,6 @@ function App() {
     e.preventDefault();
     accumulatedDelta.current += e.deltaY;
 
-    // Trigger section jump if threshold met
     if (Math.abs(accumulatedDelta.current) > THRESHOLD_TO_SNAP) {
         if (accumulatedDelta.current > 0) {
             navigateTo(activeSectionIndex + 1);
@@ -108,12 +111,10 @@ function App() {
         }
         accumulatedDelta.current = 0;
     } else {
-        // Subtle drift movement within the current page for feedback
         const current = scrollY.get();
         const drift = e.deltaY * 0.1;
         const targetDrift = current + drift;
         
-        // Ensure we don't drift out of section bounds during accumulation
         const lowerBound = activeSectionIndex * SCROLL_PER_PAGE;
         const upperBound = (activeSectionIndex + 1) * SCROLL_PER_PAGE;
         
@@ -122,12 +123,10 @@ function App() {
         }
     }
 
-    // Reset accumulation if user stops scrolling for a bit
     const timeout = (window as any)._scrollResetTimeout;
     if (timeout) clearTimeout(timeout);
     (window as any)._scrollResetTimeout = setTimeout(() => {
         if (!isAnimating.current) {
-            // Snap back to current section if they didn't push hard enough
             navigateTo(activeSectionIndex);
         }
     }, 150);
@@ -147,17 +146,53 @@ function App() {
     <div className="w-screen h-screen bg-[#050505] text-gray-800 overflow-hidden relative font-sans selection:bg-primary selection:text-white">
       <CursorCanvas />
       
+      {/* 9. SVG Power-Line Scroll Progress */}
+      <div className="fixed left-6 top-1/2 -translate-y-1/2 h-[70vh] w-4 z-40 hidden md:flex items-center justify-center pointer-events-none">
+          <svg width="6" height="100%" viewBox="0 0 6 1000" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
+              <path d="M3 0V1000" stroke="rgba(255, 94, 0, 0.05)" strokeWidth="1" />
+              <motion.path 
+                d="M3 0V1000" 
+                stroke="#ff5e00" 
+                strokeWidth="2.5" 
+                strokeDasharray="1000"
+                style={{ strokeDashoffset: powerLineOffset }}
+                className="drop-shadow-[0_0_8px_rgba(255,94,0,0.8)]"
+              />
+              {SECTIONS.map((_, i) => (
+                  <g key={i}>
+                    <circle 
+                        cx="3" 
+                        cy={i * (1000 / (SECTIONS.length - 1))} 
+                        r={activeSectionIndex === i ? "4" : "2.5"} 
+                        fill={activeSectionIndex >= i ? "#ff5e00" : "rgba(255, 94, 0, 0.2)"}
+                        className="transition-all duration-500"
+                    />
+                    {activeSectionIndex === i && (
+                        <circle 
+                            cx="3" 
+                            cy={i * (1000 / (SECTIONS.length - 1))} 
+                            r="8" 
+                            stroke="#ff5e00"
+                            strokeWidth="1"
+                            className="animate-ping opacity-20"
+                        />
+                    )}
+                  </g>
+              ))}
+          </svg>
+      </div>
+
       <header className="fixed top-0 left-0 w-full z-50 md:hidden flex justify-between items-center px-4 py-3 bg-white/90 backdrop-blur-md border-b border-gray-200">
           <div className="font-mono text-xs font-bold tracking-widest text-primary">
               0{activeSectionIndex + 1} // {SECTIONS[activeSectionIndex].title}
           </div>
           <nav className="flex gap-4 text-xs font-mono text-gray-400">
-             <button aria-label="Previous Section" disabled={activeSectionIndex === 0} onClick={() => navigateTo(activeSectionIndex - 1)} className="disabled:opacity-30 p-2">PREV</button>
-             <button aria-label="Next Section" disabled={activeSectionIndex === SECTIONS.length - 1} onClick={() => navigateTo(activeSectionIndex + 1)} className="disabled:opacity-30 p-2">NEXT</button>
+             <button aria-label="Previous Section" disabled={activeSectionIndex === 0} onClick={() => { playClick(); navigateTo(activeSectionIndex - 1); }} className="disabled:opacity-30 p-2">PREV</button>
+             <button aria-label="Next Section" disabled={activeSectionIndex === SECTIONS.length - 1} onClick={() => { playClick(); navigateTo(activeSectionIndex + 1); }} className="disabled:opacity-30 p-2">NEXT</button>
           </nav>
       </header>
       
-      <NavRail current={activeSectionIndex} total={SECTIONS.length} onChange={navigateTo} />
+      <NavRail current={activeSectionIndex} total={SECTIONS.length} onChange={(i) => { playClick(); navigateTo(i); }} />
 
       <main className="w-full h-full relative perspective-[1200px]">
          {SECTIONS.map((section, index) => (
@@ -172,7 +207,8 @@ function App() {
       </main>
 
       <button 
-        onClick={() => setIsTerminalOpen(true)}
+        onClick={() => { playClick(); setIsTerminalOpen(true); }}
+        onMouseEnter={playHover}
         aria-label="Open Command Terminal"
         className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] bg-black border border-primary text-primary w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,94,0,0.3)] hover:scale-110 hover:bg-primary hover:text-white transition-all duration-300 group"
       >
@@ -194,7 +230,10 @@ const SectionPanel = ({ index, total, scrollY, Component }: { index: number, tot
     const exitRange = (index + 1) * SCROLL_PER_PAGE;
 
     const openProgress = useTransform(scrollY, [startRange, endRange], [0, 1]);
-
+    const brightnessRaw = useTransform(scrollY, [endRange, exitRange], [1, 0.4]);
+    const scale = useTransform(scrollY, [endRange, exitRange], [1, 0.95]);
+    const borderOpacity = useTransform(openProgress, [0.9, 1], [1, 0]);
+    
     const clipInset = useTransform(openProgress, (v) => {
         if (index === 0) return 'inset(0% 0 0% 0)'; 
         const progress = Math.max(0, Math.min(1, v));
@@ -202,9 +241,7 @@ const SectionPanel = ({ index, total, scrollY, Component }: { index: number, tot
         return `inset(${gap}% 0 ${gap}% 0)`;
     });
 
-    const brightness = useTransform(scrollY, [endRange, exitRange], [1, 0.4]);
-    const scale = useTransform(scrollY, [endRange, exitRange], [1, 0.95]);
-    const borderOpacity = useTransform(openProgress, [0.9, 1], [1, 0]);
+    const brightnessFilter = useTransform(brightnessRaw, (v) => `brightness(${v})`);
 
     return (
         <motion.div 
@@ -212,7 +249,7 @@ const SectionPanel = ({ index, total, scrollY, Component }: { index: number, tot
             style={{ 
                 zIndex: index,
                 clipPath: clipInset,
-                filter: useTransform(brightness, v => `brightness(${v})`),
+                filter: brightnessFilter,
                 scale: scale
             }}
         >
@@ -235,6 +272,10 @@ function HeroSection() {
     <section className="h-full w-full relative flex flex-col overflow-hidden bg-bg">
         <HeroHUD />
         
+        <div className="absolute inset-0 z-0 pointer-events-none">
+            <ClusterVisual />
+        </div>
+
         <div className="absolute top-16 left-6 md:top-8 md:left-8 z-30">
             <div className="font-mono font-bold text-sm md:text-lg tracking-wider pointer-events-auto inline-block bg-white/50 backdrop-blur-sm px-3 py-1 rounded border border-transparent">
                 <span className="text-primary">[</span> <ScrambleText text="NBM.SYS" className="text-black" /> <span className="text-primary">]</span>
@@ -361,12 +402,14 @@ function BootScreen() {
 }
 
 function NavRail({ current, total, onChange }: { current: number, total: number, onChange: (i: number) => void }) {
+    const { playHover } = useAudioFeedback();
     return (
     <nav className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-4 items-center" aria-label="Main Navigation">
         {SECTIONS.map((section, idx) => (
             <button
                 key={section.id}
                 onClick={() => onChange(idx)}
+                onMouseEnter={playHover}
                 aria-label={`Go to ${section.title} section`}
                 aria-current={current === idx ? 'page' : undefined}
                 className="group flex items-center gap-4 relative py-2 w-8 justify-center"

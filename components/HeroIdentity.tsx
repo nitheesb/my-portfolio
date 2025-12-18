@@ -1,10 +1,20 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'framer-motion';
 import { MapPin, Mail, Github, Linkedin, ShieldCheck, Terminal } from 'lucide-react';
+import { useAudioFeedback } from '../hooks/useAudioFeedback';
 
 const HeroIdentity: React.FC = () => {
   const [isImgLoaded, setIsImgLoaded] = useState(false);
+  const [isScanned, setIsScanned] = useState(false);
+  const { playHover, playClick } = useAudioFeedback();
   const ref = useRef<HTMLDivElement>(null);
+
+  // Trigger scan animation on load
+  useEffect(() => {
+    if (isImgLoaded) {
+      setTimeout(() => setIsScanned(true), 500);
+    }
+  }, [isImgLoaded]);
 
   // --- 3D TILT LOGIC ---
   const x = useMotionValue(0);
@@ -29,6 +39,7 @@ const HeroIdentity: React.FC = () => {
     const mouseYFromCenter = (e.clientY - rect.top) / height - 0.5;
     x.set(mouseXFromCenter);
     y.set(mouseYFromCenter);
+    playHover();
   };
 
   const handleMouseLeave = () => {
@@ -69,7 +80,7 @@ const HeroIdentity: React.FC = () => {
             </div>
             <div className="font-mono text-[9px] md:text-[10px] text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
                 <ShieldCheck size={12} className="text-primary" />
-                ID_VERIFIED // SECURE_ACCESS
+                {isScanned ? 'ID_VERIFIED // SECURE_ACCESS' : 'INITIALIZING_VERIFICATION...'}
             </div>
         </div>
 
@@ -88,6 +99,16 @@ const HeroIdentity: React.FC = () => {
                     alt="Portrait of Nithees Balaji Mohan, Senior DevOps Architect" 
                     className={`w-full h-full object-cover object-top filter grayscale hover:grayscale-0 transition-all duration-500 ${!isImgLoaded ? 'opacity-0' : 'opacity-100'}`}
                     />
+
+                    {/* Laser Scan Line */}
+                    {isImgLoaded && (
+                      <motion.div 
+                        initial={{ top: '0%' }}
+                        animate={{ top: ['0%', '100%', '0%'] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="absolute left-0 w-full h-[2px] bg-primary shadow-[0_0_15px_#ff5e00] z-20 pointer-events-none opacity-80"
+                      />
+                    )}
                     
                     <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_2px,3px_100%] pointer-events-none z-10"></div>
                 </div>
@@ -106,8 +127,8 @@ const HeroIdentity: React.FC = () => {
                 </div>
 
                 <div className="flex gap-2 mt-6 pt-4 md:pt-6 border-t border-gray-100">
-                    <SocialBtn icon={Github} href="https://github.com/nitheesb" title="View Github Profile" />
-                    <SocialBtn icon={Linkedin} href="https://www.linkedin.com/in/nithees-balaji" title="Connect on LinkedIn" />
+                    <SocialBtn icon={Github} href="https://github.com/nitheesb" title="View Github Profile" onClick={playClick} />
+                    <SocialBtn icon={Linkedin} href="https://www.linkedin.com/in/nithees-balaji" title="Connect on LinkedIn" onClick={playClick} />
                     <div className="flex-1 flex items-center justify-end">
                         <div className="w-14 md:w-16 h-8 bg-black flex items-center justify-center">
                             <span className="text-white font-display font-bold text-xs tracking-widest">NBM.IO</span>
@@ -131,13 +152,14 @@ const InfoRow = ({ icon: Icon, label, value }: { icon: any, label: string, value
     </div>
 );
 
-const SocialBtn = ({ icon: Icon, href, title }: { icon: any, href: string, title: string }) => (
+const SocialBtn = ({ icon: Icon, href, title, onClick }: { icon: any, href: string, title: string, onClick?: () => void }) => (
     <a 
         href={href} 
         target="_blank" 
         title={title}
         aria-label={title}
         rel="noopener noreferrer"
+        onClick={onClick}
         className="w-8 h-8 flex items-center justify-center text-black border border-black hover:bg-black hover:text-white transition-all duration-300"
     >
         <Icon size={14} aria-hidden="true" />
