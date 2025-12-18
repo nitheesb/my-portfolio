@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'framer-motion';
 import { MapPin, Mail, Github, Linkedin, ShieldCheck, Terminal } from 'lucide-react';
@@ -11,17 +10,12 @@ const HeroIdentity: React.FC = () => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  // Physics: Stiffness 150 / Damping 15 creates a "heavy" but responsive object feel
   const mouseX = useSpring(x, { stiffness: 150, damping: 15 });
   const mouseY = useSpring(y, { stiffness: 150, damping: 15 });
 
-  // Map mouse (-0.5 to 0.5) to rotation degrees
-  // X axis rotation is driven by Y mouse movement (up/down tilts card along X axis)
   const rotateX = useTransform(mouseY, [-0.5, 0.5], ["12deg", "-12deg"]); 
   const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-12deg", "12deg"]);
 
-  // Dynamic Light Source (Glare)
-  // The light follows the mouse but slightly offset to feel natural
   const glareX = useTransform(mouseX, [-0.5, 0.5], ["0%", "100%"]);
   const glareY = useTransform(mouseY, [-0.5, 0.5], ["0%", "100%"]);
   const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX} ${glareY}, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 60%)`;
@@ -29,33 +23,24 @@ const HeroIdentity: React.FC = () => {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
-    
     const width = rect.width;
     const height = rect.height;
-    
-    // Calculate mouse position relative to center of card (-0.5 to 0.5)
     const mouseXFromCenter = (e.clientX - rect.left) / width - 0.5;
     const mouseYFromCenter = (e.clientY - rect.top) / height - 0.5;
-
     x.set(mouseXFromCenter);
     y.set(mouseYFromCenter);
   };
 
   const handleMouseLeave = () => {
-    // Reset to center on leave
     x.set(0);
     y.set(0);
   };
 
   return (
     <div className="relative w-full z-50 perspective-[1200px]" style={{ perspective: 1200 }}>
-      
-      {/* --- BACKDROP DECORATION (Static) --- */}
-      {/* Keeping these outside the tilt preserves the "floating" illusion */}
-      <div className="absolute -top-6 -right-6 w-32 h-32 border-r border-t border-primary/20 rounded-tr-3xl"></div>
-      <div className="absolute -bottom-6 -left-6 w-32 h-32 border-l border-b border-primary/20 rounded-bl-3xl"></div>
+      <div className="absolute -top-6 -right-6 w-32 h-32 border-r border-t border-primary/20 rounded-tr-3xl" aria-hidden="true"></div>
+      <div className="absolute -bottom-6 -left-6 w-32 h-32 border-l border-b border-primary/20 rounded-bl-3xl" aria-hidden="true"></div>
 
-      {/* --- MAIN CARD CONTAINER (Tilting) --- */}
       <motion.div 
         ref={ref}
         onMouseMove={handleMouseMove}
@@ -69,15 +54,13 @@ const HeroIdentity: React.FC = () => {
         }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="relative bg-white border border-gray-200 shadow-2xl overflow-hidden max-w-full transform-gpu cursor-none md:cursor-auto"
+        aria-label="Identity Card of Nithees Balaji Mohan"
       >
-        
-        {/* --- DYNAMIC GLARE OVERLAY --- */}
         <motion.div 
             className="absolute inset-0 z-50 pointer-events-none mix-blend-overlay opacity-30"
             style={{ background: glareBackground }}
         />
 
-        {/* --- HEADER BAR --- */}
         <div className="bg-[#f4f4f5] border-b border-gray-200 px-4 py-2 md:px-6 md:py-3 flex justify-between items-center relative z-10">
             <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
@@ -86,39 +69,33 @@ const HeroIdentity: React.FC = () => {
             </div>
             <div className="font-mono text-[9px] md:text-[10px] text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
                 <ShieldCheck size={12} className="text-primary" />
-                ID_VERIFIED
+                ID_VERIFIED // SECURE_ACCESS
             </div>
         </div>
 
-        {/* --- CONTENT BODY --- */}
         <div className="flex flex-col sm:flex-row h-full relative z-10 bg-white">
-            
-            {/* PHOTO SECTION */}
             <div className="w-full sm:w-[180px] md:w-[200px] relative overflow-hidden group border-b sm:border-b-0 sm:border-r border-gray-200 bg-gray-100">
                 <div className="aspect-[1/1] sm:aspect-auto sm:h-full relative">
                     {!isImgLoaded && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
-                        <span className="text-[8px] font-mono text-primary font-bold animate-pulse">LOADING...</span>
+                        <span className="text-[8px] font-mono text-primary font-bold animate-pulse">ENCRYPTED_IMAGE...</span>
                     </div>
                     )}
 
                     <img 
                     src="https://i.ibb.co/mCwSdtvZ/profile.png" 
                     onLoad={() => setIsImgLoaded(true)}
-                    alt="Nithees Balaji" 
+                    alt="Portrait of Nithees Balaji Mohan, Senior DevOps Architect" 
                     className={`w-full h-full object-cover object-top filter grayscale hover:grayscale-0 transition-all duration-500 ${!isImgLoaded ? 'opacity-0' : 'opacity-100'}`}
                     />
                     
-                    {/* Scanline */}
                     <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_2px,3px_100%] pointer-events-none z-10"></div>
                 </div>
             </div>
 
-            {/* DETAILS SECTION */}
             <div className="flex-1 p-5 md:p-6 flex flex-col justify-between min-h-[200px]">
-                
                 <div>
-                    <h2 className="text-2xl md:text-3xl font-display font-bold text-black leading-none mb-1">NITHEES BALAJI</h2>
+                    <h1 className="text-xl md:text-2xl font-display font-bold text-black leading-none mb-1">NITHEES BALAJI MOHAN</h1>
                     <div className="text-[9px] md:text-[10px] font-mono text-primary font-bold tracking-wider mb-4 md:mb-6">SENIOR DEVOPS ARCHITECT</div>
 
                     <div className="space-y-3 md:space-y-4">
@@ -129,18 +106,16 @@ const HeroIdentity: React.FC = () => {
                 </div>
 
                 <div className="flex gap-2 mt-6 pt-4 md:pt-6 border-t border-gray-100">
-                    <SocialBtn icon={Github} href="https://github.com/nitheesb" />
-                    <SocialBtn icon={Linkedin} href="https://www.linkedin.com/in/nithees-balaji" />
+                    <SocialBtn icon={Github} href="https://github.com/nitheesb" title="View Github Profile" />
+                    <SocialBtn icon={Linkedin} href="https://www.linkedin.com/in/nithees-balaji" title="Connect on LinkedIn" />
                     <div className="flex-1 flex items-center justify-end">
                         <div className="w-14 md:w-16 h-8 bg-black flex items-center justify-center">
-                            <span className="text-white font-display font-bold text-xs tracking-widest">NB.IO</span>
+                            <span className="text-white font-display font-bold text-xs tracking-widest">NBM.IO</span>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-
       </motion.div>
     </div>
   );
@@ -148,7 +123,7 @@ const HeroIdentity: React.FC = () => {
 
 const InfoRow = ({ icon: Icon, label, value }: { icon: any, label: string, value: string }) => (
     <div className="flex items-center gap-3">
-        <Icon size={14} className="text-gray-400" />
+        <Icon size={14} className="text-gray-400" aria-hidden="true" />
         <div className="flex flex-col">
             <span className="text-[9px] text-gray-400 font-mono font-bold leading-none">{label}</span>
             <span className="text-[11px] md:text-xs text-black font-bold font-mono leading-none mt-1 break-all">{value}</span>
@@ -156,13 +131,16 @@ const InfoRow = ({ icon: Icon, label, value }: { icon: any, label: string, value
     </div>
 );
 
-const SocialBtn = ({ icon: Icon, href }: { icon: any, href: string }) => (
+const SocialBtn = ({ icon: Icon, href, title }: { icon: any, href: string, title: string }) => (
     <a 
         href={href} 
         target="_blank" 
+        title={title}
+        aria-label={title}
+        rel="noopener noreferrer"
         className="w-8 h-8 flex items-center justify-center text-black border border-black hover:bg-black hover:text-white transition-all duration-300"
     >
-        <Icon size={14} />
+        <Icon size={14} aria-hidden="true" />
     </a>
 );
 

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Terminal as TerminalIcon, Download } from 'lucide-react';
 import { motion, useMotionValue, useTransform, animate, useSpring } from 'framer-motion';
@@ -15,10 +14,9 @@ import TechStack from './components/TechStack';
 import SkillsMatrix from './components/SkillsMatrix';
 import ServicesSection from './components/ServicesSection';
 
-// --- CONFIG ---
-// How many virtual pixels constitute one full page transition
-// Increased from 1000 to 1600 to make the transition feel "longer" and less instant
 const SCROLL_PER_PAGE = 1600;
+const SCROLL_COOLDOWN = 800; // Time in ms before next section jump is allowed
+const THRESHOLD_TO_SNAP = 300; // Delta required to trigger a snap
 
 const SECTIONS = [
   { id: 'hero', title: 'HOME', component: HeroSection },
@@ -32,26 +30,20 @@ function App() {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Global virtual scroll position (0 to TotalPages * SCROLL_PER_PAGE)
   const scrollY = useMotionValue(0);
-  
-  // INDUSTRY STANDARD SMOOTH SCROLL PHYSICS
-  // Increased Damping (friction) and Mass to make it feel "heavier" and slower to settle
   const smoothScrollY = useSpring(scrollY, { damping: 50, stiffness: 180, mass: 1.2 });
 
-  // Refs for scroll physics
-  const lastDelta = useRef(0);
-  const scrollTimeout = useRef<number | null>(null);
+  const lastSectionChange = useRef(Date.now());
+  const isAnimating = useRef(false);
+  const accumulatedDelta = useRef(0);
 
   const maxScroll = (SECTIONS.length - 1) * SCROLL_PER_PAGE;
 
-  // Preloader
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Sync active index for UI updates (Nav Rail, Header)
   useEffect(() => {
     const unsubscribe = smoothScrollY.on("change", (latest) => {
       const newIndex = Math.round(latest / SCROLL_PER_PAGE);
@@ -62,106 +54,90 @@ function App() {
     return () => unsubscribe();
   }, [smoothScrollY, activeSectionIndex]);
 
+  const navigateTo = useCallback((index: number) => {
+      if (index < 0 || index >= SECTIONS.length) return;
+      isAnimating.current = true;
+      lastSectionChange.current = Date.now();
+      accumulatedDelta.current = 0;
+      
+      animate(scrollY, index * SCROLL_PER_PAGE, { 
+        duration: 1.2, 
+        ease: [0.22, 1, 0.36, 1],
+        onComplete: () => {
+          isAnimating.current = false;
+        }
+      });
+  }, [scrollY]);
 
-  // --- HYBRID SCROLL LOGIC ---
   const handleWheel = useCallback((e: WheelEvent) => {
-    if (isTerminalOpen || isLoading) return;
+    if (isTerminalOpen || isLoading || isAnimating.current) return;
 
-    // 1. Check if we are hovering a scrollable internal container
+    const now = Date.now();
+    if (now - lastSectionChange.current < SCROLL_COOLDOWN) {
+        e.preventDefault();
+        return;
+    }
+
     const target = e.target as HTMLElement;
     const scrollable = target.closest('.scrollable-content');
     
-    let consumedByInternal = false;
-
+    // Internal scrolling detection
     if (scrollable) {
         const el = scrollable as HTMLElement;
-        const isAtTop = el.scrollTop <= 1; 
-        const isAtBottom = Math.abs(el.scrollHeight - el.scrollTop - el.clientHeight) <= 1;
+        const isAtTop = el.scrollTop <= 5; 
+        const isAtBottom = Math.abs(el.scrollHeight - el.scrollTop - el.clientHeight) <= 5;
         const isOverflowing = el.scrollHeight > el.clientHeight;
 
-        // If the page is FULLY open (within small margin of error)
-        const currentGlobalVal = scrollY.get();
-        const nearestPage = Math.round(currentGlobalVal / SCROLL_PER_PAGE) * SCROLL_PER_PAGE;
-        const isLockedToPage = Math.abs(currentGlobalVal - nearestPage) < 10;
-
-        if (isOverflowing && isLockedToPage) {
-             // If scrolling UP and NOT at top -> internal scroll
-             if (e.deltaY < 0 && !isAtTop) consumedByInternal = true;
-             // If scrolling DOWN and NOT at bottom -> internal scroll
-             if (e.deltaY > 0 && !isAtBottom) consumedByInternal = true;
+        if (isOverflowing) {
+            // If we are moving down and haven't reached bottom, let internal scroll work
+            if (e.deltaY > 0 && !isAtBottom) return;
+            // If we are moving up and haven't reached top, let internal scroll work
+            if (e.deltaY < 0 && !isAtTop) return;
         }
     }
 
-    // 2. If not consumed by internal div, update global virtual scroll
-    if (!consumedByInternal) {
-        // e.preventDefault() is implicitly handled by passive: false in event listener
-        e.preventDefault();
-        
+    e.preventDefault();
+    accumulatedDelta.current += e.deltaY;
+
+    // Trigger section jump if threshold met
+    if (Math.abs(accumulatedDelta.current) > THRESHOLD_TO_SNAP) {
+        if (accumulatedDelta.current > 0) {
+            navigateTo(activeSectionIndex + 1);
+        } else {
+            navigateTo(activeSectionIndex - 1);
+        }
+        accumulatedDelta.current = 0;
+    } else {
+        // Subtle drift movement within the current page for feedback
         const current = scrollY.get();
+        const drift = e.deltaY * 0.1;
+        const targetDrift = current + drift;
         
-        // SENSITIVITY CALIBRATION
-        // Reduced to 0.4 (from 0.6) to make the scroll require more effort/movement
-        const delta = e.deltaY * 0.4; 
-        lastDelta.current = delta; // Track direction for snap logic
+        // Ensure we don't drift out of section bounds during accumulation
+        const lowerBound = activeSectionIndex * SCROLL_PER_PAGE;
+        const upperBound = (activeSectionIndex + 1) * SCROLL_PER_PAGE;
         
-        const newPos = Math.max(0, Math.min(current + delta, maxScroll));
-        scrollY.set(newPos);
-
-        // --- SNAP & KICK LOGIC ---
-        // Debounce: Wait for scroll to stop before checking for snaps
-        if (scrollTimeout.current) window.clearTimeout(scrollTimeout.current);
-        
-        scrollTimeout.current = window.setTimeout(() => {
-            const y = scrollY.get();
-            const p = (y % SCROLL_PER_PAGE) / SCROLL_PER_PAGE;
-            const pageIndex = Math.floor(y / SCROLL_PER_PAGE);
-            
-            // "Less than 5%" logic
-            const kickThreshold = 0.05; // 5% start
-            const snapFinishThreshold = 0.95; // 95% done
-
-            // Helper to animate
-            const snapTo = (target: number) => {
-                // Increased duration to 1.2s (from 0.8s) for a slower, smoother glide
-                animate(scrollY, target, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
-            };
-
-            // SCROLLING DOWN
-            if (lastDelta.current > 0) {
-                // Kick: User moved > 0% but < 5% -> Treat as "Go Next"
-                if (p > 0 && p < kickThreshold) {
-                    snapTo((pageIndex + 1) * SCROLL_PER_PAGE);
-                } 
-                // Snap Finish: User moved > 95% -> Finish the job
-                else if (p > snapFinishThreshold) {
-                    snapTo((pageIndex + 1) * SCROLL_PER_PAGE);
-                }
-            } 
-            // SCROLLING UP
-            else if (lastDelta.current < 0) {
-                 // Kick Back: User moved up slightly from bottom (progress > 95%) -> Treat as "Go Prev"
-                 if (p > snapFinishThreshold) {
-                    snapTo(pageIndex * SCROLL_PER_PAGE);
-                 }
-                 // Snap Finish Back: User moved up almost to top (< 5%) -> Finish
-                 else if (p < kickThreshold) {
-                    snapTo(pageIndex * SCROLL_PER_PAGE);
-                 }
-            }
-        }, 100); // Quick check
+        if (targetDrift >= lowerBound - 100 && targetDrift <= upperBound + 100) {
+            scrollY.set(targetDrift);
+        }
     }
-  }, [scrollY, isTerminalOpen, isLoading, maxScroll]);
+
+    // Reset accumulation if user stops scrolling for a bit
+    const timeout = (window as any)._scrollResetTimeout;
+    if (timeout) clearTimeout(timeout);
+    (window as any)._scrollResetTimeout = setTimeout(() => {
+        if (!isAnimating.current) {
+            // Snap back to current section if they didn't push hard enough
+            navigateTo(activeSectionIndex);
+        }
+    }, 150);
+
+  }, [scrollY, isTerminalOpen, isLoading, activeSectionIndex, navigateTo]);
 
   useEffect(() => {
     window.addEventListener('wheel', handleWheel, { passive: false });
     return () => window.removeEventListener('wheel', handleWheel);
   }, [handleWheel]);
-
-
-  const navigateTo = (index: number) => {
-      // Slower programmatic navigation as well
-      animate(scrollY, index * SCROLL_PER_PAGE, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
-  };
 
   if (isLoading) {
     return <BootScreen />;
@@ -171,22 +147,19 @@ function App() {
     <div className="w-screen h-screen bg-[#050505] text-gray-800 overflow-hidden relative font-sans selection:bg-primary selection:text-white">
       <CursorCanvas />
       
-      {/* Mobile Header */}
-      <div className="fixed top-0 left-0 w-full z-50 md:hidden flex justify-between items-center px-4 py-3 bg-white/90 backdrop-blur-md border-b border-gray-200">
+      <header className="fixed top-0 left-0 w-full z-50 md:hidden flex justify-between items-center px-4 py-3 bg-white/90 backdrop-blur-md border-b border-gray-200">
           <div className="font-mono text-xs font-bold tracking-widest text-primary">
               0{activeSectionIndex + 1} // {SECTIONS[activeSectionIndex].title}
           </div>
-          <div className="flex gap-4 text-xs font-mono text-gray-400">
-             <button disabled={activeSectionIndex === 0} onClick={() => navigateTo(activeSectionIndex - 1)} className="disabled:opacity-30 p-2">PREV</button>
-             <button disabled={activeSectionIndex === SECTIONS.length - 1} onClick={() => navigateTo(activeSectionIndex + 1)} className="disabled:opacity-30 p-2">NEXT</button>
-          </div>
-      </div>
+          <nav className="flex gap-4 text-xs font-mono text-gray-400">
+             <button aria-label="Previous Section" disabled={activeSectionIndex === 0} onClick={() => navigateTo(activeSectionIndex - 1)} className="disabled:opacity-30 p-2">PREV</button>
+             <button aria-label="Next Section" disabled={activeSectionIndex === SECTIONS.length - 1} onClick={() => navigateTo(activeSectionIndex + 1)} className="disabled:opacity-30 p-2">NEXT</button>
+          </nav>
+      </header>
       
-      {/* Navigation Rail - Desktop */}
       <NavRail current={activeSectionIndex} total={SECTIONS.length} onChange={navigateTo} />
 
-      {/* STACKED SECTIONS RENDERER */}
-      <div className="w-full h-full relative perspective-[1200px]">
+      <main className="w-full h-full relative perspective-[1200px]">
          {SECTIONS.map((section, index) => (
              <SectionPanel 
                 key={section.id}
@@ -196,11 +169,11 @@ function App() {
                 Component={section.component}
              />
          ))}
-      </div>
+      </main>
 
-      {/* Floating Terminal Trigger */}
       <button 
         onClick={() => setIsTerminalOpen(true)}
+        aria-label="Open Command Terminal"
         className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] bg-black border border-primary text-primary w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,94,0,0.3)] hover:scale-110 hover:bg-primary hover:text-white transition-all duration-300 group"
       >
         <TerminalIcon size={20} className="md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />
@@ -215,57 +188,24 @@ function App() {
   );
 }
 
-// --- SUB-COMPONENT: SECTION PANEL ---
-// Handles the 1:1 "Split" reveal based on scroll position
 const SectionPanel = ({ index, total, scrollY, Component }: { index: number, total: number, scrollY: any, Component: any }) => {
-    
-    // Logic:
-    // Page 0 is base.
-    // Page 1 reveals over Page 0 when scroll is between 0 and 1000 (now 1600).
-    
-    // The "start" of this page's reveal animation
     const startRange = (index - 1) * SCROLL_PER_PAGE;
-    // The "end" of this page's reveal (fully open)
     const endRange = index * SCROLL_PER_PAGE;
-    // The point where this page starts getting covered by the *next* page
     const exitRange = (index + 1) * SCROLL_PER_PAGE;
 
-    // Calculate Progress (0 to 1) for opening this page
-    const openProgress = useTransform(
-        scrollY,
-        [startRange, endRange],
-        [0, 1] // 0 = closed (line), 1 = open (full)
-    );
+    const openProgress = useTransform(scrollY, [startRange, endRange], [0, 1]);
 
-    // Calculate 'inset' clip path. 
-    // At 0 progress: inset is 50% (meets in middle).
-    // At 1 progress: inset is 0% (fully open).
     const clipInset = useTransform(openProgress, (v) => {
-        // Only apply clip effect if we are not the base page (index 0)
         if (index === 0) return 'inset(0% 0 0% 0)'; 
-        // Clamp v between 0 and 1
         const progress = Math.max(0, Math.min(1, v));
         const gap = 50 * (1 - progress);
         return `inset(${gap}% 0 ${gap}% 0)`;
     });
 
-    // Opacity/Dimming for Depth effect when this page is being covered by the NEXT one
-    const brightness = useTransform(
-        scrollY,
-        [endRange, exitRange],
-        [1, 0.4] // Dim to 0.4 brightness as next page covers it
-    );
-    
-    const scale = useTransform(
-        scrollY,
-        [endRange, exitRange],
-        [1, 0.95] // Slight scale down as it goes to background
-    );
-
-    // Border Opacity: The glowing line should fade out when fully open
+    const brightness = useTransform(scrollY, [endRange, exitRange], [1, 0.4]);
+    const scale = useTransform(scrollY, [endRange, exitRange], [1, 0.95]);
     const borderOpacity = useTransform(openProgress, [0.9, 1], [1, 0]);
 
-    // Z-Index: Higher index = Higher layer
     return (
         <motion.div 
             className="absolute inset-0 w-full h-full bg-bg will-change-transform"
@@ -276,7 +216,6 @@ const SectionPanel = ({ index, total, scrollY, Component }: { index: number, tot
                 scale: scale
             }}
         >
-             {/* The glowing split line (Top & Bottom borders) */}
              {index !== 0 && (
                  <motion.div 
                     className="absolute inset-0 pointer-events-none z-50 border-y border-primary/50"
@@ -291,26 +230,18 @@ const SectionPanel = ({ index, total, scrollY, Component }: { index: number, tot
     );
 };
 
-
-// --- SUB-COMPONENTS (Pages) ---
-
-// 1. HERO PAGE
 function HeroSection() {
     return (
-    <div className="h-full w-full relative flex flex-col overflow-hidden bg-bg">
+    <section className="h-full w-full relative flex flex-col overflow-hidden bg-bg">
         <HeroHUD />
         
-        {/* Logo */}
         <div className="absolute top-16 left-6 md:top-8 md:left-8 z-30">
             <div className="font-mono font-bold text-sm md:text-lg tracking-wider pointer-events-auto inline-block bg-white/50 backdrop-blur-sm px-3 py-1 rounded border border-transparent">
-                <span className="text-primary">[</span> <ScrambleText text="NB.SYS" className="text-black" /> <span className="text-primary">]</span>
+                <span className="text-primary">[</span> <ScrambleText text="NBM.SYS" className="text-black" /> <span className="text-primary">]</span>
             </div>
         </div>
 
-        {/* Main Content */}
         <div className="flex-grow container mx-auto px-6 md:px-12 flex flex-col md:flex-row gap-8 items-center justify-center relative z-20 scrollable-content overflow-y-auto pt-24 md:pt-0">
-            
-            {/* TEXT */}
             <div className="order-2 md:order-1 flex flex-col justify-center items-start w-full md:w-1/2">
                  <motion.div 
                     initial={{ opacity: 0, x: -50 }} 
@@ -320,8 +251,8 @@ function HeroSection() {
                     className="w-full relative z-20"
                  >
                     <div className="inline-flex items-center gap-2 mb-4 border-l-2 border-primary pl-4">
-                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                        <span className="font-mono text-[10px] md:text-xs font-bold tracking-widest text-gray-500">AVAILABLE FOR HIRE</span>
+                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" aria-hidden="true"></span>
+                        <span className="font-mono text-[10px] md:text-xs font-bold tracking-widest text-gray-500">AVAILABLE FOR HIGH-SCALE MISSIONS</span>
                     </div>
                     
                     <h1 className="text-5xl sm:text-6xl md:text-8xl font-display font-bold leading-[0.9] tracking-tighter mb-6 text-black text-left">
@@ -330,23 +261,22 @@ function HeroSection() {
                     </h1>
                     
                     <p className="max-w-md font-mono text-sm text-gray-600 leading-relaxed mb-8 text-left">
-                        Building self-healing infrastructure. Transforming chaotic systems into scalable, cost-effective engines using Kubernetes & Terraform.
+                        I am <span className="text-black font-bold">Nithees Balaji Mohan</span>. I build self-healing infrastructure. Transforming chaotic systems into scalable, cost-effective engines using Kubernetes & Terraform.
                     </p>
                     
-                    {/* BUTTONS ROW */}
                     <div className="flex gap-4">
-                        <GlitchButton text="PROJECTS" icon={<TerminalIcon size={16} />} />
+                        <GlitchButton text="MISSION LOGS" icon={<TerminalIcon size={16} />} aria-label="View Projects" />
                         <GlitchButton 
-                            text="DOWNLOAD CV" 
+                            text="GET RESUME" 
                             icon={<Download size={16} />} 
                             href="https://drive.google.com/file/d/1oU43XtO0xSjEs0uk-5vBNXsn5FRsXbI_/view?usp=sharing"
                             className="bg-white text-black border-black/10 hover:bg-gray-100"
+                            aria-label="Download CV of Nithees Balaji Mohan"
                         />
                     </div>
                  </motion.div>
             </div>
 
-            {/* CARD */}
             <div className="order-1 md:order-2 flex justify-center items-center w-full md:w-1/2">
                 <div className="w-full max-w-[320px] md:max-w-[450px]">
                     <HeroIdentity />
@@ -354,15 +284,13 @@ function HeroSection() {
             </div>
         </div>
 
-        {/* Footer Stats - Merged into Hero */}
         <div className="relative z-20 w-full bg-white/50 backdrop-blur-md border-t border-gray-200">
             <StatsSection />
         </div>
-    </div>
+    </section>
     );
 }
 
-// 2. SKILLS PAGE
 function SkillsWrapper() {
     return (
     <div className="h-full w-full overflow-y-auto flex items-center bg-bg scrollable-content py-20 md:py-0">
@@ -373,31 +301,28 @@ function SkillsWrapper() {
     );
 }
 
-// 3. LOGS PAGE
 function ProjectsSection() {
     return (
     <div className="h-full w-full overflow-y-auto bg-bg custom-scrollbar-hide scrollable-content pt-24 pb-0 flex flex-col">
         <div className="container mx-auto px-6 md:px-12 flex-grow">
-            <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+            <header className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
                 <div>
-                     <h2 className="text-5xl md:text-7xl font-display font-bold text-black opacity-10 hidden md:block">LOGS</h2>
+                     <span className="text-5xl md:text-7xl font-display font-bold text-black opacity-10 hidden md:block">LOGS</span>
                      <h2 className="text-4xl md:text-5xl font-display font-bold text-black md:-mt-10 md:ml-1">MISSION LOGS</h2>
                 </div>
                 <div className="font-mono text-xs text-primary font-bold mt-2 md:mt-0">
-                    [ ACCESS_LEVEL: PUBLIC ]
+                    [ ACCESS_LEVEL: PUBLIC_RECORDS ]
                 </div>
-            </div>
+            </header>
             
-            {/* Grid */}
             <BentoGrid />
         </div>
         
-        {/* Merged Tech Stack at bottom */}
         <div className="mt-12 w-full">
              <div className="container mx-auto px-6 mb-4">
                  <div className="flex items-center gap-2">
                     <span className="w-16 h-[1px] bg-primary"></span>
-                    <span className="font-mono text-xs font-bold text-primary tracking-widest">ARSENAL</span>
+                    <span className="font-mono text-xs font-bold text-primary tracking-widest">INFRA_ARSENAL</span>
                  </div>
              </div>
              <TechStack />
@@ -406,7 +331,6 @@ function ProjectsSection() {
     );
 }
 
-// 4. SERVICES & CORE
 function ServicesWrapper() {
     return (
     <div className="h-full w-full overflow-y-auto bg-white flex flex-col scrollable-content">
@@ -417,35 +341,34 @@ function ServicesWrapper() {
     );
 }
 
-
-// --- UTILITY COMPONENTS ---
-
 function BootScreen() {
     return (
-    <div className="fixed inset-0 bg-black flex flex-col items-center justify-center font-mono text-primary z-[9999]">
-    <div className="text-4xl font-bold mb-8 animate-pulse">NB.SYS</div>
-    <div className="w-64 h-1 bg-gray-800 rounded-full overflow-hidden">
-        <motion.div 
-        className="h-full bg-primary"
-        initial={{ width: "0%" }}
-        animate={{ width: "100%" }}
-        transition={{ duration: 1.8, ease: "easeInOut" }}
-        />
-    </div>
-    <div className="mt-4 text-[10px] text-gray-500 font-mono tracking-widest">
-        INITIALIZING CORE KERNEL...
-    </div>
+    <div className="fixed inset-0 bg-black flex flex-col items-center justify-center font-mono text-primary z-[9999]" aria-live="polite">
+        <div className="text-4xl font-bold mb-8 animate-pulse">NBM.SYS</div>
+        <div className="w-64 h-1 bg-gray-800 rounded-full overflow-hidden">
+            <motion.div 
+                className="h-full bg-primary"
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 1.8, ease: "easeInOut" }}
+            />
+        </div>
+        <div className="mt-4 text-[10px] text-gray-500 font-mono tracking-widest">
+            LOADING_SYSTEM_CORE // NITHEES_BALAJI_MOHAN
+        </div>
     </div>
     );
 }
 
 function NavRail({ current, total, onChange }: { current: number, total: number, onChange: (i: number) => void }) {
     return (
-    <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-4 items-center">
+    <nav className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-4 items-center" aria-label="Main Navigation">
         {SECTIONS.map((section, idx) => (
             <button
                 key={section.id}
                 onClick={() => onChange(idx)}
+                aria-label={`Go to ${section.title} section`}
+                aria-current={current === idx ? 'page' : undefined}
                 className="group flex items-center gap-4 relative py-2 w-8 justify-center"
             >
                 <span className={`absolute right-8 font-mono text-[10px] font-bold tracking-widest transition-all duration-300 whitespace-nowrap ${current === idx ? 'opacity-100 text-black translate-x-0' : 'opacity-0 text-gray-400 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0'}`}>
@@ -458,7 +381,7 @@ function NavRail({ current, total, onChange }: { current: number, total: number,
         <div className="font-mono text-[10px] text-gray-400 rotate-90 whitespace-nowrap tracking-widest origin-center translate-y-8">
             0{current + 1} / 0{total}
         </div>
-    </div>
+    </nav>
     );
 }
 
