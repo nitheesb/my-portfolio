@@ -1,24 +1,22 @@
 import React from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const ScrollIndicator: React.FC = () => {
-    const { scrollY } = useScroll();
-    const opacity = useTransform(scrollY, [0, 200], [1, 0]);
-    const y = useTransform(scrollY, [0, 200], [0, 20]);
-
     return (
         <motion.div
-            style={{ opacity, y }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-30 pointer-events-none mix-blend-difference text-white"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2, duration: 1 }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-30 pointer-events-none"
         >
-            <span className="text-[10px] font-mono tracking-[0.2em] font-bold uppercase opacity-60">
-                Scroll to Explore
-            </span>
-            <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent opacity-40 overflow-hidden">
+            <div className="w-[1px] h-12 bg-gradient-to-b from-transparent via-[#ff5e00] to-transparent animate-pulse" />
+
+            <div className="flex flex-col items-center gap-1">
+                <span className="font-mono text-[10px] tracking-[0.3em] text-[#ff5e00]">SCROLL</span>
                 <motion.div
-                    className="w-full h-1/2 bg-white"
-                    animate={{ y: ["-100%", "100%"] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                    animate={{ y: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    className="w-1.5 h-1.5 bg-[#ff5e00] rounded-full shadow-[0_0_10px_#ff5e00]"
                 />
             </div>
         </motion.div>
