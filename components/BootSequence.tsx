@@ -9,26 +9,10 @@ const BOOT_LOGS = [
     "BIOS_DATE: 12/22/2077 14:02:35 VER: 4.02.1B",
     "CPU: NEURAL_ENGINE_X9 @ 420.0 GHz",
     "DETECTING PRIMARY MASTER ... NITHEES_CORE [OK]",
-    "DETECTING SECONDARY SLAVE ... PORTFOLIO_DB [OK]",
-    "CHECKING NVRAM ... [OK]",
     "LOADING KERNEL IMAGE ... [OK]",
-    "DECOMPRESSING KUBERNETES CONFIGS ... [OK]",
-    "MOUNTING ROOT FILE SYSTEM ... [OK]",
-    "INIT: VERSION 2.88 BOOTING",
-    "STARTING UDEV ... [OK]",
-    "REMOUNTING ROOT FILE SYSTEM IN READ-WRITE MODE ... [OK]",
-    "CHECKING DISK QUOTAS ... [OK]",
-    "ACTIVATING SWAP PARTITIONS ... [OK]",
-    "SETTING UP NETWORK INTERFACES ... [OK]",
-    "LOCALHOST:5173 CONNECTED",
-    "LOADING REACT_FIBER_DOM ... [OK]",
-    "INITIALIZING FRAMER_MOTION_PHYSICS ... [OK]",
-    "LOADING ASSETS ... 100%",
-    "SYSTEM INTEGRITY CHECK ... PASSED",
-    "ESTABLISHING SECURE CONNECTION ... [OK]",
+    "INITIALIZING SYSTEM ... [OK]",
     "USER_IDENTITY: NITHEES_BALAJI_MOHAN",
     "ROLE: SENIOR_DEVOPS_ARCHITECT",
-    "ACCESS_LEVEL: ADMIN",
     "SYSTEM READY."
 ];
 
@@ -50,18 +34,18 @@ const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
                 setLines(prev => [...prev, BOOT_LOGS[currentIndex]]);
                 currentIndex++;
 
-                const delay = Math.random() * 100 + 30;
+                const delay = Math.random() * 50 + 20;
                 timeout = setTimeout(addLine, delay);
             } else if (currentIndex >= BOOT_LOGS.length) {
                 setTimeout(() => {
                     if (onCompleteRef.current) {
                         onCompleteRef.current();
                     }
-                }, 800);
+                }, 300);
             }
         };
 
-        timeout = setTimeout(addLine, 500);
+        timeout = setTimeout(addLine, 200);
 
         return () => clearTimeout(timeout);
     }, []);

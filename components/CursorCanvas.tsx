@@ -17,6 +17,7 @@ const CursorCanvas: React.FC = () => {
 
     // State
     const mouse = { x: 0, y: 0 };
+    const currentPos = { x: 0, y: 0 };
     let rotation = 0;
     let lockedState = false;
 
@@ -40,6 +41,8 @@ const CursorCanvas: React.FC = () => {
         const ch = rect.height;
         mouse.x = cw / 2;
         mouse.y = ch / 2;
+        currentPos.x = cw / 2;
+        currentPos.y = ch / 2;
       }
     };
 
@@ -158,10 +161,15 @@ const CursorCanvas: React.FC = () => {
       const dpr = window.devicePixelRatio || 1;
       ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
 
+      // Smooth cursor follow with lerp (linear interpolation)
+      const smoothness = 0.15;
+      currentPos.x += (mouse.x - currentPos.x) * smoothness;
+      currentPos.y += (mouse.y - currentPos.y) * smoothness;
+
       // Rotate the reticle
       rotation += lockedState ? 0.02 : 0.01;
 
-      drawReticle(mouse.x, mouse.y, lockedState);
+      drawReticle(currentPos.x, currentPos.y, lockedState);
 
       animationFrameId = requestAnimationFrame(animate);
     };

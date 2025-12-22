@@ -21,7 +21,7 @@ const WireframeGlobe: React.FC = () => {
     useFrame((state, delta) => {
         if (meshRef.current) {
             // Auto-rotate
-            meshRef.current.rotation.y += delta * 0.1;
+            meshRef.current.rotation.y += delta * 0.15;
 
             // Mouse-reactive rotation
             meshRef.current.rotation.x = THREE.MathUtils.lerp(
@@ -39,7 +39,7 @@ const WireframeGlobe: React.FC = () => {
 
     return (
         <mesh ref={meshRef}>
-            <sphereGeometry args={[2, 32, 32]} />
+            <sphereGeometry args={[2, 24, 24]} />
             <meshBasicMaterial
                 color="#ff5e00"
                 wireframe
@@ -53,7 +53,11 @@ const WireframeGlobe: React.FC = () => {
 const HolographicScene: React.FC = () => {
     return (
         <div className="absolute inset-0 pointer-events-none opacity-20 md:opacity-30">
-            <Canvas camera={{ position: [0, 0, 6], fov: 50 }}>
+            <Canvas
+                camera={{ position: [0, 0, 6], fov: 50 }}
+                dpr={[1, 1.5]}
+                performance={{ min: 0.5 }}
+            >
                 <ambientLight intensity={0.5} />
                 <WireframeGlobe />
             </Canvas>
