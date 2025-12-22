@@ -3,6 +3,8 @@ import { Terminal as TerminalIcon, Download } from 'lucide-react';
 import { motion, useMotionValue, useTransform, animate, useSpring } from 'framer-motion';
 
 import Terminal from './components/Terminal';
+import BootSequence from './components/BootSequence';
+import ErrorBoundary from './components/ErrorBoundary';
 import CursorCanvas from './components/CursorCanvas';
 import StatsSection from './components/StatsSection';
 import ScrambleText from './components/ScrambleText';
@@ -46,10 +48,7 @@ function App() {
     const powerLineProgress = useTransform(smoothScrollY, [0, maxScroll], [0, 1000]);
     const powerLineOffset = useTransform(powerLineProgress, (v) => 1000 - v);
 
-    useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 2000);
-        return () => clearTimeout(timer);
-    }, []);
+
 
     useEffect(() => {
         const unsubscribe = smoothScrollY.on("change", (latest) => {
@@ -139,7 +138,11 @@ function App() {
     }, [handleWheel]);
 
     if (isLoading) {
-        return <BootScreen />;
+        return (
+            <ErrorBoundary>
+                <BootSequence onComplete={() => setIsLoading(false)} />
+            </ErrorBoundary>
+        );
     }
 
     return (
@@ -386,24 +389,7 @@ function ServicesWrapper() {
     );
 }
 
-function BootScreen() {
-    return (
-        <div className="fixed inset-0 bg-black flex flex-col items-center justify-center font-mono text-primary z-[9999]" aria-live="polite">
-            <div className="text-4xl font-bold mb-8 animate-pulse">NBM.SYS</div>
-            <div className="w-64 h-1 bg-gray-800 rounded-full overflow-hidden">
-                <motion.div
-                    className="h-full bg-primary"
-                    initial={{ width: "0%" }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 1.8, ease: "easeInOut" }}
-                />
-            </div>
-            <div className="mt-4 text-[10px] text-gray-500 font-mono tracking-widest">
-                LOADING_SYSTEM_CORE // NITHEES_BALAJI_MOHAN
-            </div>
-        </div>
-    );
-}
+
 
 function NavRail({ current, total, onChange }: { current: number, total: number, onChange: (i: number) => void }) {
     const { playHover } = useAudioFeedback();
