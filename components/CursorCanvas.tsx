@@ -164,7 +164,7 @@ const Particles = () => {
 
 const CursorCanvas: React.FC = () => {
   return (
-    <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-[10] hidden md:block">
+    <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-[50] hidden md:block">
       <Canvas
         camera={{ position: [0, 0, 10], fov: 45 }}
         gl={{ alpha: true, antialias: true }}
