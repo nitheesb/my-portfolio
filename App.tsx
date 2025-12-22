@@ -9,6 +9,7 @@ import CursorCanvas from './components/CursorCanvas';
 import StatsSection from './components/StatsSection';
 import ScrambleText from './components/ScrambleText';
 import GlitchButton from './components/GlitchButton';
+import GlitchText from './components/GlitchText';
 import HeroIdentity from './components/HeroIdentity';
 import Scanline from './components/Scanline';
 import HeroHUD from './components/HeroHUD';
@@ -16,6 +17,12 @@ import BentoGrid from './components/BentoGrid';
 import TechStack from './components/TechStack';
 import SkillsMatrix from './components/SkillsMatrix';
 import ServicesSection from './components/ServicesSection';
+import TelemetryHUD from './components/TelemetryHUD';
+import ThemeToggle from './components/ThemeToggle';
+import HolographicScene from './components/HolographicScene';
+import MobileMenu from './components/MobileMenu';
+import { AudioProvider } from './components/AudioProvider';
+import { ThemeProvider } from './contexts/ThemeProvider';
 import { useAudioFeedback } from './hooks/useAudioFeedback';
 
 const SCROLL_PER_PAGE = 1600;
@@ -32,6 +39,7 @@ const SECTIONS = [
 function App() {
     const [activeSectionIndex, setActiveSectionIndex] = useState(0);
     const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const { playClick, playHover } = useAudioFeedback();
 
@@ -146,86 +154,106 @@ function App() {
     }
 
     return (
-        <div className="w-screen h-screen bg-bg text-secondary overflow-hidden relative font-sans selection:bg-primary selection:text-white">
-            <CursorCanvas />
-            <Scanline />
+        <ThemeProvider>
+            <AudioProvider>
+                <div className="w-screen h-screen bg-bg text-secondary overflow-hidden relative font-sans selection:bg-primary selection:text-white">
+                    <CursorCanvas />
+                    <Scanline />
+                    <TelemetryHUD />
+                    <ThemeToggle />
 
-            {/* 9. SVG Power-Line Scroll Progress */}
-            <div className="fixed left-6 top-1/2 -translate-y-1/2 h-[70vh] w-4 z-[100] hidden md:flex items-center justify-center pointer-events-none">
-                <svg width="6" height="100%" viewBox="0 0 6 1000" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
-                    <path d="M3 0V1000" stroke="rgba(255, 94, 0, 0.1)" strokeWidth="1" />
-                    <motion.path
-                        d="M3 0V1000"
-                        stroke="#ff5e00"
-                        strokeWidth="2.5"
-                        strokeDasharray="1000"
-                        style={{ strokeDashoffset: powerLineOffset }}
-                        className="drop-shadow-[0_0_8px_rgba(255,94,0,0.8)]"
-                    />
-                    {SECTIONS.map((_, i) => (
-                        <g key={i}>
-                            <circle
-                                cx="3"
-                                cy={i * (1000 / (SECTIONS.length - 1))}
-                                r={activeSectionIndex === i ? "4" : "2.5"}
-                                fill={activeSectionIndex >= i ? "#ff5e00" : "rgba(255, 94, 0, 0.2)"}
-                                className="transition-all duration-500"
+                    {/* 9. SVG Power-Line Scroll Progress */}
+                    <div className="fixed left-6 top-1/2 -translate-y-1/2 h-[70vh] w-4 z-[100] hidden md:flex items-center justify-center pointer-events-none">
+                        <svg width="6" height="100%" viewBox="0 0 6 1000" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
+                            <path d="M3 0V1000" stroke="rgba(255, 94, 0, 0.1)" strokeWidth="1" />
+                            <motion.path
+                                d="M3 0V1000"
+                                stroke="#ff5e00"
+                                strokeWidth="2.5"
+                                strokeDasharray="1000"
+                                style={{ strokeDashoffset: powerLineOffset }}
+                                className="drop-shadow-[0_0_8px_rgba(255,94,0,0.8)]"
                             />
-                            {activeSectionIndex === i && (
-                                <circle
-                                    cx="3"
-                                    cy={i * (1000 / (SECTIONS.length - 1))}
-                                    r={8}
-                                    stroke="#ff5e00"
-                                    strokeWidth="1"
-                                    className="animate-ping opacity-20"
-                                />
-                            )}
-                        </g>
-                    ))}
-                </svg>
-            </div>
+                            {SECTIONS.map((_, i) => (
+                                <g key={i}>
+                                    <circle
+                                        cx="3"
+                                        cy={i * (1000 / (SECTIONS.length - 1))}
+                                        r={activeSectionIndex === i ? "4" : "2.5"}
+                                        fill={activeSectionIndex >= i ? "#ff5e00" : "rgba(255, 94, 0, 0.2)"}
+                                        className="transition-all duration-500"
+                                    />
+                                    {activeSectionIndex === i && (
+                                        <circle
+                                            cx="3"
+                                            cy={i * (1000 / (SECTIONS.length - 1))}
+                                            r={8}
+                                            stroke="#ff5e00"
+                                            strokeWidth="1"
+                                            className="animate-ping opacity-20"
+                                        />
+                                    )}
+                                </g>
+                            ))}
+                        </svg>
+                    </div>
 
-            <header className="fixed top-0 left-0 w-full z-50 md:hidden flex justify-between items-center px-4 py-3 bg-white/90 backdrop-blur-md border-b border-gray-200">
-                <div className="font-mono text-xs font-bold tracking-widest text-primary">
-                    0{activeSectionIndex + 1} // {SECTIONS[activeSectionIndex].title}
-                </div>
-                <nav className="flex gap-4 text-xs font-mono text-gray-400">
-                    <button aria-label="Previous Section" disabled={activeSectionIndex === 0} onClick={() => { playClick(); navigateTo(activeSectionIndex - 1); }} className="disabled:opacity-30 p-2">PREV</button>
-                    <button aria-label="Next Section" disabled={activeSectionIndex === SECTIONS.length - 1} onClick={() => { playClick(); navigateTo(activeSectionIndex + 1); }} className="disabled:opacity-30 p-2">NEXT</button>
-                </nav>
-            </header>
+                    <header className="fixed top-0 left-0 w-full z-50 md:hidden flex justify-between items-center px-4 py-3 bg-black/90 backdrop-blur-md border-b-2 border-primary/30">
+                        {/* Industrial Corner Screws */}
+                        <div className="absolute top-1 left-1 w-1.5 h-1.5 bg-primary/50 rounded-full"></div>
+                        <div className="absolute top-1 right-1 w-1.5 h-1.5 bg-primary/50 rounded-full"></div>
 
-            <NavRail current={activeSectionIndex} total={SECTIONS.length} onChange={(i) => { playClick(); navigateTo(i); }} />
+                        <div className="font-mono text-xs font-bold tracking-widest text-primary">
+                            0{activeSectionIndex + 1} // {SECTIONS[activeSectionIndex].title}
+                        </div>
+                        <button
+                            onClick={() => { playClick(); setIsMobileMenuOpen(true); }}
+                            className="font-mono text-xs text-primary border border-primary/50 px-3 py-1.5 rounded bg-black/50 hover:bg-primary/20 transition-all"
+                            aria-label="Open menu"
+                        >
+                            MENU
+                        </button>
+                    </header>
 
-            <main className="w-full h-full relative perspective-[1200px]">
-                {SECTIONS.map((section, index) => (
-                    <SectionPanel
-                        key={section.id}
-                        index={index}
-                        total={SECTIONS.length}
-                        scrollY={smoothScrollY}
-                        Component={section.component}
-                        onNavigate={navigateTo}
+                    <MobileMenu
+                        isOpen={isMobileMenuOpen}
+                        onClose={() => setIsMobileMenuOpen(false)}
+                        currentSection={activeSectionIndex}
+                        onNavigate={(i) => { playClick(); navigateTo(i); }}
                     />
-                ))}
-            </main>
 
-            <button
-                onClick={() => { playClick(); setIsTerminalOpen(true); }}
-                onMouseEnter={playHover}
-                aria-label="Open Command Terminal"
-                className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] bg-black border border-primary text-primary w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,94,0,0.3)] hover:scale-110 hover:bg-primary hover:text-white transition-all duration-300 group"
-            >
-                <TerminalIcon size={20} className="md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />
-            </button>
+                    <NavRail current={activeSectionIndex} total={SECTIONS.length} onChange={(i) => { playClick(); navigateTo(i); }} />
 
-            <Terminal
-                isOpen={isTerminalOpen}
-                onClose={() => setIsTerminalOpen(false)}
-                onAction={(cmd) => console.log(cmd)}
-            />
-        </div>
+                    <main className="w-full h-full relative perspective-[1200px]">
+                        {SECTIONS.map((section, index) => (
+                            <SectionPanel
+                                key={section.id}
+                                index={index}
+                                total={SECTIONS.length}
+                                scrollY={smoothScrollY}
+                                Component={section.component}
+                                onNavigate={navigateTo}
+                            />
+                        ))}
+                    </main>
+
+                    <button
+                        onClick={() => { playClick(); setIsTerminalOpen(true); }}
+                        onMouseEnter={playHover}
+                        aria-label="Open Command Terminal"
+                        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] bg-black border border-primary text-primary w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,94,0,0.3)] hover:scale-110 hover:bg-primary hover:text-white transition-all duration-300 group"
+                    >
+                        <TerminalIcon size={20} className="md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />
+                    </button>
+
+                    <Terminal
+                        isOpen={isTerminalOpen}
+                        onClose={() => setIsTerminalOpen(false)}
+                        onAction={(cmd) => console.log(cmd)}
+                    />
+                </div>
+            </AudioProvider>
+        </ThemeProvider>
     );
 }
 
@@ -277,6 +305,7 @@ function HeroSection({ onNavigate }: { onNavigate: (i: number) => void }) {
     return (
         <section className="h-full w-full relative flex flex-col overflow-hidden bg-bg">
             <HeroHUD />
+            <HolographicScene />
 
             <div className="absolute top-16 left-6 md:top-8 md:left-8 z-30">
                 <div className="font-mono font-bold text-sm md:text-lg tracking-wider pointer-events-auto inline-block bg-white/50 backdrop-blur-sm px-3 py-1 rounded border border-transparent">
@@ -299,8 +328,10 @@ function HeroSection({ onNavigate }: { onNavigate: (i: number) => void }) {
                         </div>
 
                         <h1 className="text-5xl sm:text-6xl md:text-8xl font-display font-bold leading-[0.9] tracking-tighter mb-6 text-black text-left">
-                            DEVOPS <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-600">ARCHITECT</span>
+                            <GlitchText text="DEVOPS" as="span" /> <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-600">
+                                <GlitchText text="ARCHITECT" as="span" />
+                            </span>
                         </h1>
 
                         <p className="max-w-md font-mono text-sm text-gray-600 leading-relaxed mb-8 text-left">

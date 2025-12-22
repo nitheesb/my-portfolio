@@ -1,8 +1,9 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const CursorCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isLocked, setIsLocked] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -11,12 +12,13 @@ const CursorCanvas: React.FC = () => {
     if (!ctx) return;
 
     // Config
-    const TRAIL_LENGTH = 35;
-    const DOT_REF_COLOR = { r: 255, g: 94, b: 0 }; // #ff5e00 (Primary Orange) pre-parse
+    const PRIMARY_COLOR = { r: 255, g: 94, b: 0 }; // #ff5e00
+    const LOCKED_COLOR = { r: 0, g: 255, b: 100 }; // Green lock-on
 
     // State
     const mouse = { x: 0, y: 0 };
-    const dots = Array.from({ length: TRAIL_LENGTH }, () => ({ x: 0, y: 0 }));
+    let rotation = 0;
+    let lockedState = false;
 
     // Init position logic
     let hasMoved = false;
@@ -33,13 +35,11 @@ const CursorCanvas: React.FC = () => {
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
 
-      // Reset dots if this is first load to center or off-screen
       if (!hasMoved) {
         const cw = rect.width;
         const ch = rect.height;
         mouse.x = cw / 2;
         mouse.y = ch / 2;
-        dots.forEach(dot => { dot.x = cw / 2; dot.y = ch / 2; });
       }
     };
 
@@ -51,6 +51,12 @@ const CursorCanvas: React.FC = () => {
       hasMoved = true;
       mouse.x = e.clientX;
       mouse.y = e.clientY;
+
+      // Check if hovering over clickable element
+      const target = e.target as HTMLElement;
+      const isClickable = target.closest('button, a, input, [role="button"]');
+      lockedState = !!isClickable;
+      setIsLocked(lockedState);
     };
 
     window.addEventListener('resize', onResize);
@@ -59,35 +65,103 @@ const CursorCanvas: React.FC = () => {
 
     let animationFrameId: number;
 
+    const drawReticle = (x: number, y: number, locked: boolean) => {
+      const color = locked ? LOCKED_COLOR : PRIMARY_COLOR;
+      const alpha = locked ? 1 : 0.8;
+
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+
+      // Center dot
+      ctx.beginPath();
+      ctx.arc(0, 0, 2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
+      ctx.fill();
+
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(0, 0, 15, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha * 0.6})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Corner brackets
+      const bracketSize = 20;
+      const bracketThickness = 2;
+      const corners = [
+        { x: bracketSize, y: bracketSize },
+        { x: -bracketSize, y: bracketSize },
+        { x: -bracketSize, y: -bracketSize },
+        { x: bracketSize, y: -bracketSize }
+      ];
+
+      ctx.strokeStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha * 0.8})`;
+      ctx.lineWidth = bracketThickness;
+
+      corners.forEach((corner, i) => {
+        const angle = (i * Math.PI / 2);
+        ctx.save();
+        ctx.rotate(angle);
+
+        // L-shaped bracket
+        ctx.beginPath();
+        ctx.moveTo(bracketSize, bracketSize - 6);
+        ctx.lineTo(bracketSize, bracketSize);
+        ctx.lineTo(bracketSize - 6, bracketSize);
+        ctx.stroke();
+
+        ctx.restore();
+      });
+
+      // Crosshair lines
+      const lineLength = 8;
+      ctx.strokeStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha * 0.4})`;
+      ctx.lineWidth = 1;
+
+      // Horizontal
+      ctx.beginPath();
+      ctx.moveTo(-lineLength - 5, 0);
+      ctx.lineTo(-5, 0);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(5, 0);
+      ctx.lineTo(lineLength + 5, 0);
+      ctx.stroke();
+
+      // Vertical
+      ctx.beginPath();
+      ctx.moveTo(0, -lineLength - 5);
+      ctx.lineTo(0, -5);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, 5);
+      ctx.lineTo(0, lineLength + 5);
+      ctx.stroke();
+
+      // Lock-on pulse effect
+      if (locked) {
+        const pulseSize = 25 + Math.sin(Date.now() / 200) * 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, pulseSize, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${0.3 * alpha})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    };
+
     const animate = () => {
-      // Clear with DPR aware sizing -> we can just clear the whole buffer
-      // However, we scaled the context, so clearing (0,0,width,height) works in logical pixels
-      // canvas.width/height is physical, so we divide by dpr or use getBoundingClientRect values
       const dpr = window.devicePixelRatio || 1;
       ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
 
-      let targetX = mouse.x;
-      let targetY = mouse.y;
+      // Rotate the reticle
+      rotation += lockedState ? 0.02 : 0.01;
 
-      // Draw Loop
-      dots.forEach((dot, index) => {
-        const ease = 0.25;
-
-        dot.x += (targetX - dot.x) * ease;
-        dot.y += (targetY - dot.y) * ease;
-
-        targetX = dot.x;
-        targetY = dot.y;
-
-        const size = Math.max(0.5, (TRAIL_LENGTH - index) * 0.25);
-        const opacity = Math.max(0.1, 1 - (index / TRAIL_LENGTH));
-
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, size + 1.5, 0, Math.PI * 2);
-        // Direct RBGA string construction is faster than regex parsing every frame
-        ctx.fillStyle = `rgba(${DOT_REF_COLOR.r}, ${DOT_REF_COLOR.g}, ${DOT_REF_COLOR.b}, ${opacity})`;
-        ctx.fill();
-      });
+      drawReticle(mouse.x, mouse.y, lockedState);
 
       animationFrameId = requestAnimationFrame(animate);
     };
