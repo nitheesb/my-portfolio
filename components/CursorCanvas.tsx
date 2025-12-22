@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from 'react';
 const CursorCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number>();
-  const previousTimeRef = useRef<number>();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -13,146 +12,123 @@ const CursorCanvas: React.FC = () => {
     if (!ctx) return;
 
     // Configuration
-    const SEGMENT_COUNT = 15;
-    const SEGMENT_LENGTH = 10;
-    const STROKE_COLOR = '#ff5e00'; // Brand Orange
-    const DAMPING = 0.85; // Less damping = more swing
-    const STIFFNESS = 0.12;
-
-    interface Point {
-      x: number;
-      y: number;
-    }
+    const PARTICLE_COUNT = 150;
+    const MOUSE_RADIUS = 180;
+    const REPULSION_FORCE = 6; // Strength of the push
+    const RETURN_SPEED = 0.04; // How fast they go back
+    const DAMPING = 0.92;
+    const COLOR_BASE = '#ff5e00'; // Brand Orange
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let mouse: Point = { x: width / 2, y: height / 2 };
-    let segments: Point[] = Array(SEGMENT_COUNT).fill({ x: width / 2, y: height / 2 });
 
-    // Physics velocity for each segment
-    let vels: Point[] = Array(SEGMENT_COUNT).fill({ x: 0, y: 0 });
+    interface Particle {
+      x: number;
+      y: number;
+      originX: number;
+      originY: number;
+      vx: number;
+      vy: number;
+      size: number;
+      alpha: number;
+    }
+
+    let particles: Particle[] = [];
+    let mouse = { x: -1000, y: -1000 };
+    let isActive = false;
+
+    const initParticles = () => {
+      particles = [];
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        particles.push({
+          x,
+          y,
+          originX: x,
+          originY: y,
+          vx: 0,
+          vy: 0,
+          size: Math.random() * 2 + 1,
+          alpha: Math.random() * 0.5 + 0.2
+        });
+      }
+    };
 
     const onResize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width;
       canvas.height = height;
+      // Re-distribute particles on resize
+      initParticles();
     };
 
     const onMouseMove = (e: MouseEvent) => {
-      mouse = { x: e.clientX, y: e.clientY };
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      isActive = true;
+    };
+
+    const onMouseLeave = () => {
+      isActive = false;
+      mouse.x = -1000;
+      mouse.y = -1000;
     };
 
     window.addEventListener('resize', onResize);
     window.addEventListener('mousemove', onMouseMove);
-    onResize(); // Initial size
+    window.addEventListener('mouseleave', onMouseLeave); // Reset when leaving window
+    onResize(); // Initial setup
 
-    const animate = (time: number) => {
-      if (previousTimeRef.current === undefined) {
-        previousTimeRef.current = time;
-      }
-      previousTimeRef.current = time;
-
+    const animate = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // 1. Move Head (first segment) towards mouse
-      // We use a simple lerp for the head to make it feel responsive but slightly weighted
-      const head = segments[0];
-      const dx = mouse.x - head.x;
-      const dy = mouse.y - head.y;
+      // Render and update each particle
+      particles.forEach((p) => {
+        // 1. Calculate repulsion from mouse
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const distance = Math.hypot(dx, dy);
 
-      // Direct set for instant response or lerp for "weight"?
-      // Let's do a fast lerp for the head so it's snappy but not jittery
-      segments[0] = {
-        x: head.x + dx * 0.4,
-        y: head.y + dy * 0.4
-      };
+        let forceX = 0;
+        let forceY = 0;
 
-      // 2. Physics Simulation for the rest of the rope (Inverse Kinematics / Spring-ish)
-      // We simulate each point trying to stay SEGMENT_LENGTH away from the previous one
-      // plus some momentum (verlet integration-ish or velocity damping)
+        if (distance < MOUSE_RADIUS && isActive) {
+          const angle = Math.atan2(dy, dx);
+          // The closer, the stronger the push
+          const force = (MOUSE_RADIUS - distance) / MOUSE_RADIUS;
+          const repulsion = -force * REPULSION_FORCE;
 
-      for (let i = 1; i < SEGMENT_COUNT; i++) {
-        const prev = segments[i - 1];
-        const curr = segments[i];
-
-        // Spring/Drag mechanic
-        // Target position is where the previous segment is
-
-        // Calculate pull force towards previous node
-        const tx = prev.x - curr.x;
-        const ty = prev.y - curr.y;
-
-        // Add force to velocity
-        vels[i].x += tx * STIFFNESS;
-        vels[i].y += ty * STIFFNESS;
-
-        // Apply sliding damping
-        vels[i].x *= DAMPING;
-        vels[i].y *= DAMPING;
-
-        // Update position
-        segments[i] = {
-          x: curr.x + vels[i].x,
-          y: curr.y + vels[i].y
-        };
-
-        // Constraint: Ensure segments don't stretch too much (Chain constraint)
-        // This makes it feel like a rope of fixed maximum length
-        const dist = Math.hypot(segments[i].x - segments[i - 1].x, segments[i].y - segments[i - 1].y);
-        if (dist > SEGMENT_LENGTH * 2) {
-          // Too far, snap closer
-          const angle = Math.atan2(segments[i].y - segments[i - 1].y, segments[i].x - segments[i - 1].x);
-          segments[i] = {
-            x: segments[i - 1].x + Math.cos(angle) * SEGMENT_LENGTH * 2,
-            y: segments[i - 1].y + Math.sin(angle) * SEGMENT_LENGTH * 2
-          };
-          // Kill velocity if we hit hard limit to prevent explosion
-          vels[i] = { x: 0, y: 0 };
+          forceX = Math.cos(angle) * repulsion;
+          forceY = Math.sin(angle) * repulsion;
         }
-      }
 
-      // 3. Render
-      if (SEGMENT_COUNT > 1) {
+        // 2. Add force to velocity
+        p.vx += forceX;
+        p.vy += forceY;
+
+        // 3. Return to origin (Spring force)
+        const returnDx = p.originX - p.x;
+        const returnDy = p.originY - p.y;
+
+        p.vx += returnDx * RETURN_SPEED;
+        p.vy += returnDy * RETURN_SPEED;
+
+        // 4. Apply physics
+        p.vx *= DAMPING;
+        p.vy *= DAMPING;
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // 5. Draw
+        // Draw as small distinct geometric shapes/dashes for "Tech" feel
         ctx.beginPath();
-        ctx.moveTo(segments[0].x, segments[0].y);
-
-        // Catmull-Rom or Quadratic Bezier for smooth curve through points
-        for (let i = 1; i < SEGMENT_COUNT - 1; i++) {
-          const xc = (segments[i].x + segments[i + 1].x) / 2;
-          const yc = (segments[i].y + segments[i + 1].y) / 2;
-          ctx.quadraticCurveTo(segments[i].x, segments[i].y, xc, yc);
-        }
-        // Last segment
-        ctx.lineTo(segments[SEGMENT_COUNT - 1].x, segments[SEGMENT_COUNT - 1].y);
-
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
-        // Create a gradient for the stroke if possible, or just solid color
-        // Variable width is harder with stroke(). 
-        // To do variable width properly in 2D canvas, we often need to draw filled paths/polygons.
-        // For simplicity and performance, let's stick to a solid stroke that tapers opacity or 
-        // simply use a fixed width that looks good. 
-        // OR: Draw scaling circles (blobby trail) if line width modulation is key.
-
-        // Let's try the "Variable Width" approach by drawing many small lines or circles?
-        // No, standard stroke is cleaner. Let's do a tapered opacity stroke using a loop,
-        // or just one nice stroke.
-        // "Antigravity" usually implies a clean, single thread.
-
-        ctx.strokeStyle = STROKE_COLOR;
-        ctx.lineWidth = 3;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = STROKE_COLOR;
-        ctx.stroke();
-
-        // Optional: Draw a "Head" dot
-        ctx.beginPath();
-        ctx.arc(segments[0].x, segments[0].y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = STROKE_COLOR;
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = hexToRgba(COLOR_BASE, p.alpha);
         ctx.fill();
-      }
+      });
 
       requestRef.current = requestAnimationFrame(animate);
     };
@@ -162,6 +138,7 @@ const CursorCanvas: React.FC = () => {
     return () => {
       window.removeEventListener('resize', onResize);
       window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseleave', onMouseLeave);
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
   }, []);
@@ -169,9 +146,18 @@ const CursorCanvas: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full pointer-events-none z-[100] hidden md:block mix-blend-screen"
+      className="fixed top-0 left-0 w-full h-full pointer-events-none z-[1] hidden md:block" // Lower z-index to be behind content but visible
+      style={{ mixBlendMode: 'plus-lighter' }} // Cool blend mode for sparks
     />
   );
 };
+
+// Helper to convert hex to rgba
+function hexToRgba(hex: string, alpha: number) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
 export default CursorCanvas;
