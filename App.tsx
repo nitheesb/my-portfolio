@@ -18,6 +18,7 @@ import SkillsMatrix from './components/SkillsMatrix';
 import ServicesSection from './components/ServicesSection';
 import HolographicScene from './components/HolographicScene';
 import MobileMenu from './components/MobileMenu';
+import ScrollIndicator from './components/ScrollIndicator';
 import { AudioProvider } from './components/AudioProvider';
 import { useAudioFeedback } from './hooks/useAudioFeedback';
 
@@ -320,7 +321,7 @@ function HeroSection({ onNavigate }: { onNavigate: (i: number) => void }) {
 
                         <h1 className="text-5xl sm:text-6xl md:text-8xl font-display font-bold leading-[0.9] tracking-tighter mb-6 text-black text-left">
                             <GlitchText text="DEVOPS" as="span" /> <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-600">
+                            <span className="text-primary">
                                 <GlitchText text="ARCHITECT" as="span" />
                             </span>
                         </h1>
@@ -357,6 +358,8 @@ function HeroSection({ onNavigate }: { onNavigate: (i: number) => void }) {
             <div className="relative z-20 w-full bg-white/50 backdrop-blur-md border-t border-gray-200">
                 <StatsSection />
             </div>
+
+            <ScrollIndicator />
         </section>
     );
 }

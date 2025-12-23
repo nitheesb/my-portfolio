@@ -1,9 +1,18 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+  maxLife: number;
+  size: number;
+}
 
 const CursorCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isLocked, setIsLocked] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -13,15 +22,10 @@ const CursorCanvas: React.FC = () => {
 
     // Config
     const PRIMARY_COLOR = { r: 255, g: 94, b: 0 }; // #ff5e00
-    const LOCKED_COLOR = { r: 0, g: 255, b: 100 }; // Green lock-on
 
     // State
-    const mouse = { x: 0, y: 0 };
-    const currentPos = { x: 0, y: 0 };
-    let rotation = 0;
-    let lockedState = false;
-
-    // Init position logic
+    const mouse = { x: 0, y: 0, prevX: 0, prevY: 0 };
+    const particles: Particle[] = [];
     let hasMoved = false;
 
     // High DPI Canvas Setup
@@ -41,8 +45,8 @@ const CursorCanvas: React.FC = () => {
         const ch = rect.height;
         mouse.x = cw / 2;
         mouse.y = ch / 2;
-        currentPos.x = cw / 2;
-        currentPos.y = ch / 2;
+        mouse.prevX = cw / 2;
+        mouse.prevY = ch / 2;
       }
     };
 
@@ -52,14 +56,30 @@ const CursorCanvas: React.FC = () => {
 
     const onMouseMove = (e: MouseEvent) => {
       hasMoved = true;
+      mouse.prevX = mouse.x;
+      mouse.prevY = mouse.y;
       mouse.x = e.clientX;
       mouse.y = e.clientY;
 
-      // Check if hovering over clickable element
-      const target = e.target as HTMLElement;
-      const isClickable = target.closest('button, a, input, [role="button"]');
-      lockedState = !!isClickable;
-      setIsLocked(lockedState);
+      // Create particles based on mouse movement
+      const dx = mouse.x - mouse.prevX;
+      const dy = mouse.y - mouse.prevY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      // Create more particles when moving faster
+      const particleCount = Math.min(Math.floor(distance / 5), 3);
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: mouse.x + (Math.random() - 0.5) * 10,
+          y: mouse.y + (Math.random() - 0.5) * 10,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          life: 1,
+          maxLife: 60 + Math.random() * 40,
+          size: 2 + Math.random() * 3
+        });
+      }
     };
 
     window.addEventListener('resize', onResize);
@@ -68,108 +88,55 @@ const CursorCanvas: React.FC = () => {
 
     let animationFrameId: number;
 
-    const drawReticle = (x: number, y: number, locked: boolean) => {
-      const color = locked ? LOCKED_COLOR : PRIMARY_COLOR;
-      const alpha = locked ? 1 : 0.8;
-
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rotation);
-
-      // Center dot
-      ctx.beginPath();
-      ctx.arc(0, 0, 2, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
-      ctx.fill();
-
-      // Outer ring
-      ctx.beginPath();
-      ctx.arc(0, 0, 15, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha * 0.6})`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // Corner brackets
-      const bracketSize = 20;
-      const bracketThickness = 2;
-      const corners = [
-        { x: bracketSize, y: bracketSize },
-        { x: -bracketSize, y: bracketSize },
-        { x: -bracketSize, y: -bracketSize },
-        { x: bracketSize, y: -bracketSize }
-      ];
-
-      ctx.strokeStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha * 0.8})`;
-      ctx.lineWidth = bracketThickness;
-
-      corners.forEach((corner, i) => {
-        const angle = (i * Math.PI / 2);
-        ctx.save();
-        ctx.rotate(angle);
-
-        // L-shaped bracket
-        ctx.beginPath();
-        ctx.moveTo(bracketSize, bracketSize - 6);
-        ctx.lineTo(bracketSize, bracketSize);
-        ctx.lineTo(bracketSize - 6, bracketSize);
-        ctx.stroke();
-
-        ctx.restore();
-      });
-
-      // Crosshair lines
-      const lineLength = 8;
-      ctx.strokeStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha * 0.4})`;
-      ctx.lineWidth = 1;
-
-      // Horizontal
-      ctx.beginPath();
-      ctx.moveTo(-lineLength - 5, 0);
-      ctx.lineTo(-5, 0);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(5, 0);
-      ctx.lineTo(lineLength + 5, 0);
-      ctx.stroke();
-
-      // Vertical
-      ctx.beginPath();
-      ctx.moveTo(0, -lineLength - 5);
-      ctx.lineTo(0, -5);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(0, 5);
-      ctx.lineTo(0, lineLength + 5);
-      ctx.stroke();
-
-      // Lock-on pulse effect
-      if (locked) {
-        const pulseSize = 25 + Math.sin(Date.now() / 200) * 3;
-        ctx.beginPath();
-        ctx.arc(0, 0, pulseSize, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${0.3 * alpha})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
-
-      ctx.restore();
-    };
-
     const animate = () => {
       const dpr = window.devicePixelRatio || 1;
       ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
 
-      // Smooth cursor follow with lerp (linear interpolation)
-      const smoothness = 0.15;
-      currentPos.x += (mouse.x - currentPos.x) * smoothness;
-      currentPos.y += (mouse.y - currentPos.y) * smoothness;
+      // Update and draw particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
 
-      // Rotate the reticle
-      rotation += lockedState ? 0.02 : 0.01;
+        // Update particle
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life++;
 
-      drawReticle(currentPos.x, currentPos.y, lockedState);
+        // Apply slight gravity and friction
+        p.vy += 0.05;
+        p.vx *= 0.98;
+        p.vy *= 0.98;
+
+        // Remove dead particles
+        if (p.life >= p.maxLife) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        // Calculate opacity based on life
+        const lifeRatio = 1 - (p.life / p.maxLife);
+        const alpha = lifeRatio * 0.8;
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * lifeRatio, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${PRIMARY_COLOR.r}, ${PRIMARY_COLOR.g}, ${PRIMARY_COLOR.b}, ${alpha})`;
+        ctx.fill();
+
+        // Add glow effect
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2 * lifeRatio);
+        gradient.addColorStop(0, `rgba(${PRIMARY_COLOR.r}, ${PRIMARY_COLOR.g}, ${PRIMARY_COLOR.b}, ${alpha * 0.5})`);
+        gradient.addColorStop(1, `rgba(${PRIMARY_COLOR.r}, ${PRIMARY_COLOR.g}, ${PRIMARY_COLOR.b}, 0)`);
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 2 * lifeRatio, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      }
+
+      // Limit particle count for performance
+      if (particles.length > 300) {
+        particles.splice(0, particles.length - 300);
+      }
 
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -186,7 +153,7 @@ const CursorCanvas: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full pointer-events-none z-[100] hidden md:block mix-blend-screen"
+      className="fixed top-0 left-0 w-full h-full pointer-events-none z-[100] hidden md:block"
     />
   );
 };
