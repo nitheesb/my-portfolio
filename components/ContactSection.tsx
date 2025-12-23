@@ -56,7 +56,7 @@ const ContactSection: React.FC = () => {
                     <div className="flex gap-6">
                         <div className="flex flex-col gap-1">
                             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Coordinates</span>
-                            <a href="mailto:nithees.m@example.com" onMouseEnter={playHover} className="text-black hover:text-primary transition-colors font-mono">nithees.bm@gmail.com</a>
+                            <a href="mailto:nitheesbalaji@gmail.com" onMouseEnter={playHover} className="text-black hover:text-primary transition-colors font-mono">nitheesbalaji@gmail.com</a>
                         </div>
                         <div className="flex flex-col gap-1">
                             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Direct Uplink</span>
