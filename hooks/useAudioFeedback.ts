@@ -113,6 +113,13 @@ export const useAudioFeedback = () => {
     }
   }, []);
 
+  const setMuted = useCallback((muted: boolean) => {
+    isMuted.current = muted;
+    if (muted) {
+      stopAmbient();
+    }
+  }, [stopAmbient]);
+
   const toggleMute = useCallback(() => {
     isMuted.current = !isMuted.current;
     if (isMuted.current) {
@@ -128,6 +135,7 @@ export const useAudioFeedback = () => {
     playKeyPress,
     startAmbient,
     stopAmbient,
-    toggleMute
+    toggleMute,
+    setMuted
   };
 };

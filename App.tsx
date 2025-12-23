@@ -21,6 +21,10 @@ import MobileMenu from './components/MobileMenu';
 import ScrollIndicator from './components/ScrollIndicator';
 import { AudioProvider } from './components/AudioProvider';
 import { useAudioFeedback } from './hooks/useAudioFeedback';
+import ContactSection from './components/ContactSection';
+import ClusterVisual from './components/ClusterVisual';
+
+
 
 const SCROLL_PER_PAGE = 1600;
 const SCROLL_COOLDOWN = 800;
@@ -31,7 +35,10 @@ const SECTIONS = [
     { id: 'skills', title: 'SYSTEMS', component: SkillsWrapper },
     { id: 'projects', title: 'LOGS', component: ProjectsSection },
     { id: 'services', title: 'CORE', component: ServicesWrapper },
+    { id: 'contact', title: 'SIGNAL', component: ContactSection },
 ];
+
+
 
 function App() {
     const [activeSectionIndex, setActiveSectionIndex] = useState(0);
@@ -153,8 +160,12 @@ function App() {
     return (
         <AudioProvider>
             <div className="w-screen h-screen bg-bg text-secondary overflow-hidden relative font-sans selection:bg-primary selection:text-white">
+                <div className="fixed inset-0 z-0 pointer-events-none">
+                    <ClusterVisual />
+                </div>
                 <CursorCanvas />
                 <Scanline />
+
 
                 {/* 9. SVG Power-Line Scroll Progress */}
                 <div className="fixed left-6 top-1/2 -translate-y-1/2 h-[70vh] w-4 z-[100] hidden md:flex items-center justify-center pointer-events-none">
@@ -413,6 +424,9 @@ function ServicesWrapper() {
         </div>
     );
 }
+
+
+
 
 
 
