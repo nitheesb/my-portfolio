@@ -60,8 +60,9 @@ const ContactSection: React.FC = () => {
                         </div>
                         <div className="flex flex-col gap-1">
                             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Direct Uplink</span>
-                            <a href="#" onMouseEnter={playHover} className="text-black hover:text-primary transition-colors font-mono">LinkedIn Profile</a>
+                            <a href="https://www.linkedin.com/in/nithees-balaji/" target="_blank" rel="noopener noreferrer" onMouseEnter={playHover} className="text-black hover:text-primary transition-colors font-mono">LinkedIn Profile</a>
                         </div>
+
                     </div>
                 </div>
 

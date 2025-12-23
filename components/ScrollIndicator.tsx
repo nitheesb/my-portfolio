@@ -8,7 +8,8 @@ export default function ScrollIndicator() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 0.8 }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2"
+            className="absolute bottom-24 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2"
+
         >
             <span className="font-mono text-[10px] font-bold tracking-widest text-gray-500">
                 SCROLL TO EXPLORE
