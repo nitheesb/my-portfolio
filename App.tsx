@@ -34,7 +34,7 @@ const THRESHOLD_TO_SNAP = 120;
 
 const SECTIONS = [
     { id: 'hero', title: 'HOME', component: HeroSection, bg: 'mesh-gradient' },
-    { id: 'skills', title: 'SYSTEMS', component: SkillsWrapper, bg: 'bg-[#0a0a0a]' },
+    { id: 'skills', title: 'SYSTEMS', component: SkillsWrapper, bg: 'bg-bg' },
     { id: 'projects', title: 'LOGS', component: ProjectsSection, bg: 'bg-bg' },
     { id: 'services', title: 'CORE', component: ServicesWrapper, bg: 'bg-white' },
     { id: 'contact', title: 'SIGNAL', component: ContactSection, bg: 'bg-bg' },
@@ -385,7 +385,7 @@ function HeroSection({ onNavigate }: { onNavigate: (i: number) => void }) {
 
 function SkillsWrapper() {
     return (
-        <div className="h-full w-full overflow-y-auto flex items-center bg-[#0a0a0a] scrollable-content py-20 md:py-0">
+        <div className="h-full w-full overflow-y-auto flex items-center bg-bg scrollable-content py-20 md:py-0">
             <div className="w-full">
                 <SkillsMatrix />
             </div>
@@ -395,29 +395,21 @@ function SkillsWrapper() {
 
 function ProjectsSection() {
     return (
-        <div className="h-full w-full overflow-y-auto bg-bg custom-scrollbar-hide scrollable-content pt-24 pb-0 flex flex-col">
-            <div className="container mx-auto px-6 md:px-12 flex-grow">
-                <header className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+        <div className="h-full w-full overflow-hidden bg-bg flex flex-col">
+            <div className="container mx-auto px-6 md:px-12 flex-grow flex flex-col justify-center py-12">
+                <header className="flex flex-col md:flex-row items-start md:items-end justify-between mb-8">
                     <div>
-                        <span className="text-5xl md:text-7xl font-display font-bold text-black opacity-10 hidden md:block">LOGS</span>
-                        <h2 className="text-4xl md:text-5xl font-display font-bold text-black md:-mt-10 md:ml-1">MISSION LOGS</h2>
+                        <span className="font-mono text-[10px] text-primary font-bold tracking-[0.2em] block mb-2">DEPLOYMENT_HISTORY</span>
+                        <h2 className="text-4xl md:text-5xl font-display font-bold text-black">
+                            MISSION <span className="gradient-text">LOGS</span>
+                        </h2>
                     </div>
-                    <div className="font-mono text-xs text-primary font-bold mt-2 md:mt-0">
+                    <div className="font-mono text-xs text-gray-400 font-bold mt-2 md:mt-0">
                         [ ACCESS_LEVEL: PUBLIC_RECORDS ]
                     </div>
                 </header>
 
                 <BentoGrid />
-            </div>
-
-            <div className="mt-12 w-full">
-                <div className="container mx-auto px-6 mb-4">
-                    <div className="flex items-center gap-2">
-                        <span className="w-16 h-[1px] bg-primary"></span>
-                        <span className="font-mono text-xs font-bold text-primary tracking-widest">INFRA_ARSENAL</span>
-                    </div>
-                </div>
-                <TechStack />
             </div>
         </div>
     );

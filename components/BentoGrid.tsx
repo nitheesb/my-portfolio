@@ -13,7 +13,7 @@ const BentoGrid: React.FC = () => {
    };
 
    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-10 auto-rows-fr">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr">
          {PROJECTS.map((project, index) => (
             <MotionDiv
                key={project.id}
@@ -22,7 +22,7 @@ const BentoGrid: React.FC = () => {
                viewport={{ once: true }}
                transition={{ delay: index * 0.1 }}
                className={`
-            group relative glass-card rounded-2xl p-6 
+            group relative glass-card rounded-2xl p-5 
             hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:border-primary/20 hover:-translate-y-1 transition-all duration-500 
             flex flex-col justify-between 
             h-full overflow-hidden
@@ -32,46 +32,47 @@ const BentoGrid: React.FC = () => {
                {/* Gradient top accent */}
                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-               {/* Top Section */}
-               <div className="flex justify-between items-start mb-4">
+               <div className="flex justify-between items-start mb-2">
                   <div>
-                     <div className="flex items-center gap-2 mb-2">
-                        <span className="font-mono text-[9px] bg-primary/10 text-primary px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">{project.company}</span>
+                     <div className="flex items-center gap-2 mb-1.5">
+                        <span className="font-mono text-[9px] bg-primary/10 text-primary px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">{project.company}</span>
                         <span className="font-mono text-[9px] text-gray-400">{project.period}</span>
                      </div>
-                     <h3 className="text-xl md:text-2xl font-display font-bold text-black leading-tight group-hover:text-primary transition-colors">
+                     <h3 className="text-lg font-display font-bold text-black leading-tight group-hover:text-primary transition-colors">
                         {project.role}
                      </h3>
                   </div>
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity -translate-y-2 group-hover:translate-y-0 duration-300">
-                     <ArrowUpRight size={20} className="text-primary" />
+                     <ArrowUpRight size={18} className="text-primary" />
                   </div>
                </div>
 
-               {/* Middle Section: Description */}
-               <div className="mb-6 flex-grow">
-                  <p className="font-mono text-xs text-gray-600 leading-relaxed mb-4">
-                     {project.description.mission} <br />
-                     <span className="text-gray-400 mt-1 block">{project.description.execution}</span>
+               {/* Description */}
+               <div className="mb-3 flex-grow">
+                  <p className="font-mono text-[11px] text-gray-600 leading-relaxed mb-2 line-clamp-2">
+                     {project.description.mission}
                   </p>
 
-                  <div className="flex flex-wrap gap-2">
-                     {project.tags.map(tag => (
-                        <span key={tag} className="text-[10px] bg-primary/5 text-primary px-2.5 py-1 rounded-full font-bold font-mono">
+                  <div className="flex flex-wrap gap-1.5">
+                     {project.tags.slice(0, 4).map(tag => (
+                        <span key={tag} className="text-[9px] bg-primary/5 text-primary px-2 py-0.5 rounded-full font-bold font-mono">
                            {tag}
                         </span>
                      ))}
+                     {project.tags.length > 4 && (
+                        <span className="text-[9px] text-gray-400 font-mono font-bold px-1">+{project.tags.length - 4}</span>
+                     )}
                   </div>
                </div>
 
-               {/* Bottom Section: Stats */}
-               <div className="grid grid-cols-2 gap-4 border-t border-gray-100/50 pt-4 mt-auto w-full">
+               {/* Stats */}
+               <div className="grid grid-cols-2 gap-3 border-t border-gray-100/50 pt-3 mt-auto w-full">
                   {project.stats.map((stat, i) => (
                      <div key={i}>
-                        <div className="text-xl font-bold font-display leading-none mb-1 gradient-text">
+                        <div className="text-lg font-bold font-display leading-none mb-0.5 gradient-text">
                            {stat.value}
                         </div>
-                        <div className="text-[9px] font-mono text-gray-400 font-bold uppercase tracking-wider">{stat.label}</div>
+                        <div className="text-[8px] font-mono text-gray-400 font-bold uppercase tracking-wider">{stat.label}</div>
                      </div>
                   ))}
                </div>
