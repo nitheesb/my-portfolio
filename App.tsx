@@ -28,9 +28,9 @@ import { useDeviceType } from './hooks/useDeviceType';
 
 
 
-const SCROLL_PER_PAGE = 1600;
-const SCROLL_COOLDOWN = 800;
-const THRESHOLD_TO_SNAP = 300;
+const SCROLL_PER_PAGE = 1200;
+const SCROLL_COOLDOWN = 400;
+const THRESHOLD_TO_SNAP = 120;
 
 const SECTIONS = [
     { id: 'hero', title: 'HOME', component: HeroSection, bg: 'mesh-gradient' },
@@ -60,7 +60,7 @@ function DesktopApp() {
     const { playClick, playHover } = useAudioFeedback();
 
     const scrollY = useMotionValue(0);
-    const smoothScrollY = useSpring(scrollY, { damping: 50, stiffness: 180, mass: 1.2 });
+    const smoothScrollY = useSpring(scrollY, { damping: 30, stiffness: 300, mass: 0.8 });
 
     const lastSectionChange = useRef(Date.now());
     const isAnimating = useRef(false);
@@ -91,8 +91,8 @@ function DesktopApp() {
         accumulatedDelta.current = 0;
 
         animate(scrollY, index * SCROLL_PER_PAGE, {
-            duration: 1.2,
-            ease: [0.22, 1, 0.36, 1],
+            duration: 0.6,
+            ease: [0.25, 1, 0.5, 1],
             onComplete: () => {
                 isAnimating.current = false;
             }
@@ -124,7 +124,9 @@ function DesktopApp() {
         }
 
         e.preventDefault();
-        accumulatedDelta.current += e.deltaY;
+
+        const delta = Math.abs(e.deltaY) > 50 ? Math.sign(e.deltaY) * 50 : e.deltaY;
+        accumulatedDelta.current += delta;
 
         if (Math.abs(accumulatedDelta.current) > THRESHOLD_TO_SNAP) {
             if (accumulatedDelta.current > 0) {
@@ -133,26 +135,13 @@ function DesktopApp() {
                 navigateTo(activeSectionIndex - 1);
             }
             accumulatedDelta.current = 0;
-        } else {
-            const current = scrollY.get();
-            const drift = e.deltaY * 0.1;
-            const targetDrift = current + drift;
-
-            const lowerBound = activeSectionIndex * SCROLL_PER_PAGE;
-            const upperBound = (activeSectionIndex + 1) * SCROLL_PER_PAGE;
-
-            if (targetDrift >= lowerBound - 100 && targetDrift <= upperBound + 100) {
-                scrollY.set(targetDrift);
-            }
         }
 
         const timeout = (window as any)._scrollResetTimeout;
         if (timeout) clearTimeout(timeout);
         (window as any)._scrollResetTimeout = setTimeout(() => {
-            if (!isAnimating.current) {
-                navigateTo(activeSectionIndex);
-            }
-        }, 150);
+            accumulatedDelta.current = 0;
+        }, 200);
 
     }, [scrollY, isTerminalOpen, isLoading, activeSectionIndex, navigateTo]);
 
@@ -280,14 +269,14 @@ const SectionPanel = ({ index, total, scrollY, Component, onNavigate, bg }: { in
     const exitRange = (index + 1) * SCROLL_PER_PAGE;
 
     const openProgress = useTransform(scrollY, [startRange, endRange], [0, 1]);
-    const brightnessRaw = useTransform(scrollY, [endRange, exitRange], [1, 0.4]);
-    const scale = useTransform(scrollY, [endRange, exitRange], [1, 0.95]);
+    const brightnessRaw = useTransform(scrollY, [endRange, exitRange], [1, 0.6]);
+    const scale = useTransform(scrollY, [endRange, exitRange], [1, 0.97]);
     const borderOpacity = useTransform(openProgress, [0.9, 1], [1, 0]);
 
     const clipInset = useTransform(openProgress, (v) => {
         if (index === 0) return 'inset(0% 0 0% 0)';
         const progress = Math.max(0, Math.min(1, v));
-        const gap = 50 * (1 - progress);
+        const gap = 40 * (1 - progress);
         return `inset(${gap}% 0 ${gap}% 0)`;
     });
 
