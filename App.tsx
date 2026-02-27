@@ -395,9 +395,9 @@ function SkillsWrapper() {
 
 function ProjectsSection() {
     return (
-        <div className="h-full w-full overflow-hidden bg-bg flex flex-col">
-            <div className="container mx-auto px-6 md:px-12 flex-grow flex flex-col justify-center py-12">
-                <header className="flex flex-col md:flex-row items-start md:items-end justify-between mb-8">
+        <div className="h-full w-full overflow-y-auto bg-bg flex flex-col scrollable-content">
+            <div className="container mx-auto px-6 md:px-12 flex-grow flex flex-col justify-center py-10">
+                <header className="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 shrink-0">
                     <div>
                         <span className="font-mono text-[10px] text-primary font-bold tracking-[0.2em] block mb-2">DEPLOYMENT_HISTORY</span>
                         <h2 className="text-4xl md:text-5xl font-display font-bold text-black">
