@@ -7,15 +7,15 @@ const MotionDiv = motion.div as any;
 
 const ServicesSection: React.FC = () => {
   return (
-    <section id="services" className="py-24 relative overflow-hidden bg-bg">
+    <section id="services" className="py-24 relative overflow-hidden">
       {/* Background Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+      <div className="absolute inset-0 dot-grid pointer-events-none opacity-50"></div>
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 flex items-end justify-between">
             <div>
-                <h2 className="text-4xl md:text-6xl font-display font-bold uppercase mb-4">
-                    <span className="text-primary">AVAILABLE</span> PROTOCOLS
+                <h2 className="text-4xl md:text-6xl font-display font-bold uppercase mb-4 text-black">
+                    AVAILABLE <span className="gradient-text">PROTOCOLS</span>
                 </h2>
                 <div className="font-mono text-sm text-gray-500">
                     // SELECT_MODULE_TO_EXECUTE
@@ -35,16 +35,13 @@ const ServicesSection: React.FC = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    className="group relative bg-white border border-gray-200 p-8 hover:border-primary hover:shadow-lg transition-all duration-300"
+                    className="group relative glass-card rounded-2xl p-8 hover:border-primary/20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500"
                 >
                     {/* Hover Corner Effect */}
-                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                     <div className="mb-6 flex justify-between items-start">
-                        <div className="p-3 bg-gray-50 rounded text-primary group-hover:bg-primary group-hover:text-black transition-colors">
+                        <div className="p-3 bg-gradient-to-br from-primary to-primaryLight rounded-xl text-white shadow-[0_4px_12px_rgba(255,94,0,0.2)] group-hover:shadow-[0_4px_20px_rgba(255,94,0,0.35)] transition-shadow duration-300">
                             <service.icon size={28} />
                         </div>
                         <div className="font-mono text-xs text-gray-400 group-hover:text-primary transition-colors font-bold">
@@ -63,7 +60,7 @@ const ServicesSection: React.FC = () => {
                     <ul className="space-y-2">
                         {service.features.map((feature, fIndex) => (
                             <li key={fIndex} className="flex items-center gap-2 text-xs font-mono text-gray-400 group-hover:text-gray-600 transition-colors font-bold">
-                                <span className="text-primary opacity-50">&gt;&gt;</span> {feature}
+                                <span className="w-1 h-1 bg-primary rounded-full shrink-0"></span> {feature}
                             </li>
                         ))}
                     </ul>

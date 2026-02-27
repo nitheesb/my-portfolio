@@ -23,6 +23,8 @@ import { AudioProvider } from './components/AudioProvider';
 import { useAudioFeedback } from './hooks/useAudioFeedback';
 import ContactSection from './components/ContactSection';
 import ClusterVisual from './components/ClusterVisual';
+import MobileApp from './components/MobileApp';
+import { useDeviceType } from './hooks/useDeviceType';
 
 
 
@@ -31,16 +33,26 @@ const SCROLL_COOLDOWN = 800;
 const THRESHOLD_TO_SNAP = 300;
 
 const SECTIONS = [
-    { id: 'hero', title: 'HOME', component: HeroSection },
-    { id: 'skills', title: 'SYSTEMS', component: SkillsWrapper },
-    { id: 'projects', title: 'LOGS', component: ProjectsSection },
-    { id: 'services', title: 'CORE', component: ServicesWrapper },
-    { id: 'contact', title: 'SIGNAL', component: ContactSection },
+    { id: 'hero', title: 'HOME', component: HeroSection, bg: 'mesh-gradient' },
+    { id: 'skills', title: 'SYSTEMS', component: SkillsWrapper, bg: 'bg-[#0a0a0a]' },
+    { id: 'projects', title: 'LOGS', component: ProjectsSection, bg: 'bg-bg' },
+    { id: 'services', title: 'CORE', component: ServicesWrapper, bg: 'bg-white' },
+    { id: 'contact', title: 'SIGNAL', component: ContactSection, bg: 'bg-bg' },
 ];
 
 
 
 function App() {
+    const { isMobile } = useDeviceType();
+
+    if (isMobile) {
+        return <MobileApp />;
+    }
+
+    return <DesktopApp />;
+}
+
+function DesktopApp() {
     const [activeSectionIndex, setActiveSectionIndex] = useState(0);
     const [isTerminalOpen, setIsTerminalOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -238,6 +250,7 @@ function App() {
                             scrollY={smoothScrollY}
                             Component={section.component}
                             onNavigate={navigateTo}
+                            bg={section.bg}
                         />
                     ))}
                 </main>
@@ -246,7 +259,7 @@ function App() {
                     onClick={() => { playClick(); setIsTerminalOpen(true); }}
                     onMouseEnter={playHover}
                     aria-label="Open Command Terminal"
-                    className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] bg-black border border-primary text-primary w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,94,0,0.3)] hover:scale-110 hover:bg-primary hover:text-white transition-all duration-300 group"
+                    className="fixed bottom-8 right-8 z-[100] bg-black/80 backdrop-blur-sm border border-primary/50 text-primary w-14 h-14 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(255,94,0,0.2)] hover:scale-110 hover:bg-primary hover:text-white hover:shadow-[0_0_40px_rgba(255,94,0,0.4)] transition-all duration-300 group"
                 >
                     <TerminalIcon size={20} className="md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />
                 </button>
@@ -261,7 +274,7 @@ function App() {
     );
 }
 
-const SectionPanel = ({ index, total, scrollY, Component, onNavigate }: { index: number, total: number, scrollY: any, Component: any, onNavigate: (i: number) => void }) => {
+const SectionPanel = ({ index, total, scrollY, Component, onNavigate, bg }: { index: number, total: number, scrollY: any, Component: any, onNavigate: (i: number) => void, bg: string }) => {
     const startRange = (index - 1) * SCROLL_PER_PAGE;
     const endRange = index * SCROLL_PER_PAGE;
     const exitRange = (index + 1) * SCROLL_PER_PAGE;
@@ -282,7 +295,7 @@ const SectionPanel = ({ index, total, scrollY, Component, onNavigate }: { index:
 
     return (
         <motion.div
-            className="absolute inset-0 w-full h-full bg-bg will-change-transform"
+            className={`absolute inset-0 w-full h-full ${bg} will-change-transform`}
             style={{
                 zIndex: index,
                 clipPath: clipInset,
@@ -307,8 +320,14 @@ const SectionPanel = ({ index, total, scrollY, Component, onNavigate }: { index:
 function HeroSection({ onNavigate }: { onNavigate: (i: number) => void }) {
     const { playClick } = useAudioFeedback();
     return (
-        <section className="h-full w-full relative flex flex-col overflow-hidden bg-bg">
+        <section className="h-full w-full relative flex flex-col overflow-hidden">
             <HolographicScene />
+
+            {/* Enhanced gradient mesh background */}
+            <div className="absolute inset-0 pointer-events-none z-[5]">
+                <div className="absolute top-0 right-0 w-[70%] h-[70%] bg-gradient-radial from-primary/[0.06] to-transparent rounded-full blur-[120px]" />
+                <div className="absolute bottom-0 left-0 w-[50%] h-[50%] bg-gradient-radial from-primary/[0.04] to-transparent rounded-full blur-[100px]" />
+            </div>
 
             <div className="absolute top-16 left-6 md:top-8 md:left-8 z-30">
                 <div className="font-mono font-bold text-sm md:text-lg tracking-wider pointer-events-auto inline-block bg-white/50 backdrop-blur-sm px-3 py-1 rounded border border-transparent">
@@ -325,14 +344,14 @@ function HeroSection({ onNavigate }: { onNavigate: (i: number) => void }) {
                         transition={{ delay: 0.5, duration: 0.8 }}
                         className="w-full relative z-20"
                     >
-                        <div className="inline-flex items-center gap-2 mb-4 border-l-2 border-primary pl-4">
+                        <div className="inline-flex items-center gap-2 mb-6 glass-card pl-4 pr-5 py-2 rounded-full">
                             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" aria-hidden="true"></span>
                             <span className="font-mono text-[10px] md:text-xs font-bold tracking-widest text-gray-500">AVAILABLE FOR HIGH-SCALE MISSIONS</span>
                         </div>
 
                         <h1 className="text-5xl sm:text-6xl md:text-8xl font-display font-bold leading-[0.9] tracking-tighter mb-6 text-black text-left">
                             <GlitchText text="DEVOPS" as="span" /> <br />
-                            <span className="text-primary">
+                            <span className="gradient-text">
                                 <GlitchText text="ARCHITECT" as="span" />
                             </span>
                         </h1>
@@ -366,7 +385,7 @@ function HeroSection({ onNavigate }: { onNavigate: (i: number) => void }) {
                 </div>
             </div>
 
-            <div className="relative z-20 w-full bg-white/50 backdrop-blur-md border-t border-gray-200">
+            <div className="relative z-20 w-full glass border-t border-white/30">
                 <StatsSection />
             </div>
 
@@ -377,7 +396,7 @@ function HeroSection({ onNavigate }: { onNavigate: (i: number) => void }) {
 
 function SkillsWrapper() {
     return (
-        <div className="h-full w-full overflow-y-auto flex items-center bg-bg scrollable-content py-20 md:py-0">
+        <div className="h-full w-full overflow-y-auto flex items-center bg-[#0a0a0a] scrollable-content py-20 md:py-0">
             <div className="w-full">
                 <SkillsMatrix />
             </div>
@@ -417,7 +436,7 @@ function ProjectsSection() {
 
 function ServicesWrapper() {
     return (
-        <div className="h-full w-full overflow-y-auto bg-white flex flex-col scrollable-content">
+        <div className="h-full w-full overflow-y-auto flex flex-col scrollable-content mesh-gradient">
             <div className="w-full pt-20 pb-10 flex-grow">
                 <ServicesSection />
             </div>
@@ -433,7 +452,7 @@ function ServicesWrapper() {
 function NavRail({ current, total, onChange }: { current: number, total: number, onChange: (i: number) => void }) {
     const { playHover } = useAudioFeedback();
     return (
-        <nav className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-4 items-center" aria-label="Main Navigation">
+        <nav className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-3 items-center glass rounded-2xl p-3 shadow-lg" aria-label="Main Navigation">
             {SECTIONS.map((section, idx) => (
                 <button
                     key={section.id}
@@ -441,17 +460,17 @@ function NavRail({ current, total, onChange }: { current: number, total: number,
                     onMouseEnter={playHover}
                     aria-label={`Go to ${section.title} section`}
                     aria-current={current === idx ? 'page' : undefined}
-                    className="group flex items-center gap-4 relative py-2 w-8 justify-center"
+                    className="group flex items-center gap-4 relative py-1.5 w-8 justify-center"
                 >
-                    <span className={`absolute right-8 font-mono text-[10px] font-bold tracking-widest transition-all duration-300 whitespace-nowrap ${current === idx ? 'opacity-100 text-black translate-x-0' : 'opacity-0 text-gray-400 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0'}`}>
+                    <span className={`absolute right-10 font-mono text-[10px] font-bold tracking-widest transition-all duration-300 whitespace-nowrap px-2 py-1 rounded-md ${current === idx ? 'opacity-100 text-primary translate-x-0 bg-primary/10' : 'opacity-0 text-gray-400 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0'}`}>
                         {section.title}
                     </span>
-                    <div className={`w-1 transition-all duration-500 rounded-full ${current === idx ? 'h-8 bg-primary' : 'h-1.5 bg-gray-300 group-hover:bg-gray-400'}`}></div>
+                    <div className={`transition-all duration-500 rounded-full ${current === idx ? 'w-2 h-8 bg-primary shadow-[0_0_12px_rgba(255,94,0,0.4)]' : 'w-1.5 h-1.5 bg-gray-300 group-hover:bg-primary/50 group-hover:scale-125'}`}></div>
                 </button>
             ))}
-            <div className="w-[1px] h-20 bg-gray-200 my-2"></div>
-            <div className="font-mono text-[10px] text-gray-400 rotate-90 whitespace-nowrap tracking-widest origin-center translate-y-8">
-                0{current + 1} / 0{total}
+            <div className="w-[1px] h-6 bg-gray-200/50 my-1"></div>
+            <div className="font-mono text-[9px] text-gray-400 font-bold tracking-wider">
+                {String(current + 1).padStart(2, '0')}/{String(total).padStart(2, '0')}
             </div>
         </nav>
     );

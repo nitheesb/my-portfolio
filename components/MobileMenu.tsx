@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Home, Cpu, FileText, Wrench } from 'lucide-react';
+import { X, Home, Cpu, FileText, Wrench, Radio } from 'lucide-react';
 
 interface MobileMenuProps {
     isOpen: boolean;
@@ -14,6 +14,7 @@ const MENU_ITEMS = [
     { id: 1, label: 'SYSTEMS', icon: Cpu },
     { id: 2, label: 'LOGS', icon: FileText },
     { id: 3, label: 'CORE', icon: Wrench },
+    { id: 4, label: 'SIGNAL', icon: Radio },
 ];
 
 const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, currentSection, onNavigate }) => {

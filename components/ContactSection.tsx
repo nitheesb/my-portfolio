@@ -70,7 +70,7 @@ const ContactSection: React.FC = () => {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                    className="bg-black border border-primary/20 rounded-lg overflow-hidden shadow-2xl relative"
+                    className="bg-black border border-primary/15 rounded-xl overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.3)] relative"
                 >
                     {/* Console Header */}
                     <div className="bg-gray-900 px-4 py-2 border-b border-white/5 flex items-center justify-between">

@@ -11,7 +11,7 @@ interface GlitchButtonProps {
 
 const GlitchButton: React.FC<GlitchButtonProps> = ({ text, href, onClick, className = "", icon }) => {
   const content = (
-    <div className={`relative group inline-block font-mono font-bold text-lg bg-primary text-black px-8 py-4 overflow-hidden ${className}`}>
+    <div className={`relative group inline-block font-mono font-bold text-lg bg-primary text-black px-8 py-4 overflow-hidden rounded-xl shadow-[0_4px_20px_rgba(255,94,0,0.25)] hover:shadow-[0_8px_40px_rgba(255,94,0,0.4)] hover:-translate-y-0.5 transition-all duration-300 ${className}`}>
       <span className="relative z-10 flex items-center gap-2 group-hover:text-white transition-colors duration-200">
         {icon}
         {text}

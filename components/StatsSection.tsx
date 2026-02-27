@@ -35,7 +35,7 @@ const StatsSection: React.FC<StatsSectionProps> = ({ dark = false }) => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.5 + (i * 0.1) }}
-                      className={`relative pl-4 border-l-2 ${stat.border} flex flex-col justify-center`}
+                      className={`relative pl-4 border-l-2 ${stat.border} flex flex-col justify-center py-2 rounded-r-lg hover:bg-black/[0.02] transition-colors`}
                   >
                       <span className={`block text-2xl md:text-3xl font-bold font-display ${stat.color} mb-0.5`}>{stat.val}</span>
                       <span className="text-[9px] md:text-[10px] font-mono text-gray-500 block tracking-widest uppercase font-semibold">{stat.label}</span>

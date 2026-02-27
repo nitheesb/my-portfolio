@@ -64,7 +64,7 @@ const HeroIdentity: React.FC = () => {
             transformStyle: "preserve-3d",
         }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative bg-white border border-gray-200 shadow-2xl overflow-hidden max-w-full transform-gpu cursor-none md:cursor-auto"
+        className="relative bg-white/90 backdrop-blur-sm border border-gray-200/80 shadow-[0_20px_60px_rgba(0,0,0,0.1)] rounded-2xl overflow-hidden max-w-full transform-gpu cursor-none md:cursor-auto"
         aria-label="Identity Card of Nithees Balaji Mohan"
       >
         <motion.div 
@@ -72,7 +72,7 @@ const HeroIdentity: React.FC = () => {
             style={{ background: glareBackground }}
         />
 
-        <div className="bg-[#f4f4f5] border-b border-gray-200 px-4 py-2 md:px-6 md:py-3 flex justify-between items-center relative z-10">
+        <div className="bg-gray-50/80 border-b border-gray-200/50 px-4 py-2.5 md:px-6 md:py-3 flex justify-between items-center relative z-10">
             <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
                 <div className="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
@@ -130,7 +130,7 @@ const HeroIdentity: React.FC = () => {
                     <SocialBtn icon={Github} href="https://github.com/nitheesb" title="View Github Profile" onClick={playClick} />
                     <SocialBtn icon={Linkedin} href="https://www.linkedin.com/in/nithees-balaji" title="Connect on LinkedIn" onClick={playClick} />
                     <div className="flex-1 flex items-center justify-end">
-                        <div className="w-14 md:w-16 h-8 bg-black flex items-center justify-center">
+                        <div className="w-14 md:w-16 h-8 bg-gradient-to-r from-primary to-primaryLight rounded-lg flex items-center justify-center">
                             <span className="text-white font-display font-bold text-xs tracking-widest">NBM.IO</span>
                         </div>
                     </div>
@@ -160,7 +160,7 @@ const SocialBtn = ({ icon: Icon, href, title, onClick }: { icon: any, href: stri
         aria-label={title}
         rel="noopener noreferrer"
         onClick={onClick}
-        className="w-8 h-8 flex items-center justify-center text-black border border-black hover:bg-black hover:text-white transition-all duration-300"
+        className="w-8 h-8 flex items-center justify-center text-gray-600 border border-gray-200 rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-all duration-300"
     >
         <Icon size={14} aria-hidden="true" />
     </a>
