@@ -276,7 +276,7 @@ const SectionPanel = ({ index, total, scrollY, Component, onNavigate, bg }: { in
     const clipInset = useTransform(openProgress, (v) => {
         if (index === 0) return 'inset(0% 0 0% 0)';
         const progress = Math.max(0, Math.min(1, v));
-        const gap = 40 * (1 - progress);
+        const gap = 50 * (1 - progress);
         return `inset(${gap}% 0 ${gap}% 0)`;
     });
 
