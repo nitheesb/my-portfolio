@@ -433,7 +433,7 @@ function AboutSection() {
           <div>
             <ScrollRevealText
               text="I architect cloud systems that scale. With over 9 years of experience across AWS, GCP, and Kubernetes, I specialize in transforming brittle infrastructure into resilient, self-healing platforms. My approach combines immutable infrastructure principles with shift-left security and deep observability."
-              className="font-display text-2xl md:text-4xl font-bold text-white leading-snug tracking-tight"
+              className="font-display text-lg md:text-xl font-semibold text-white leading-relaxed tracking-tight"
             />
           </div>
 
@@ -717,7 +717,7 @@ function ServicesSection() {
           </p>
         </MotionDiv>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
           {SERVICES.map((service, i) => (
             <MotionDiv
               key={service.id}
