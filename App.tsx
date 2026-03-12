@@ -181,6 +181,57 @@ function FloatingShapes() {
 }
 
 // ═══════════════════════════════════════════════════════════
+// PAGE SECTION — Full-page snap with entrance animations
+// ═══════════════════════════════════════════════════════════
+function PageSection({ children, id, animation = 'fade', className = '' }: {
+  children: React.ReactNode;
+  id?: string;
+  animation?: 'fade' | 'scale' | 'clip' | 'slide' | 'zoom';
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
+
+  const variants: Record<string, { hidden: any; visible: any }> = {
+    fade: {
+      hidden: { opacity: 0, y: 80 },
+      visible: { opacity: 1, y: 0 },
+    },
+    scale: {
+      hidden: { opacity: 0, scale: 0.88 },
+      visible: { opacity: 1, scale: 1 },
+    },
+    clip: {
+      hidden: { clipPath: 'inset(8% 8% 8% 8% round 24px)', opacity: 0.3 },
+      visible: { clipPath: 'inset(0% 0% 0% 0% round 0px)', opacity: 1 },
+    },
+    slide: {
+      hidden: { opacity: 0, x: -60, skewX: 2 },
+      visible: { opacity: 1, x: 0, skewX: 0 },
+    },
+    zoom: {
+      hidden: { opacity: 0, scale: 1.15 },
+      visible: { opacity: 1, scale: 1 },
+    },
+  };
+
+  const v = variants[animation];
+
+  return (
+    <div ref={ref} id={id} className={`min-h-screen snap-start snap-always relative ${className}`}>
+      <MotionDiv
+        initial={v.hidden}
+        animate={isInView ? v.visible : v.hidden}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full"
+      >
+        {children}
+      </MotionDiv>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
 // LOADER
 // ═══════════════════════════════════════════════════════════
 function Loader({ onComplete }: { onComplete: () => void }) {
@@ -304,7 +355,7 @@ function HeroSection() {
   const { playClick } = useAudioFeedback();
 
   return (
-    <section id="hero" ref={ref} className="relative min-h-screen flex items-center overflow-hidden">
+    <section id="hero" ref={ref} className="relative min-h-screen flex items-center overflow-hidden snap-start snap-always">
       <motion.div className="absolute inset-0 grid-bg opacity-30" style={{ y: bgY }} />
       <motion.div className="absolute top-[10%] right-[-5%] w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full opacity-15 blur-[120px]"
         style={{ y: bgY, background: 'radial-gradient(circle, #ff5e00, #ff8c4240, transparent)' }}
@@ -411,7 +462,7 @@ function AboutSection() {
   ];
 
   return (
-    <section id="about" ref={sectionRef} className="py-20 md:py-32 relative">
+    <section ref={sectionRef} className="py-20 md:py-32 relative">
       <motion.div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-[0.03] blur-[100px] pointer-events-none"
         style={{ y: bgY, background: 'radial-gradient(circle, #ff5e00, transparent)' }} />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
@@ -485,7 +536,7 @@ function ExperienceSection() {
   const bgY = useTransform(scrollYProgress, [0, 1], [60, -60]);
 
   return (
-    <section id="experience" ref={sectionRef} className="py-20 md:py-32 relative">
+    <section ref={sectionRef} className="py-20 md:py-32 relative">
       <motion.div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full opacity-[0.02] blur-[80px] pointer-events-none"
         style={{ y: bgY, background: 'radial-gradient(circle, #ff5e00, transparent)' }} />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
@@ -557,7 +608,7 @@ function SkillsSection() {
   const bgY = useTransform(scrollYProgress, [0, 1], [40, -40]);
 
   return (
-    <section id="skills" ref={sectionRef} className="py-20 md:py-32 relative">
+    <section ref={sectionRef} className="py-20 md:py-32 relative">
       <motion.div className="absolute inset-0 dot-grid opacity-20 pointer-events-none" style={{ y: bgY }} />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <SectionHeading num="03" title="Skill" highlight="Matrix"
@@ -616,7 +667,7 @@ function ServicesSection() {
   const bgY = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
   return (
-    <section id="services" ref={sectionRef} className="py-20 md:py-32 relative overflow-hidden">
+    <section ref={sectionRef} className="py-20 md:py-32 relative overflow-hidden">
       <motion.div className="absolute bottom-0 right-[-10%] w-[500px] h-[500px] rounded-full opacity-[0.02] blur-[80px] pointer-events-none"
         style={{ y: bgY, background: 'radial-gradient(circle, #ff5e00, transparent)' }} />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
@@ -662,7 +713,7 @@ function ContactSection() {
   const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); playClick(); setStatus('sending'); setTimeout(() => setStatus('sent'), 2500); };
 
   return (
-    <section id="contact" className="py-20 md:py-32 relative">
+    <section className="py-20 md:py-32 relative">
       <div className="absolute inset-0 grid-bg opacity-15 pointer-events-none" />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <SectionHeading num="05" title="Let's Build" highlight="Together" />
@@ -810,19 +861,24 @@ function App() {
             <Navbar />
             <main>
               <HeroSection />
-              <TechMarquee />
-              <SectionDivider />
-              <AboutSection />
-              <SectionDivider />
-              <ExperienceSection />
-              <SectionDivider />
-              <SkillsSection />
-              <SectionDivider />
-              <ServicesSection />
-              <SectionDivider />
-              <ContactSection />
+              <PageSection id="about" animation="clip">
+                <TechMarquee />
+                <AboutSection />
+              </PageSection>
+              <PageSection id="experience" animation="scale">
+                <ExperienceSection />
+              </PageSection>
+              <PageSection id="skills" animation="fade">
+                <SkillsSection />
+              </PageSection>
+              <PageSection id="services" animation="slide">
+                <ServicesSection />
+              </PageSection>
+              <PageSection id="contact" animation="zoom">
+                <ContactSection />
+                <Footer />
+              </PageSection>
             </main>
-            <Footer />
             <motion.button initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.8, ease }}
               onClick={() => { playClick(); setIsTerminalOpen(true); }} aria-label="Open Command Terminal"
               className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[60] w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-surface border border-white/[0.06] flex items-center justify-center text-primary hover:bg-primary hover:text-black hover:shadow-[0_0_30px_rgba(255,94,0,0.3)] transition-all duration-300 group">

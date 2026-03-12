@@ -172,7 +172,7 @@
 
     html {
       scroll-behavior: smooth;
-      scroll-padding-top: 80px;
+      scroll-snap-type: y mandatory;
       scrollbar-width: thin;
       scrollbar-color: rgba(255,94,0,0.3) transparent;
     }
@@ -188,7 +188,7 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    body { overflow-x: hidden; }
+    body { overflow-x: clip; }
 
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
