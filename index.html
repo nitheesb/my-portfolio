@@ -103,9 +103,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&family=Rajdhani:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
@@ -113,45 +111,36 @@
           colors: {
             primary: '#ff5e00',
             primaryLight: '#ff8c42',
-            secondary: '#1a1a1a',
-            bg: '#f4f4f5',
-            darkBg: '#09090b',
-            darkSurface: '#111111',
-            surface: '#ffffff',
-            border: 'rgba(0, 0, 0, 0.1)',
+            secondary: '#fafafa',
+            bg: '#060606',
+            surface: '#0f0f11',
+            surfaceLight: '#161618',
+            border: 'rgba(255, 255, 255, 0.06)',
           },
           fontFamily: {
+            sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace'],
-            display: ['"Rajdhani"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
           },
           animation: {
-            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'marquee': 'marquee 25s linear infinite',
-            'glitch': 'glitch 1s linear infinite',
-            'scan-once': 'scan 0.8s ease-in-out forwards',
-            'float': 'float 6s ease-in-out infinite',
+            'marquee': 'marquee 30s linear infinite',
+            'marquee-reverse': 'marquee-reverse 30s linear infinite',
             'shimmer': 'shimmer 3s linear infinite',
             'gradient': 'gradient-shift 15s ease infinite',
             'glow': 'glow-pulse 3s ease-in-out infinite',
-            'spin-slow': 'spin 6s linear infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'spin-slow': 'spin 20s linear infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'border-glow': 'border-glow 3s ease-in-out infinite',
           },
           keyframes: {
             marquee: {
               '0%': { transform: 'translateX(0%)' },
-              '100%': { transform: 'translateX(-100%)' },
+              '100%': { transform: 'translateX(-50%)' },
             },
-            glitch: {
-              '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
-              '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
-              '62%': { transform: 'translate(0,0) skew(5deg)' },
-            },
-            scan: {
-              '0%': { transform: 'translateX(-100%)' },
-              '100%': { transform: 'translateX(100%)' },
-            },
-            float: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-8px)' },
+            'marquee-reverse': {
+              '0%': { transform: 'translateX(-50%)' },
+              '100%': { transform: 'translateX(0%)' },
             },
             shimmer: {
               '0%': { backgroundPosition: '-200% 0' },
@@ -162,8 +151,16 @@
               '50%': { backgroundPosition: '100% 50%' },
             },
             'glow-pulse': {
-              '0%, 100%': { boxShadow: '0 0 20px rgba(255, 94, 0, 0.15)' },
-              '50%': { boxShadow: '0 0 40px rgba(255, 94, 0, 0.35)' },
+              '0%, 100%': { boxShadow: '0 0 20px rgba(255, 94, 0, 0.1)' },
+              '50%': { boxShadow: '0 0 60px rgba(255, 94, 0, 0.25)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            'border-glow': {
+              '0%, 100%': { borderColor: 'rgba(255, 94, 0, 0.1)' },
+              '50%': { borderColor: 'rgba(255, 94, 0, 0.4)' },
             },
           }
         }
@@ -171,65 +168,44 @@
     }
   </script>
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,94,0,0.3) transparent;
+    }
+
     body, html {
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #f4f4f5;
-      color: #171717;
+      min-height: 100%;
+      background-color: #060606;
+      color: #fafafa;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
+    body { overflow-x: hidden; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,94,0,0.3); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,94,0,0.5); }
+
     .noise-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       pointer-events: none;
       z-index: 9999;
-      opacity: 0.03;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    }
-
-    ::-webkit-scrollbar { width: 0px; background: transparent; }
-
-    .hacker-mode { filter: invert(1) hue-rotate(180deg); }
-    .hacker-mode img, .hacker-mode .no-invert { filter: invert(1) hue-rotate(180deg); }
-
-    .clip-left { clip-path: inset(0 50% 0 0); }
-    .clip-right { clip-path: inset(0 0 0 50%); }
-
-    /* ═══════════════════════════════════════════════════
-       GLASS MORPHISM
-       ═══════════════════════════════════════════════════ */
-    .glass {
-      background: rgba(255, 255, 255, 0.65);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-    }
-
-    .glass-dark {
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .glass-card {
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(16px) saturate(160%);
-      -webkit-backdrop-filter: blur(16px) saturate(160%);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
     /* ═══════════════════════════════════════════════════
-       GRADIENT UTILITIES
+       GRADIENT & TEXT
        ═══════════════════════════════════════════════════ */
     .gradient-text {
       background: linear-gradient(135deg, #ff5e00 0%, #ff8c42 50%, #ffb347 100%);
@@ -238,88 +214,126 @@
       background-clip: text;
     }
 
-    .bg-gradient-radial {
-      background: radial-gradient(circle, var(--tw-gradient-from), var(--tw-gradient-to, transparent));
+    .text-glow {
+      text-shadow: 0 0 40px rgba(255, 94, 0, 0.3), 0 0 80px rgba(255, 94, 0, 0.1);
     }
 
     /* ═══════════════════════════════════════════════════
-       ANIMATED BACKGROUNDS
+       CARD SYSTEM
        ═══════════════════════════════════════════════════ */
-    .mesh-gradient {
-      background: linear-gradient(-45deg, #f8f9fa, #fff5ee, #f0f4ff, #fef5f0);
-      background-size: 400% 400%;
-      animation: gradient-shift 15s ease infinite;
+    .card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .card:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 94, 0, 0.15);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 94, 0, 0.05);
+      transform: translateY(-4px);
     }
 
-    .mesh-gradient-dark {
-      background: linear-gradient(-45deg, #0a0a0a, #1a0800, #0a0a15, #0a0a0a);
-      background-size: 400% 400%;
-      animation: gradient-shift 20s ease infinite;
+    .card-static {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+    }
+
+    .glass-surface {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       GRID & BACKGROUNDS
+       ═══════════════════════════════════════════════════ */
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
     }
 
     .dot-grid {
-      background-image: radial-gradient(rgba(0,0,0,0.07) 1px, transparent 1px);
-      background-size: 20px 20px;
-    }
-
-    .dot-grid-dark {
-      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 20px 20px;
+      background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 24px 24px;
     }
 
     /* ═══════════════════════════════════════════════════
-       CARD & HOVER EFFECTS
+       BUTTONS
        ═══════════════════════════════════════════════════ */
-    .hover-lift {
-      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
-    }
-    .hover-lift:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-    }
-
-    .hover-glow:hover {
-      box-shadow: 0 0 30px rgba(255, 94, 0, 0.12), 0 8px 30px rgba(0, 0, 0, 0.06);
-    }
-
-    /* ═══════════════════════════════════════════════════
-       BUTTON EFFECTS
-       ═══════════════════════════════════════════════════ */
-    .btn-shimmer {
+    .btn-primary {
       position: relative;
       overflow: hidden;
+      background: linear-gradient(135deg, #ff5e00, #ff8c42);
+      color: #000;
+      font-weight: 700;
+      border: none;
+      transition: all 0.3s ease;
     }
-    .btn-shimmer::after {
+    .btn-primary:hover {
+      box-shadow: 0 0 30px rgba(255, 94, 0, 0.4), 0 8px 30px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+    .btn-primary::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
       animation: shimmer 3s infinite;
     }
 
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fafafa;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-ghost:hover {
+      border-color: #ff5e00;
+      color: #ff5e00;
+      box-shadow: 0 0 20px rgba(255, 94, 0, 0.1);
+    }
+
     /* ═══════════════════════════════════════════════════
-       MOBILE STYLES
+       MARQUEE
        ═══════════════════════════════════════════════════ */
-    .mobile-scroll-container {
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-    }
-    .mobile-scroll-container::-webkit-scrollbar { display: none; }
+    .marquee-track { display: flex; width: max-content; }
 
-    .mobile-hide-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    /* ═══════════════════════════════════════════════════
+       SKILL BAR
+       ═══════════════════════════════════════════════════ */
+    .skill-bar-bg {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 4px;
+      overflow: hidden;
     }
-    .mobile-hide-scrollbar::-webkit-scrollbar { display: none; }
+    .skill-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #ff5e00, #ff8c42);
+      box-shadow: 0 0 12px rgba(255, 94, 0, 0.3);
+    }
 
+    /* ═══════════════════════════════════════════════════
+       SCROLLBAR HIDE
+       ═══════════════════════════════════════════════════ */
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+    /* ═══════════════════════════════════════════════════
+       SAFE AREAS & MOBILE
+       ═══════════════════════════════════════════════════ */
     .safe-area-top { padding-top: env(safe-area-inset-top); }
     .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
 
     /* ═══════════════════════════════════════════════════
-       ACCESSIBILITY & SELECTION
+       ACCESSIBLE FOCUS
        ═══════════════════════════════════════════════════ */
     *:focus-visible {
       outline: 2px solid #ff5e00;
@@ -328,12 +342,19 @@
     }
 
     ::selection {
-      background: rgba(255, 94, 0, 0.2);
-      color: inherit;
+      background: rgba(255, 94, 0, 0.25);
+      color: #fafafa;
     }
 
-    @media (prefers-reduced-motion: no-preference) {
-      .mobile-scroll-container { scroll-behavior: smooth; }
+    /* ═══════════════════════════════════════════════════
+       HORIZONTAL SCROLL SECTION 
+       ═══════════════════════════════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
   <script type="importmap">

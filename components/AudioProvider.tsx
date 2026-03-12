@@ -60,7 +60,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
             {children}
 
             {/* Mute Toggle Button */}
-            <div className="fixed top-6 right-6 md:top-8 md:right-24 z-[100] flex items-center gap-3">
+            <div className="fixed top-[72px] right-6 md:top-[88px] md:right-8 z-[100] flex items-center gap-3">
                 {isMuted && (
                     <span className="hidden md:block font-mono text-[10px] font-bold tracking-widest text-primary/70 animate-pulse">
                         TURN ON FOR SFX
