@@ -218,11 +218,11 @@ function PageSection({ children, id, animation = 'fade', className = '' }: {
   const v = variants[animation];
 
   return (
-    <div ref={ref} id={id} className={`min-h-screen snap-start snap-always relative ${className}`}>
+    <div ref={ref} id={id} className={`min-h-screen relative ${className}`}>
       <MotionDiv
         initial={v.hidden}
         animate={isInView ? v.visible : v.hidden}
-        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         className="w-full"
       >
         {children}
@@ -355,7 +355,7 @@ function HeroSection() {
   const { playClick } = useAudioFeedback();
 
   return (
-    <section id="hero" ref={ref} className="relative min-h-screen flex items-center overflow-hidden snap-start snap-always">
+    <section id="hero" ref={ref} className="relative min-h-screen flex items-center overflow-hidden">
       <motion.div className="absolute inset-0 grid-bg opacity-30" style={{ y: bgY }} />
       <motion.div className="absolute top-[10%] right-[-5%] w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full opacity-15 blur-[120px]"
         style={{ y: bgY, background: 'radial-gradient(circle, #ff5e00, #ff8c4240, transparent)' }}
@@ -368,44 +368,118 @@ function HeroSection() {
       <FloatingShapes />
 
       <motion.div style={{ y, opacity, scale }} className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pt-28 pb-16 md:pt-36 md:pb-28">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6, ease }} className="mb-6 md:mb-8">
-          <div className="inline-flex items-center gap-2.5 card-static px-4 py-2 rounded-full">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse-slow shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-            <span className="font-mono text-[10px] md:text-xs text-white/40 font-medium tracking-[0.15em]">AVAILABLE FOR HIGH-SCALE MISSIONS</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+          {/* Left — Text Content */}
+          <div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6, ease }} className="mb-6 md:mb-8">
+              <div className="inline-flex items-center gap-2.5 card-static px-4 py-2 rounded-full">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse-slow shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
+                <span className="font-mono text-[10px] md:text-xs text-white/40 font-medium tracking-[0.15em]">AVAILABLE FOR HIGH-SCALE MISSIONS</span>
+              </div>
+            </motion.div>
+
+            <div className="mb-5 md:mb-7 overflow-hidden">
+              <h1 className="font-display text-[clamp(2.8rem,8vw,6rem)] font-bold leading-[0.9] tracking-tight text-white">
+                <AnimChars text="NITHEES" delay={0.3} stagger={0.03} /><br />
+                <AnimChars text="BALAJI" delay={0.5} stagger={0.03} className="gradient-text" /><br />
+                <AnimChars text="MOHAN" delay={0.7} stagger={0.03} />
+              </h1>
+            </div>
+
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 0.5, ease }} className="mb-8 md:mb-10">
+              <p className="text-base md:text-lg text-white/50 max-w-xl leading-relaxed">
+                Senior DevOps Architect — I build self-healing infrastructure and transform chaotic systems
+                into scalable, cost-effective engines using{' '}
+                <span className="text-primary font-semibold">Kubernetes</span> &amp;{' '}
+                <span className="text-primary font-semibold">Terraform</span>.
+              </p>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.0, duration: 0.5, ease }} className="flex flex-wrap gap-4">
+              <MagneticWrap>
+                <a href="#experience" onClick={playClick} className="btn-primary font-mono text-xs md:text-sm px-7 py-3.5 rounded-full flex items-center gap-2.5 tracking-wider">
+                  VIEW WORK <ArrowRight size={14} />
+                </a>
+              </MagneticWrap>
+              <MagneticWrap>
+                <a href="https://drive.google.com/file/d/1oU43XtO0xSjEs0uk-5vBNXsn5FRsXbI_/view?usp=sharing"
+                  target="_blank" rel="noopener noreferrer"
+                  className="btn-ghost font-mono text-xs md:text-sm px-7 py-3.5 rounded-full flex items-center gap-2.5 tracking-wider">
+                  <Download size={14} /> GET RESUME
+                </a>
+              </MagneticWrap>
+            </motion.div>
           </div>
-        </motion.div>
 
-        <div className="mb-5 md:mb-7 overflow-hidden">
-          <h1 className="font-display text-[clamp(2.8rem,9vw,7.5rem)] font-bold leading-[0.9] tracking-tight text-white">
-            <AnimChars text="NITHEES" delay={0.3} stagger={0.03} /><br />
-            <AnimChars text="BALAJI" delay={0.5} stagger={0.03} className="gradient-text" /><br />
-            <AnimChars text="MOHAN" delay={0.7} stagger={0.03} />
-          </h1>
+          {/* Right — Profile Visual */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85, rotateY: -15 }}
+            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+            transition={{ delay: 0.6, duration: 1.2, ease }}
+            className="hidden md:flex items-center justify-center relative"
+          >
+            {/* Orbiting ring */}
+            <motion.div className="absolute w-[340px] h-[340px] rounded-full border border-primary/[0.08]"
+              animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}>
+              <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-primary/30 shadow-[0_0_12px_rgba(255,94,0,0.4)]" />
+            </motion.div>
+            <motion.div className="absolute w-[420px] h-[420px] rounded-full border border-white/[0.03]"
+              animate={{ rotate: -360 }} transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}>
+              <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-white/10" />
+              <div className="absolute bottom-8 left-6 w-1.5 h-1.5 rounded-full bg-primary/20" />
+            </motion.div>
+
+            {/* Photo container */}
+            <div className="relative w-64 h-64 lg:w-72 lg:h-72">
+              {/* Glow behind photo */}
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/20 via-primary/5 to-transparent blur-2xl scale-110" />
+              {/* Geometric frame */}
+              <motion.div
+                className="absolute -inset-3 rounded-3xl border border-primary/15"
+                animate={{ rotate: [0, 1, -1, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <motion.div
+                className="absolute -inset-6 rounded-3xl border border-white/[0.04]"
+                animate={{ rotate: [0, -0.5, 0.5, 0] }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              {/* Photo */}
+              <div className="relative w-full h-full rounded-3xl overflow-hidden border-2 border-white/[0.08] shadow-2xl shadow-primary/10">
+                <img
+                  src="https://i.ibb.co/mCwSdtvZ/profile.png"
+                  alt="Nithees Balaji Mohan"
+                  className="w-full h-full object-cover object-top"
+                />
+                {/* Scanline overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bg/60" />
+                <motion.div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)' }} />
+              </div>
+
+              {/* Floating status badges */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.2, duration: 0.6, ease }}
+                className="absolute -right-4 top-8 card-static px-3 py-2 rounded-xl backdrop-blur-md"
+              >
+                <div className="flex items-center gap-2">
+                  <Shield size={12} className="text-primary" />
+                  <span className="font-mono text-[9px] text-white/60 tracking-wider">9+ YRS EXP</span>
+                </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.4, duration: 0.6, ease }}
+                className="absolute -left-4 bottom-12 card-static px-3 py-2 rounded-xl backdrop-blur-md"
+              >
+                <div className="flex items-center gap-2">
+                  <Cpu size={12} className="text-primary" />
+                  <span className="font-mono text-[9px] text-white/60 tracking-wider">K8s EXPERT</span>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
         </div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 0.5, ease }} className="mb-8 md:mb-10">
-          <p className="text-base md:text-lg text-white/50 max-w-xl leading-relaxed">
-            Senior DevOps Architect — I build self-healing infrastructure and transform chaotic systems
-            into scalable, cost-effective engines using{' '}
-            <span className="text-primary font-semibold">Kubernetes</span> &amp;{' '}
-            <span className="text-primary font-semibold">Terraform</span>.
-          </p>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.0, duration: 0.5, ease }} className="flex flex-wrap gap-4">
-          <MagneticWrap>
-            <a href="#experience" onClick={playClick} className="btn-primary font-mono text-xs md:text-sm px-7 py-3.5 rounded-full flex items-center gap-2.5 tracking-wider">
-              VIEW WORK <ArrowRight size={14} />
-            </a>
-          </MagneticWrap>
-          <MagneticWrap>
-            <a href="https://drive.google.com/file/d/1oU43XtO0xSjEs0uk-5vBNXsn5FRsXbI_/view?usp=sharing"
-              target="_blank" rel="noopener noreferrer"
-              className="btn-ghost font-mono text-xs md:text-sm px-7 py-3.5 rounded-full flex items-center gap-2.5 tracking-wider">
-              <Download size={14} /> GET RESUME
-            </a>
-          </MagneticWrap>
-        </motion.div>
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2, duration: 0.8 }}
           className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
