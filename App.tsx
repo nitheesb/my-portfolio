@@ -159,64 +159,32 @@ function SectionDivider() {
 // UTILITY: Floating background shapes
 // ═══════════════════════════════════════════════════════════
 function FloatingShapes() {
-  const particles = Array.from({ length: 30 }, (_, i) => ({
-    id: i,
-    left: `${3 + (i * 47 + 13) % 94}%`,
-    top: `${3 + (i * 31 + 7) % 90}%`,
-    size: 2 + (i % 5) * 1.2,
-    duration: 3 + (i % 5) * 1.5,
-    delay: (i % 7) * 0.4,
-  }));
-
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-      {/* Drifting grid lines */}
-      <motion.div className="absolute top-[18%] left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/15 to-transparent"
-        animate={{ x: [-100, 100, -100] }}
-        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute top-[45%] left-0 w-full h-px bg-gradient-to-r from-transparent via-secondary/[0.06] to-transparent"
-        animate={{ x: [80, -80, 80] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute top-[75%] left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/10 to-transparent"
-        animate={{ x: [-50, 50, -50] }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }} />
+      {/* CSS-animated grid lines — no JS overhead */}
+      <div className="absolute top-[18%] left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/15 to-transparent animate-[drift_16s_ease-in-out_infinite]" />
+      <div className="absolute top-[50%] left-0 w-full h-px bg-gradient-to-r from-transparent via-secondary/[0.06] to-transparent animate-[drift-reverse_20s_ease-in-out_infinite]" />
 
-      {/* Geometric shapes */}
-      <motion.div className="absolute top-[15%] right-[12%] w-20 h-20 border border-primary/15 rotate-45 rounded-sm"
-        animate={{ y: [-12, 12, -12], rotate: [45, 50, 45] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute top-[10%] left-[15%] w-14 h-14 border border-primary/10 rounded-full"
-        animate={{ scale: [1, 1.4, 1], opacity: [0.1, 0.25, 0.1] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute top-[60%] left-[8%] w-20 h-20 border border-primary/[0.08] rounded-full"
-        animate={{ y: [0, 15, 0], x: [0, 8, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute bottom-[20%] right-[18%] w-28 h-28 border border-secondary/[0.06] rotate-12 rounded-lg"
-        animate={{ rotate: [12, 18, 12], y: [0, -10, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute top-[35%] right-[35%] w-10 h-10 border border-primary/10 rounded-md rotate-[30deg]"
-        animate={{ rotate: [30, 40, 30], scale: [1, 1.1, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} />
+      {/* Static geometric accents */}
+      <div className="absolute top-[15%] right-[12%] w-20 h-20 border border-primary/10 rotate-45 rounded-sm animate-[float_10s_ease-in-out_infinite]" />
+      <div className="absolute top-[10%] left-[15%] w-14 h-14 border border-primary/[0.08] rounded-full animate-[pulse-slow_6s_ease-in-out_infinite]" />
+      <div className="absolute top-[60%] left-[8%] w-16 h-16 border border-primary/[0.06] rounded-full animate-[float_12s_ease-in-out_infinite_reverse]" />
+      <div className="absolute bottom-[20%] right-[18%] w-24 h-24 border border-secondary/[0.05] rotate-12 rounded-lg animate-[float_14s_ease-in-out_infinite]" />
 
-      {/* Large gradient orbs */}
-      <motion.div className="absolute top-[5%] right-[20%] w-60 h-60 rounded-full bg-primary/[0.04] blur-3xl"
-        animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute bottom-[10%] left-[10%] w-40 h-40 rounded-full bg-primary/[0.03] blur-2xl"
-        animate={{ x: [0, -15, 0], y: [0, 15, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
+      {/* Static gradient orbs — no animation, just ambient color */}
+      <div className="absolute top-[5%] right-[20%] w-60 h-60 rounded-full bg-primary/[0.04] blur-3xl" />
+      <div className="absolute bottom-[10%] left-[10%] w-40 h-40 rounded-full bg-primary/[0.03] blur-2xl" />
 
-      {/* Floating particles */}
-      {particles.map(p => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full bg-primary/40"
-          style={{ left: p.left, top: p.top, width: p.size, height: p.size }}
-          animate={{
-            y: [0, -(12 + p.size * 4), 0],
-            opacity: [0.2, 0.7, 0.2],
+      {/* CSS-only particles via pseudo-positioned dots */}
+      {Array.from({ length: 12 }, (_, i) => (
+        <div key={i}
+          className="absolute w-1.5 h-1.5 rounded-full bg-primary/30 animate-[float_infinite_ease-in-out]"
+          style={{
+            left: `${5 + (i * 47 + 13) % 90}%`,
+            top: `${5 + (i * 31 + 7) % 85}%`,
+            animationDuration: `${3 + (i % 4) * 1.5}s`,
+            animationDelay: `${(i % 5) * 0.6}s`,
           }}
-          transition={{ duration: p.duration, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}
         />
       ))}
     </div>
@@ -245,8 +213,8 @@ function PageSection({ children, id, animation = 'fade', className = '' }: {
       visible: { opacity: 1, scale: 1 },
     },
     clip: {
-      hidden: { clipPath: 'inset(8% 8% 8% 8% round 24px)', opacity: 0.3 },
-      visible: { clipPath: 'inset(0% 0% 0% 0% round 0px)', opacity: 1 },
+      hidden: { opacity: 0, y: 40 },
+      visible: { opacity: 1, y: 0 },
     },
     slide: {
       hidden: { opacity: 0, x: -60, skewX: 2 },
@@ -411,14 +379,11 @@ function HeroSection() {
   return (
     <section id="hero" ref={ref} className="relative min-h-screen flex items-center overflow-hidden">
       <motion.div className="absolute inset-0 grid-bg opacity-40" style={{ y: bgY }} />
-      <motion.div className="absolute top-[10%] right-[-5%] w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full opacity-20 blur-[120px]"
-        style={{ y: bgY, background: 'radial-gradient(circle, #ff5e00, #ff8c4240, transparent)' }}
-        animate={{ x: [0, 40, -20, 0], y: [0, -30, 20, 0], scale: [1, 1.1, 0.95, 1] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute bottom-[-15%] left-[-5%] w-[400px] h-[400px] rounded-full opacity-10 blur-[100px]"
-        style={{ background: 'radial-gradient(circle, #ff5e0060, transparent)' }}
-        animate={{ x: [0, -20, 15, 0], y: [0, 20, -15, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }} />
+      {/* Static ambient orbs — GPU composited, no JS animation */}
+      <div className="absolute top-[10%] right-[-5%] w-[500px] h-[500px] md:w-[600px] md:h-[600px] rounded-full opacity-15 blur-[80px] will-change-transform"
+        style={{ background: 'radial-gradient(circle, #ff5e00, #ff8c4240, transparent)' }} />
+      <div className="absolute bottom-[-15%] left-[-5%] w-[300px] h-[300px] rounded-full opacity-10 blur-[60px]"
+        style={{ background: 'radial-gradient(circle, #ff5e0060, transparent)' }} />
       <FloatingShapes />
 
       <motion.div style={{ y, opacity, scale }} className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pt-28 pb-16 md:pt-36 md:pb-28">
@@ -465,70 +430,113 @@ function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right — Profile Visual */}
+          {/* Right — Abstract Dashboard Visual */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.85, rotateY: -15 }}
-            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-            transition={{ delay: 0.6, duration: 1.2, ease }}
-            className="hidden md:flex items-center justify-center relative"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8, ease }}
+            className="hidden md:block relative"
           >
-            {/* Orbiting ring */}
-            <motion.div className="absolute w-[340px] h-[340px] rounded-full border border-primary/[0.08]"
-              animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}>
-              <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-primary/30 shadow-[0_0_12px_rgba(255,94,0,0.4)]" />
-            </motion.div>
-            <motion.div className="absolute w-[420px] h-[420px] rounded-full border border-black/[0.04]"
-              animate={{ rotate: -360 }} transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}>
-              <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-black/10" />
-              <div className="absolute bottom-8 left-6 w-1.5 h-1.5 rounded-full bg-primary/20" />
-            </motion.div>
+            {/* Main terminal card */}
+            <div className="relative w-full max-w-[440px] mx-auto">
+              {/* Glow behind card */}
+              <div className="absolute -inset-6 rounded-3xl bg-gradient-to-br from-primary/10 via-primary/[0.03] to-transparent blur-2xl" />
 
-            {/* Photo container */}
-            <div className="relative w-64 h-64 lg:w-72 lg:h-72">
-              {/* Glow behind photo */}
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/20 via-primary/5 to-transparent blur-2xl scale-110" />
-              {/* Geometric frame */}
-              <motion.div
-                className="absolute -inset-3 rounded-3xl border border-primary/15"
-                animate={{ rotate: [0, 1, -1, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-              />
-              <motion.div
-                className="absolute -inset-6 rounded-3xl border border-black/[0.04]"
-                animate={{ rotate: [0, -0.5, 0.5, 0] }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-              />
-              {/* Photo */}
-              <div className="relative w-full h-full rounded-3xl overflow-hidden border-2 border-black/[0.08] shadow-2xl shadow-primary/10">
-                <img
-                  src="https://i.ibb.co/mCwSdtvZ/profile.png"
-                  alt="Nithees Balaji Mohan"
-                  className="w-full h-full object-cover object-top"
-                />
-                {/* Scanline overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/60" />
-                <motion.div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)' }} />
+              <div className="relative card rounded-2xl overflow-hidden shadow-xl shadow-black/[0.04]">
+                {/* Terminal header */}
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-black/[0.05] bg-surface/50">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+                  </div>
+                  <span className="font-mono text-[9px] text-secondary/30 tracking-wider ml-2">infrastructure.status</span>
+                </div>
+
+                {/* Dashboard content */}
+                <div className="p-5 space-y-4">
+                  {/* Cluster status row */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse-slow" />
+                      <span className="font-mono text-[11px] text-secondary/70">GKE Production</span>
+                    </div>
+                    <span className="font-mono text-[10px] text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full">HEALTHY</span>
+                  </div>
+
+                  {/* Metrics grid */}
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { label: 'Uptime', value: '99.99%', color: 'text-primary' },
+                      { label: 'Pods', value: '847', color: 'text-secondary' },
+                      { label: 'Latency', value: '12ms', color: 'text-green-600' },
+                    ].map(m => (
+                      <div key={m.label} className="bg-surface/80 rounded-xl p-3 text-center">
+                        <div className={`font-display text-lg font-bold ${m.color}`}>{m.value}</div>
+                        <div className="font-mono text-[9px] text-secondary/35 tracking-wider mt-0.5">{m.label}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Mini code snippet */}
+                  <div className="bg-[#1a1a2e] rounded-xl p-4 font-mono text-[11px] leading-relaxed">
+                    <div className="text-gray-500">$ kubectl get nodes</div>
+                    <div className="mt-1.5">
+                      <span className="text-green-400">NAME</span>
+                      <span className="text-gray-500 ml-8">STATUS</span>
+                      <span className="text-gray-500 ml-6">AGE</span>
+                    </div>
+                    <div className="text-gray-300">node-pool-01{'  '}<span className="text-green-400">Ready</span>{'   '}142d</div>
+                    <div className="text-gray-300">node-pool-02{'  '}<span className="text-green-400">Ready</span>{'   '}142d</div>
+                    <div className="text-gray-300">node-pool-03{'  '}<span className="text-green-400">Ready</span>{'   '}89d</div>
+                    <motion.span
+                      className="inline-block w-1.5 h-3.5 bg-primary/80 ml-0.5"
+                      animate={{ opacity: [1, 0] }}
+                      transition={{ duration: 0.8, repeat: Infinity, ease: 'steps(2)' }}
+                    />
+                  </div>
+
+                  {/* Deploy progress bar */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="font-mono text-[10px] text-secondary/50">Deploying v2.14.0</span>
+                      <span className="font-mono text-[10px] text-primary font-bold">100%</span>
+                    </div>
+                    <div className="h-1.5 bg-black/[0.04] rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full bg-gradient-to-r from-primary to-primaryLight rounded-full"
+                        initial={{ width: '0%' }}
+                        animate={{ width: '100%' }}
+                        transition={{ delay: 1.2, duration: 2, ease: [0.22, 1, 0.36, 1] }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* Floating status badges */}
+              {/* Floating accent card — top right */}
               <motion.div
-                initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.2, duration: 0.6, ease }}
-                className="absolute -right-4 top-8 card-static px-3 py-2 rounded-xl backdrop-blur-md"
+                initial={{ opacity: 0, x: 20, y: -10 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ delay: 1.3, duration: 0.6, ease }}
+                className="absolute -right-6 -top-4 card-static px-3 py-2 rounded-xl shadow-lg shadow-black/[0.03]"
               >
                 <div className="flex items-center gap-2">
-                  <Shield size={12} className="text-primary" />
-                  <span className="font-mono text-[9px] text-secondary/60 tracking-wider">9+ YRS EXP</span>
+                  <Shield size={12} className="text-green-500" />
+                  <span className="font-mono text-[9px] text-secondary/60 tracking-wider">0 INCIDENTS</span>
                 </div>
               </motion.div>
+
+              {/* Floating accent card — bottom left */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.4, duration: 0.6, ease }}
-                className="absolute -left-4 bottom-12 card-static px-3 py-2 rounded-xl backdrop-blur-md"
+                initial={{ opacity: 0, x: -20, y: 10 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ delay: 1.5, duration: 0.6, ease }}
+                className="absolute -left-6 -bottom-3 card-static px-3 py-2 rounded-xl shadow-lg shadow-black/[0.03]"
               >
                 <div className="flex items-center gap-2">
-                  <Cpu size={12} className="text-primary" />
-                  <span className="font-mono text-[9px] text-secondary/60 tracking-wider">K8s EXPERT</span>
+                  <Cloud size={12} className="text-primary" />
+                  <span className="font-mono text-[9px] text-secondary/60 tracking-wider">MULTI-CLOUD</span>
                 </div>
               </motion.div>
             </div>

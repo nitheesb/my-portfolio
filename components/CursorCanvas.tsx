@@ -66,8 +66,8 @@ const CursorCanvas: React.FC = () => {
       const dy = mouse.y - mouse.prevY;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      // Create more particles when moving faster
-      const particleCount = Math.min(Math.floor(distance / 5), 3);
+      // Create fewer particles for performance
+      const particleCount = Math.min(Math.floor(distance / 8), 2);
 
       for (let i = 0; i < particleCount; i++) {
         particles.push({
@@ -122,20 +122,11 @@ const CursorCanvas: React.FC = () => {
         ctx.fillStyle = `rgba(${PRIMARY_COLOR.r}, ${PRIMARY_COLOR.g}, ${PRIMARY_COLOR.b}, ${alpha})`;
         ctx.fill();
 
-        // Add glow effect
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2 * lifeRatio);
-        gradient.addColorStop(0, `rgba(${PRIMARY_COLOR.r}, ${PRIMARY_COLOR.g}, ${PRIMARY_COLOR.b}, ${alpha * 0.5})`);
-        gradient.addColorStop(1, `rgba(${PRIMARY_COLOR.r}, ${PRIMARY_COLOR.g}, ${PRIMARY_COLOR.b}, 0)`);
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 2 * lifeRatio, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
-        ctx.fill();
       }
 
       // Limit particle count for performance
-      if (particles.length > 300) {
-        particles.splice(0, particles.length - 300);
+      if (particles.length > 100) {
+        particles.splice(0, particles.length - 100);
       }
 
       animationFrameId = requestAnimationFrame(animate);
