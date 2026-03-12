@@ -159,23 +159,56 @@ function SectionDivider() {
 // UTILITY: Floating background shapes
 // ═══════════════════════════════════════════════════════════
 function FloatingShapes() {
+  // Generate random particles
+  const particles = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    left: `${5 + (i * 47 + 13) % 90}%`,
+    top: `${5 + (i * 31 + 7) % 85}%`,
+    size: 1.5 + (i % 4) * 0.8,
+    duration: 3 + (i % 5) * 1.5,
+    delay: (i % 7) * 0.4,
+  }));
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-      <motion.div className="absolute top-[15%] right-[12%] w-20 h-20 border border-primary/[0.06] rotate-45 rounded-sm"
+      {/* Grid lines that drift */}
+      <motion.div className="absolute top-[20%] left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/10 to-transparent"
+        animate={{ x: [-100, 100, -100] }}
+        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }} />
+      <motion.div className="absolute top-[55%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent"
+        animate={{ x: [80, -80, 80] }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }} />
+      <motion.div className="absolute top-[80%] left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/[0.06] to-transparent"
+        animate={{ x: [-50, 50, -50] }}
+        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }} />
+
+      {/* Geometric shapes */}
+      <motion.div className="absolute top-[15%] right-[12%] w-20 h-20 border border-primary/10 rotate-45 rounded-sm"
         animate={{ y: [-12, 12, -12], rotate: [45, 50, 45] }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute bottom-[25%] right-[25%] w-32 h-32 rounded-full border border-white/[0.03]"
-        animate={{ y: [0, -20, 0], scale: [1, 1.05, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute top-[40%] left-[75%] w-2.5 h-2.5 bg-primary/15 rounded-full"
-        animate={{ y: [0, -25, 0], opacity: [0.15, 0.4, 0.15] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute top-[60%] left-[8%] w-16 h-16 border border-white/[0.03] rounded-full"
+      <motion.div className="absolute top-[10%] left-[15%] w-12 h-12 border border-primary/[0.08] rounded-full"
+        animate={{ scale: [1, 1.3, 1], opacity: [0.08, 0.2, 0.08] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} />
+      <motion.div className="absolute top-[60%] left-[8%] w-16 h-16 border border-white/[0.06] rounded-full"
         animate={{ y: [0, 15, 0], x: [0, 8, 0] }}
         transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute bottom-[15%] left-[20%] w-1.5 h-1.5 bg-primary/20 rounded-full"
-        animate={{ y: [0, -15, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }} />
+      <motion.div className="absolute bottom-[20%] right-[18%] w-24 h-24 border border-white/[0.04] rotate-12 rounded-lg"
+        animate={{ rotate: [12, 18, 12], y: [0, -10, 0] }}
+        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }} />
+
+      {/* Floating particles */}
+      {particles.map(p => (
+        <motion.div
+          key={p.id}
+          className="absolute rounded-full bg-primary/30"
+          style={{ left: p.left, top: p.top, width: p.size, height: p.size }}
+          animate={{
+            y: [0, -(15 + p.size * 5), 0],
+            opacity: [0.15, 0.6, 0.15],
+          }}
+          transition={{ duration: p.duration, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}
+        />
+      ))}
     </div>
   );
 }
@@ -218,7 +251,7 @@ function PageSection({ children, id, animation = 'fade', className = '' }: {
   const v = variants[animation];
 
   return (
-    <div ref={ref} id={id} className={`min-h-screen relative ${className}`}>
+    <div ref={ref} id={id} className={`relative ${className}`}>
       <MotionDiv
         initial={v.hidden}
         animate={isInView ? v.visible : v.hidden}
@@ -387,7 +420,7 @@ function HeroSection() {
             </div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 0.5, ease }} className="mb-8 md:mb-10">
-              <p className="text-base md:text-lg text-white/50 max-w-xl leading-relaxed">
+              <p className="text-base md:text-lg text-white/60 max-w-xl leading-relaxed">
                 Senior DevOps Architect — I build self-healing infrastructure and transform chaotic systems
                 into scalable, cost-effective engines using{' '}
                 <span className="text-primary font-semibold">Kubernetes</span> &amp;{' '}
@@ -536,7 +569,7 @@ function AboutSection() {
   ];
 
   return (
-    <section ref={sectionRef} className="py-20 md:py-32 relative">
+    <section ref={sectionRef} className="pt-6 pb-10 md:pt-10 md:pb-14 relative">
       <motion.div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-[0.03] blur-[100px] pointer-events-none"
         style={{ y: bgY, background: 'radial-gradient(circle, #ff5e00, transparent)' }} />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
@@ -545,13 +578,13 @@ function AboutSection() {
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10 md:gap-14">
           <div className="md:col-span-3">
             <MotionDiv initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, ease }}>
-              <p className="text-base md:text-lg text-white/60 leading-relaxed mb-5">
+              <p className="text-base md:text-lg text-white/70 leading-relaxed mb-5">
                 I architect cloud systems that scale. With over{' '}
                 <span className="text-white font-semibold">9 years</span> of experience across
                 AWS, GCP, and Kubernetes, I specialize in transforming brittle infrastructure
                 into resilient, self-healing platforms.
               </p>
-              <p className="text-sm md:text-base text-white/40 leading-relaxed">
+              <p className="text-sm md:text-base text-white/50 leading-relaxed">
                 My approach combines immutable infrastructure principles with shift-left
                 security and deep observability. I&apos;ve led teams through large-scale cloud
                 migrations, built disaster recovery frameworks, and slashed operational
@@ -572,9 +605,9 @@ function AboutSection() {
                 </div>
               </div>
               <div className="space-y-3 text-sm text-white/50">
-                <div className="flex items-center gap-3"><MapPin size={14} className="text-primary shrink-0" /><span>Bangkok, Thailand</span></div>
-                <div className="flex items-center gap-3"><Mail size={14} className="text-primary shrink-0" /><span>nitheesbalaji@gmail.com</span></div>
-                <div className="flex items-center gap-3"><Cloud size={14} className="text-primary shrink-0" /><span>GCP / AWS / Kubernetes</span></div>
+                <div className="flex items-center gap-3"><MapPin size={14} className="text-primary shrink-0" /><span className="text-white/60">Bangkok, Thailand</span></div>
+                <div className="flex items-center gap-3"><Mail size={14} className="text-primary shrink-0" /><span className="text-white/60">nitheesbalaji@gmail.com</span></div>
+                <div className="flex items-center gap-3"><Cloud size={14} className="text-primary shrink-0" /><span className="text-white/60">GCP / AWS / Kubernetes</span></div>
               </div>
               <div className="flex gap-2 pt-5 mt-5 border-t border-white/[0.06]">
                 <a href="https://github.com/nitheesb" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg border border-white/10 flex items-center justify-center text-white/30 hover:text-primary hover:border-primary/30 transition-all"><Github size={16} /></a>
@@ -584,15 +617,15 @@ function AboutSection() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mt-14 md:mt-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mt-10 md:mt-14">
           {stats.map((stat, i) => (
             <MotionDiv key={i} initial={{ opacity: 0, y: 25, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5, ease }} className="card rounded-xl p-5 md:p-6 group">
               <div className="font-display text-2xl md:text-3xl font-bold text-white group-hover:text-primary transition-colors duration-500">
                 <Counter target={stat.value} suffix={stat.suffix} prefix={stat.prefix || ''} />
               </div>
-              <div className="text-xs font-semibold text-white/50 mt-1.5">{stat.label}</div>
-              <div className="text-[10px] text-white/25 mt-0.5">{stat.desc}</div>
+              <div className="text-xs font-semibold text-white/60 mt-1.5">{stat.label}</div>
+              <div className="text-[10px] text-white/35 mt-0.5">{stat.desc}</div>
             </MotionDiv>
           ))}
         </div>
@@ -610,7 +643,7 @@ function ExperienceSection() {
   const bgY = useTransform(scrollYProgress, [0, 1], [60, -60]);
 
   return (
-    <section ref={sectionRef} className="py-20 md:py-32 relative">
+    <section ref={sectionRef} className="pt-6 pb-10 md:pt-10 md:pb-14 relative">
       <motion.div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full opacity-[0.02] blur-[80px] pointer-events-none"
         style={{ y: bgY, background: 'radial-gradient(circle, #ff5e00, transparent)' }} />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
@@ -620,7 +653,7 @@ function ExperienceSection() {
             <ProjectCard key={project.id} project={project} index={i} />
           ))}
         </div>
-        <MotionDiv initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, ease }} className="mt-14 md:mt-20">
+        <MotionDiv initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, ease }} className="mt-10 md:mt-14">
           <div className="flex items-center gap-3 mb-5">
             <div className="h-px w-8 bg-primary/40" />
             <span className="font-mono text-[10px] text-primary/70 tracking-[0.2em] font-medium">TECH ARSENAL</span>
@@ -629,7 +662,7 @@ function ExperienceSection() {
             {TECH_STACK.map((tech, i) => (
               <MotionDiv key={tech} initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
                 transition={{ delay: i * 0.02, ease }}
-                className="text-[11px] md:text-xs font-medium bg-white/[0.04] text-white/50 px-3.5 py-1.5 rounded-full border border-white/[0.05] hover:border-primary/20 hover:text-primary transition-all duration-300 cursor-default">
+                className="text-[11px] md:text-xs font-medium bg-white/[0.06] text-white/60 px-3.5 py-1.5 rounded-full border border-white/[0.08] hover:border-primary/20 hover:text-primary transition-all duration-300 cursor-default">
                 {tech}
               </MotionDiv>
             ))}
@@ -652,11 +685,11 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0]; index: n
         <span className="text-xs text-white/30">{project.period}</span>
       </div>
       <h3 className="font-display text-lg md:text-xl font-bold text-white mb-3 leading-tight group-hover:text-primary/90 transition-colors duration-300">{project.role}</h3>
-      <p className="text-sm text-white/45 leading-relaxed mb-2 flex-1">{project.description.mission} {project.description.execution}</p>
-      <p className="text-xs text-primary/50 leading-relaxed mb-4 font-medium">{project.description.outcome}</p>
+      <p className="text-sm text-white/55 leading-relaxed mb-2 flex-1">{project.description.mission} {project.description.execution}</p>
+      <p className="text-xs text-primary/70 leading-relaxed mb-4 font-medium">{project.description.outcome}</p>
       <div className="flex flex-wrap gap-1.5 mb-4">
         {project.tags.map(tag => (
-          <span key={tag} className="text-[10px] font-medium bg-white/[0.05] text-white/40 px-2.5 py-1 rounded-full">{tag}</span>
+          <span key={tag} className="text-[10px] font-medium bg-white/[0.06] text-white/50 px-2.5 py-1 rounded-full">{tag}</span>
         ))}
       </div>
       <div className="flex gap-6 pt-4 border-t border-white/[0.05]">
@@ -682,7 +715,7 @@ function SkillsSection() {
   const bgY = useTransform(scrollYProgress, [0, 1], [40, -40]);
 
   return (
-    <section ref={sectionRef} className="py-20 md:py-32 relative">
+    <section ref={sectionRef} className="pt-6 pb-10 md:pt-10 md:pb-14 relative">
       <motion.div className="absolute inset-0 dot-grid opacity-20 pointer-events-none" style={{ y: bgY }} />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <SectionHeading num="03" title="Skill" highlight="Matrix"
@@ -720,7 +753,7 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
   return (
     <MotionDiv initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay, duration: 0.4, ease }} className="group">
       <div className="flex justify-between items-center mb-2">
-        <span className="text-sm text-white/60 font-medium group-hover:text-white transition-colors">{name}</span>
+        <span className="text-sm text-white/70 font-medium group-hover:text-white transition-colors">{name}</span>
         <span className="font-mono text-xs text-primary font-bold">{level}</span>
       </div>
       <div className="skill-bar-bg h-2 md:h-2.5 rounded-full">
@@ -741,7 +774,7 @@ function ServicesSection() {
   const bgY = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
   return (
-    <section ref={sectionRef} className="py-20 md:py-32 relative overflow-hidden">
+    <section ref={sectionRef} className="pt-6 pb-10 md:pt-10 md:pb-14 relative overflow-hidden">
       <motion.div className="absolute bottom-0 right-[-10%] w-[500px] h-[500px] rounded-full opacity-[0.02] blur-[80px] pointer-events-none"
         style={{ y: bgY, background: 'radial-gradient(circle, #ff5e00, transparent)' }} />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
@@ -762,7 +795,7 @@ function ServicesSection() {
                   <ArrowUpRight size={16} className="text-white/10 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
                 </div>
                 <h3 className="font-display text-lg md:text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors duration-300">{service.title}</h3>
-                <p className="text-sm text-white/40 leading-relaxed mb-4">{service.description}</p>
+                <p className="text-sm text-white/55 leading-relaxed mb-4">{service.description}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {service.features.map((f, fi) => (
                     <span key={fi} className="text-[10px] font-medium text-primary/60 bg-primary/[0.06] px-2.5 py-1 rounded-full">{f}</span>
@@ -787,14 +820,14 @@ function ContactSection() {
   const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); playClick(); setStatus('sending'); setTimeout(() => setStatus('sent'), 2500); };
 
   return (
-    <section className="py-20 md:py-32 relative">
+    <section className="pt-6 pb-10 md:pt-10 md:pb-14 relative">
       <div className="absolute inset-0 grid-bg opacity-15 pointer-events-none" />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <SectionHeading num="05" title="Let's Build" highlight="Together" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
           <div>
             <MotionDiv initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, ease }}>
-              <p className="text-base md:text-lg text-white/50 max-w-md mb-8 leading-relaxed">
+              <p className="text-base md:text-lg text-white/60 max-w-md mb-8 leading-relaxed">
                 Ready for high-impact cloud architecture &amp; DevOps consultations.
                 Expected response latency: <span className="text-primary font-semibold">&lt; 24h</span>
               </p>
