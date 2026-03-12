@@ -34,7 +34,7 @@ const THRESHOLD_TO_SNAP = 120;
 
 const SECTIONS = [
     { id: 'hero', title: 'HOME', component: HeroSection, bg: 'mesh-gradient' },
-    { id: 'skills', title: 'SYSTEMS', component: SkillsWrapper, bg: 'bg-bg' },
+    { id: 'skills', title: 'SKILLS', component: SkillsWrapper, bg: 'bg-bg' },
     { id: 'projects', title: 'LOGS', component: ProjectsSection, bg: 'bg-bg' },
     { id: 'services', title: 'CORE', component: ServicesWrapper, bg: 'bg-white' },
     { id: 'contact', title: 'SIGNAL', component: ContactSection, bg: 'bg-bg' },

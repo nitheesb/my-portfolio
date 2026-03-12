@@ -105,7 +105,7 @@ function MobileApp() {
   return (
     <AudioProvider>
       <ErrorBoundary>
-        <div className="w-screen h-screen bg-bg text-secondary overflow-hidden relative">
+        <div className="w-screen h-screen bg-bg text-secondary overflow-hidden relative font-sans selection:bg-primary selection:text-white">
           <div ref={scrollRef} className="h-full overflow-y-auto mobile-scroll-container mobile-hide-scrollbar">
             <MobileHero ref={(el) => { sectionRefs.current[0] = el; }} onNavigate={scrollToSection} />
             <MobileSkills ref={(el) => { sectionRefs.current[1] = el; }} />
@@ -204,7 +204,7 @@ const MobileHero = forwardRef<HTMLElement, { onNavigate: (i: number) => void }>(
         {/* Description */}
         <MotionDiv initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="mb-8">
           <p className="font-mono text-[13px] text-gray-500 leading-relaxed max-w-[320px]">
-            I am <span className="text-black font-bold">Nithees Balaji Mohan</span>. Building self-healing infrastructure &amp; scalable cloud systems with Kubernetes &amp; Terraform.
+            I am <span className="text-black font-bold">Nithees Balaji Mohan</span>. I build self-healing infrastructure. Transforming chaotic systems into scalable, cost-effective engines using Kubernetes &amp; Terraform.
           </p>
         </MotionDiv>
 
@@ -222,17 +222,17 @@ const MobileHero = forwardRef<HTMLElement, { onNavigate: (i: number) => void }>(
             className="glass-card text-black font-mono font-bold text-xs px-6 py-3.5 rounded-xl flex items-center gap-2 active:scale-95 transition-transform"
           >
             <Download size={14} />
-            RESUME
+            GET RESUME
           </a>
         </MotionDiv>
 
         {/* Stats Row */}
         <MotionDiv initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="mt-10 grid grid-cols-4 gap-3">
           {[
-            { val: '18%', label: 'COST CUT', accent: true },
-            { val: '99.9%', label: 'UPTIME' },
-            { val: '-60%', label: 'ERRORS' },
-            { val: '9+', label: 'YEARS' },
+            { val: '18%', label: 'COST REDUCTION', accent: true },
+            { val: '99.99%', label: 'UPTIME (GKE)' },
+            { val: '-60%', label: 'DEPLOY ERRORS' },
+            { val: '9+', label: 'YEARS EXP' },
           ].map((stat, i) => (
             <div key={i} className="glass-card rounded-xl p-3 text-center">
               <div className={`text-lg font-bold font-display ${stat.accent ? 'gradient-text' : 'text-black'}`}>{stat.val}</div>
@@ -326,7 +326,7 @@ const MobileProjects = forwardRef<HTMLElement>((_, ref) => {
   return (
     <section ref={ref} className="py-16 px-6 bg-bg relative">
       <MotionDiv {...fadeUp} className="mb-10">
-        <span className="font-mono text-[10px] text-primary font-bold tracking-[0.2em] block mb-2">ACCESS_LEVEL: PUBLIC</span>
+        <span className="font-mono text-[10px] text-primary font-bold tracking-[0.2em] block mb-2">DEPLOYMENT_HISTORY</span>
         <h2 className="text-4xl font-display font-bold text-black">
           MISSION <span className="gradient-text">LOGS</span>
         </h2>
@@ -402,9 +402,9 @@ const MobileServices = forwardRef<HTMLElement>((_, ref) => {
 
       <div className="relative z-10">
         <MotionDiv {...fadeUp} className="mb-8">
-          <span className="font-mono text-[10px] text-primary font-bold tracking-[0.2em] block mb-2">AVAILABLE_PROTOCOLS</span>
+          <span className="font-mono text-[10px] text-primary font-bold tracking-[0.2em] block mb-2">SELECT_MODULE_TO_EXECUTE</span>
           <h2 className="text-4xl font-display font-bold text-black">
-            SERVICE <span className="gradient-text">CORE</span>
+            AVAILABLE <span className="gradient-text">PROTOCOLS</span>
           </h2>
         </MotionDiv>
 
@@ -457,9 +457,9 @@ const MobileContact = forwardRef<HTMLElement>((_, ref) => {
 
       <div className="relative z-10">
         <MotionDiv {...fadeUp} className="mb-6">
-          <span className="font-mono text-[10px] text-primary font-bold tracking-[0.2em] block mb-2">ENCRYPTED_CHANNEL</span>
+          <span className="font-mono text-[10px] text-primary font-bold tracking-[0.2em] block mb-2">ENCRYPTED_CHANNEL_OPEN</span>
           <h2 className="text-4xl font-display font-bold text-white">
-            INITIATE <span className="gradient-text">SIGNAL</span>
+            INITIATE <span className="gradient-text">TRANSMISSION</span>
           </h2>
         </MotionDiv>
 
@@ -484,7 +484,7 @@ const MobileContact = forwardRef<HTMLElement>((_, ref) => {
                 <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
                 <div className="w-2 h-2 rounded-full bg-green-500/60" />
               </div>
-              <span className="font-mono text-[9px] text-gray-500 tracking-widest">SIGNAL_v2</span>
+              <span className="font-mono text-[9px] text-gray-500 tracking-widest">Signal_Composer.v1</span>
             </div>
 
             <AnimatePresence mode="wait">
@@ -496,7 +496,7 @@ const MobileContact = forwardRef<HTMLElement>((_, ref) => {
                   className="p-5 space-y-4"
                 >
                   <div>
-                    <label className="text-[9px] font-mono text-primary font-bold tracking-[0.15em] block mb-1.5">SOURCE_ID</label>
+                    <label className="text-[9px] font-mono text-primary font-bold tracking-[0.15em] block mb-1.5">Source_ID</label>
                     <input
                       required type="text" placeholder="Your name"
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-mono text-xs focus:border-primary outline-none transition-colors placeholder:text-gray-700"
@@ -504,7 +504,7 @@ const MobileContact = forwardRef<HTMLElement>((_, ref) => {
                     />
                   </div>
                   <div>
-                    <label className="text-[9px] font-mono text-primary font-bold tracking-[0.15em] block mb-1.5">RETURN_ADDR</label>
+                    <label className="text-[9px] font-mono text-primary font-bold tracking-[0.15em] block mb-1.5">Return_Address</label>
                     <input
                       required type="email" placeholder="email@domain.com"
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-mono text-xs focus:border-primary outline-none transition-colors placeholder:text-gray-700"
@@ -512,7 +512,7 @@ const MobileContact = forwardRef<HTMLElement>((_, ref) => {
                     />
                   </div>
                   <div>
-                    <label className="text-[9px] font-mono text-primary font-bold tracking-[0.15em] block mb-1.5">MESSAGE_PAYLOAD</label>
+                    <label className="text-[9px] font-mono text-primary font-bold tracking-[0.15em] block mb-1.5">Message_Payload</label>
                     <textarea
                       required rows={3} placeholder="Describe the mission..."
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-mono text-xs focus:border-primary outline-none transition-colors resize-none placeholder:text-gray-700"
@@ -533,7 +533,7 @@ const MobileContact = forwardRef<HTMLElement>((_, ref) => {
                   className="p-12 flex flex-col items-center justify-center space-y-4"
                 >
                   <Cpu size={32} className="text-primary animate-pulse" />
-                  <span className="font-mono text-[10px] text-primary animate-pulse tracking-[0.2em]">TRANSMITTING...</span>
+                  <span className="font-mono text-[10px] text-primary animate-pulse tracking-[0.2em]">UPLOADING DATA PACKETS...</span>
                   <div className="w-32 h-1 bg-white/10 rounded-full overflow-hidden">
                     <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: 1.8 }} className="h-full bg-gradient-to-r from-primary to-primaryLight rounded-full" />
                   </div>
@@ -549,7 +549,7 @@ const MobileContact = forwardRef<HTMLElement>((_, ref) => {
                   </div>
                   <h3 className="text-xl font-display font-bold text-white">SIGNAL RECEIVED</h3>
                   <p className="font-mono text-[10px] text-gray-500 max-w-[200px]">Transmission verified. Stand by for response.</p>
-                  <button onClick={() => setStatus('idle')} className="mt-2 px-4 py-2 border border-white/10 rounded-xl text-white font-mono text-[10px] active:bg-white/5">NEW SIGNAL</button>
+                  <button onClick={() => setStatus('idle')} className="mt-2 px-4 py-2 border border-white/10 rounded-xl text-white font-mono text-[10px] active:bg-white/5">Close Channel</button>
                 </motion.div>
               )}
             </AnimatePresence>
