@@ -508,67 +508,51 @@ function AboutSection() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// EXPERIENCE SECTION — Horizontal scroll cards on desktop
+// EXPERIENCE SECTION — Vertical cards grid
 // ═══════════════════════════════════════════════════════════
 function ExperienceSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end end'],
-  });
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', '-60%']);
-
   return (
-    <section id="experience" className="relative">
-      {/* Desktop: Horizontal scroll */}
-      <div ref={containerRef} className="hidden md:block relative h-[200vh]">
-        <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
-          <div className="max-w-7xl mx-auto px-12 mb-12 w-full">
-            <SectionHeader num="02" label="Experience" className="mb-4" />
-            <h2 className="font-display text-5xl lg:text-6xl font-bold text-white tracking-tight">
-              Mission <span className="gradient-text">Logs</span>
-            </h2>
-          </div>
-          <motion.div style={{ x }} className="flex gap-6 pl-12 pr-[40vw]">
-            {PROJECTS.map((project, i) => (
-              <ProjectCard key={project.id} project={project} index={i} />
-            ))}
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Mobile: Vertical stack */}
-      <div className="md:hidden py-24 px-6">
+    <section id="experience" className="py-24 md:py-40 relative">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
         <SectionHeader num="02" label="Experience" />
-        <h2 className="font-display text-4xl font-bold text-white tracking-tight mb-10">
-          Mission <span className="gradient-text">Logs</span>
-        </h2>
-        <div className="space-y-6">
+        <MotionDiv
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease }}
+          className="mb-12 md:mb-16"
+        >
+          <h2 className="font-display text-4xl md:text-6xl font-bold text-white tracking-tight">
+            Mission <span className="gradient-text">Logs</span>
+          </h2>
+        </MotionDiv>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
           {PROJECTS.map((project, i) => (
             <ProjectCard key={project.id} project={project} index={i} />
           ))}
         </div>
-      </div>
 
-      {/* Tech stack strip */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="h-px w-8 bg-primary/40" />
-          <span className="font-mono text-[10px] text-primary tracking-[0.2em]">TECH ARSENAL</span>
-        </div>
-        <div className="flex flex-wrap gap-2 md:gap-3">
-          {TECH_STACK.map((tech, i) => (
-            <MotionDiv
-              key={tech}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.04, ease }}
-              className="font-mono text-[10px] md:text-xs font-medium bg-white/[0.03] text-white/40 px-4 py-2 rounded-full border border-white/[0.04] hover:border-primary/20 hover:text-primary transition-all"
-            >
-              {tech}
-            </MotionDiv>
-          ))}
+        {/* Tech stack strip */}
+        <div className="mt-16 md:mt-24">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="h-px w-8 bg-primary/40" />
+            <span className="font-mono text-[10px] text-primary tracking-[0.2em]">TECH ARSENAL</span>
+          </div>
+          <div className="flex flex-wrap gap-2 md:gap-3">
+            {TECH_STACK.map((tech, i) => (
+              <MotionDiv
+                key={tech}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.03, ease }}
+                className="font-mono text-[10px] md:text-xs font-medium bg-white/[0.03] text-white/40 px-4 py-2 rounded-full border border-white/[0.04] hover:border-primary/20 hover:text-primary transition-all"
+              >
+                {tech}
+              </MotionDiv>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -582,7 +566,7 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0]; index: n
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.08, duration: 0.5, ease }}
-      className="card rounded-2xl p-6 md:p-8 w-full md:w-[420px] md:shrink-0 flex flex-col"
+      className="card rounded-2xl p-6 md:p-8 w-full flex flex-col"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
@@ -594,7 +578,8 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0]; index: n
       <h3 className="font-display text-xl md:text-2xl font-bold text-white mb-3 leading-tight">{project.role}</h3>
 
       {/* Description */}
-      <p className="font-mono text-xs text-white/30 leading-relaxed mb-5 flex-1">{project.description.mission} {project.description.execution}</p>
+      <p className="font-mono text-xs text-white/30 leading-relaxed mb-3 flex-1">{project.description.mission} {project.description.execution}</p>
+      <p className="font-mono text-[11px] text-primary/50 leading-relaxed mb-5">{project.description.outcome}</p>
 
       {/* Tags */}
       <div className="flex flex-wrap gap-1.5 mb-5">
