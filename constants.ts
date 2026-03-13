@@ -113,55 +113,55 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
   {
     category: "CLOUD INFRASTRUCTURE",
     items: [
-      { name: "AWS", level: 95 },
-      { name: "Google Cloud", level: 90 },
-      { name: "Azure", level: 75 },
-      { name: "Hybrid Cloud", level: 85 }
+      { name: "AWS", tags: ["9+ yrs", "Certified", "Multi-account"] },
+      { name: "Google Cloud", tags: ["7+ yrs", "GKE Expert", "Daily driver"] },
+      { name: "Azure", tags: ["4+ yrs", "AKS", "Hybrid setups"] },
+      { name: "Hybrid Cloud", tags: ["Multi-cloud", "Federation", "Cost arbitrage"] }
     ]
   },
   {
     category: "CONTAINER ORCHESTRATION",
     items: [
-      { name: "Kubernetes (GKE/EKS)", level: 98 },
-      { name: "Docker", level: 95 },
-      { name: "Helm Charts", level: 92 },
-      { name: "Istio Service Mesh", level: 80 }
+      { name: "Kubernetes", tags: ["8+ yrs", "CKA/CKAD", "500+ nodes"] },
+      { name: "Docker", tags: ["9+ yrs", "Multi-stage", "Rootless"] },
+      { name: "Helm Charts", tags: ["Custom operators", "Chart museum", "GitOps"] },
+      { name: "Istio Service Mesh", tags: ["mTLS", "Traffic shaping", "Canary"] }
     ]
   },
   {
     category: "INFRASTRUCTURE AS CODE",
     items: [
-      { name: "Terraform", level: 95 },
-      { name: "Ansible", level: 85 },
-      { name: "CloudFormation", level: 80 },
-      { name: "Pulumi", level: 70 }
+      { name: "Terraform", tags: ["8+ yrs", "Custom providers", "Modules"] },
+      { name: "Ansible", tags: ["6+ yrs", "Playbooks", "Tower/AWX"] },
+      { name: "CloudFormation", tags: ["Nested stacks", "Custom resources"] },
+      { name: "Pulumi", tags: ["TypeScript", "Python", "State mgmt"] }
     ]
   },
   {
     category: "CI/CD & AUTOMATION",
     items: [
-      { name: "GitHub Actions", level: 95 },
-      { name: "Jenkins", level: 90 },
-      { name: "ArgoCD (GitOps)", level: 92 },
-      { name: "GitLab CI", level: 88 }
+      { name: "GitHub Actions", tags: ["Custom actions", "Matrix builds", "OIDC"] },
+      { name: "Jenkins", tags: ["Shared libraries", "Pipeline-as-code"] },
+      { name: "ArgoCD", tags: ["GitOps", "App of Apps", "Multi-cluster"] },
+      { name: "GitLab CI", tags: ["Auto DevOps", "Runners", "SAST/DAST"] }
     ]
   },
   {
     category: "OBSERVABILITY",
     items: [
-      { name: "Prometheus", level: 90 },
-      { name: "Grafana", level: 90 },
-      { name: "NewRelic", level: 85 },
-      { name: "ELK Stack", level: 80 }
+      { name: "Prometheus", tags: ["PromQL", "Alertmanager", "Federation"] },
+      { name: "Grafana", tags: ["Custom dashboards", "Loki", "Tempo"] },
+      { name: "NewRelic", tags: ["APM", "Synthetics", "SLO tracking"] },
+      { name: "ELK Stack", tags: ["Log pipelines", "Kibana", "Index mgmt"] }
     ]
   },
   {
     category: "LANGUAGES & SCRIPTING",
     items: [
-      { name: "Python", level: 90 },
-      { name: "Bash/Shell", level: 95 },
-      { name: "Go", level: 75 },
-      { name: "SQL", level: 80 }
+      { name: "Python", tags: ["Automation", "FastAPI", "Boto3"] },
+      { name: "Bash/Shell", tags: ["9+ yrs", "Daily driver", "Complex scripts"] },
+      { name: "Go", tags: ["CLI tools", "K8s controllers", "Operators"] },
+      { name: "SQL", tags: ["PostgreSQL", "Query tuning", "Migrations"] }
     ]
   }
 ];

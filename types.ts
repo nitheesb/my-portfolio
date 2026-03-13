@@ -21,7 +21,7 @@ export interface SkillCategory {
   category: string;
   items: {
     name: string;
-    level: number; // 1-100
+    tags: string[];
   }[];
 }
 

@@ -32,40 +32,7 @@ const stagger = {
   viewport: { once: true },
 };
 
-// ── Progress Ring ──────────────────────────────────────
-function ProgressRing({ progress, size = 52, strokeWidth = 3 }: { progress: number; size?: number; strokeWidth?: number }) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const offset = circumference - (progress / 100) * circumference;
-
-  return (
-    <svg width={size} height={size} className="transform -rotate-90">
-      <circle cx={size / 2} cy={size / 2} r={radius} stroke="rgba(255,94,0,0.08)" strokeWidth={strokeWidth} fill="none" />
-      <motion.circle
-        cx={size / 2} cy={size / 2} r={radius}
-        stroke="url(#mobileProgressGrad)"
-        strokeWidth={strokeWidth}
-        fill="none"
-        strokeLinecap="round"
-        initial={{ strokeDashoffset: circumference }}
-        whileInView={{ strokeDashoffset: offset }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-        strokeDasharray={circumference}
-      />
-      <defs>
-        <linearGradient id="mobileProgressGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#ff5e00" />
-          <stop offset="100%" stopColor="#ff8c42" />
-        </linearGradient>
-      </defs>
-    </svg>
-  );
-}
-
-// ═══════════════════════════════════════════════════════
-// MOBILE APP
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════\n// MOBILE APP\n// ═══════════════════════════════════════════════════════
 function MobileApp() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeSection, setActiveSection] = useState(0);
@@ -304,13 +271,12 @@ const MobileSkills = forwardRef<HTMLElement>((_, ref) => {
               transition={{ delay: i * 0.08 }}
               className="glass-dark rounded-2xl p-4 flex flex-col items-center text-center"
             >
-              <div className="relative mb-2">
-                <ProgressRing progress={skill.level} />
-                <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold font-mono text-primary">
-                  {skill.level}
-                </span>
+              <span className="text-white text-[12px] font-bold leading-tight mb-2">{skill.name}</span>
+              <div className="flex flex-wrap gap-1 justify-center">
+                {skill.tags.map((tag, ti) => (
+                  <span key={ti} className="text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-primary/20 text-primary/80">{tag}</span>
+                ))}
               </div>
-              <span className="text-white text-[12px] font-bold leading-tight">{skill.name}</span>
             </MotionDiv>
           ))}
         </motion.div>

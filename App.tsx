@@ -763,12 +763,12 @@ function SkillsSection() {
             </div>
           </div>
           <div>
-            <motion.div key={active} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, ease }} className="space-y-4">
+            <motion.div key={active} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, ease }} className="space-y-3">
               <div className="font-mono text-[10px] text-secondary/20 tracking-wider mb-5">
                 root@core:~/modules/{SKILL_CATEGORIES[active].category.toLowerCase().replace(/ /g, '_')}
               </div>
               {SKILL_CATEGORIES[active].items.map((skill, i) => (
-                <SkillBar key={`${active}-${skill.name}`} name={skill.name} level={skill.level} delay={i * 0.08} />
+                <SkillCard key={`${active}-${skill.name}`} name={skill.name} tags={skill.tags} delay={i * 0.08} />
               ))}
             </motion.div>
           </div>
@@ -778,17 +778,15 @@ function SkillsSection() {
   );
 }
 
-function SkillBar({ name, level, delay }: { name: string; level: number; delay: number }) {
+function SkillCard({ name, tags, delay }: { name: string; tags: string[]; delay: number }) {
   return (
-    <MotionDiv initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay, duration: 0.4, ease }} className="group">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-sm text-secondary/70 font-medium group-hover:text-secondary transition-colors">{name}</span>
-        <span className="font-mono text-xs text-primary font-bold">{level}</span>
-      </div>
-      <div className="skill-bar-bg h-2 md:h-2.5 rounded-full">
-        <motion.div className="skill-bar-fill rounded-full"
-          initial={{ width: 0 }} animate={{ width: `${level}%` }}
-          transition={{ delay: delay + 0.2, duration: 1, ease }} />
+    <MotionDiv initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay, duration: 0.4, ease }}
+      className="group flex items-center justify-between p-3.5 rounded-xl bg-black/[0.02] border border-black/[0.04] hover:border-primary/20 hover:bg-primary/[0.02] transition-all duration-300">
+      <span className="text-sm font-semibold text-secondary/80 group-hover:text-secondary transition-colors">{name}</span>
+      <div className="flex gap-1.5 flex-wrap justify-end">
+        {tags.map((tag, i) => (
+          <span key={i} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary/[0.07] text-primary/70 group-hover:bg-primary/[0.12] group-hover:text-primary transition-all duration-300">{tag}</span>
+        ))}
       </div>
     </MotionDiv>
   );

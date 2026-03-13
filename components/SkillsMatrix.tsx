@@ -5,36 +5,6 @@ import { Terminal } from 'lucide-react';
 
 const MotionDiv = motion.div as any;
 
-function ProgressRing({ progress, size = 72, strokeWidth = 4 }: { progress: number; size?: number; strokeWidth?: number }) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const offset = circumference - (progress / 100) * circumference;
-
-  return (
-    <svg width={size} height={size} className="transform -rotate-90">
-      <circle cx={size / 2} cy={size / 2} r={radius} stroke="rgba(255,94,0,0.1)" strokeWidth={strokeWidth} fill="none" />
-      <motion.circle
-        cx={size / 2} cy={size / 2} r={radius}
-        stroke="url(#desktopSkillGrad)"
-        strokeWidth={strokeWidth}
-        fill="none"
-        strokeLinecap="round"
-        initial={{ strokeDashoffset: circumference }}
-        whileInView={{ strokeDashoffset: offset }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        strokeDasharray={circumference}
-      />
-      <defs>
-        <linearGradient id="desktopSkillGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#ff5e00" />
-          <stop offset="100%" stopColor="#ff8c42" />
-        </linearGradient>
-      </defs>
-    </svg>
-  );
-}
-
 const SkillsMatrix: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState(0);
 
@@ -90,14 +60,12 @@ const SkillsMatrix: React.FC = () => {
               transition={{ delay: i * 0.08, duration: 0.4 }}
               className="glass-card rounded-2xl p-6 flex flex-col items-center text-center hover:border-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 group cursor-default"
             >
-              <div className="relative mb-3">
-                <ProgressRing progress={skill.level} />
-                <span className="absolute inset-0 flex items-center justify-center text-lg font-bold font-display text-black group-hover:text-primary transition-colors">
-                  {skill.level}
-                </span>
+              <span className="text-black font-bold text-sm font-display mb-3 group-hover:text-primary transition-colors">{skill.name}</span>
+              <div className="flex flex-wrap gap-1.5 justify-center">
+                {skill.tags.map((tag, ti) => (
+                  <span key={ti} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary/[0.07] text-primary/70 group-hover:bg-primary/[0.12] group-hover:text-primary transition-all">{tag}</span>
+                ))}
               </div>
-              <span className="text-black font-bold text-sm font-display">{skill.name}</span>
-              <span className="text-[10px] font-mono text-gray-400 mt-1">PROFICIENCY</span>
             </MotionDiv>
           ))}
         </motion.div>
