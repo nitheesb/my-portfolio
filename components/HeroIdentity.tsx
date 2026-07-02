@@ -93,10 +93,10 @@ const HeroIdentity: React.FC = () => {
                     </div>
                     )}
 
-                    <img 
-                    src="https://i.ibb.co/mCwSdtvZ/profile.png" 
+                    <img
+                    src="/profile.webp"
                     onLoad={() => setIsImgLoaded(true)}
-                    alt="Portrait of Nithees Balaji Mohan, Senior DevOps Architect" 
+                    alt="Portrait of Nithees Balaji Mohan, Senior DevOps Lead"
                     className={`w-full h-full object-cover object-top filter grayscale hover:grayscale-0 transition-all duration-500 ${!isImgLoaded ? 'opacity-0' : 'opacity-100'}`}
                     />
 

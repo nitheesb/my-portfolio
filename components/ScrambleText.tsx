@@ -59,11 +59,12 @@ const ScrambleText: React.FC<ScrambleTextProps> = ({
   }, []);
 
   return (
-    <span 
+    <span
       className={`inline-block cursor-default ${className}`}
       onMouseEnter={hover ? scramble : undefined}
+      aria-label={text}
     >
-      {displayText}
+      <span aria-hidden="true">{displayText}</span>
     </span>
   );
 };

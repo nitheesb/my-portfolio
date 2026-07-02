@@ -5,6 +5,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   build: {
+    // Filesystem sandbox disallows unlink/rename, so Vite can't empty the
+    // existing dist/ directory before writing new output.
+    emptyOutDir: false,
     rollupOptions: {
       output: {
         manualChunks: {

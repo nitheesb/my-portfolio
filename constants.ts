@@ -41,17 +41,17 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "LOG_2022_2023",
-    role: "DevOps Engineer",
+    role: "Senior DevOps Engineer",
     company: "Brikl",
     period: "May 2022 - Jan 2023",
     tags: ["AWS", "Landing Zones", "GitHub Actions"],
     description: {
       mission: "Stabilize microservices deployments.",
       execution: "Built AWS Landing Zones using Terraform. Standardized CI/CD pipelines to enforce testing gates before production.",
-      outcome: "Reduced deployment failure rate by 60% and secured the platform."
+      outcome: "Embedded SAST/DAST scanning into GitHub Actions pipelines, cutting critical production vulnerabilities by 60%."
     },
     stats: [
-      { label: "ERRORS", value: "-60%", color: "#ff5e00" },
+      { label: "VULNS", value: "-60%", color: "#ff5e00" },
       { label: "STACK", value: "AWS", color: "#171717" }
     ],
     colSpan: "md:col-span-1"
@@ -122,10 +122,9 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
   {
     category: "CONTAINER ORCHESTRATION",
     items: [
-      { name: "Kubernetes", tags: ["8+ yrs", "CKA/CKAD", "500+ nodes"] },
+      { name: "Kubernetes", tags: ["8+ yrs", "GKE/EKS/AKS", "500+ nodes"] },
       { name: "Docker", tags: ["9+ yrs", "Multi-stage", "Rootless"] },
-      { name: "Helm Charts", tags: ["Custom operators", "Chart museum", "GitOps"] },
-      { name: "Istio Service Mesh", tags: ["mTLS", "Traffic shaping", "Canary"] }
+      { name: "Helm Charts", tags: ["Custom operators", "Chart museum", "GitOps"] }
     ]
   },
   {
@@ -133,8 +132,7 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     items: [
       { name: "Terraform", tags: ["8+ yrs", "Custom providers", "Modules"] },
       { name: "Ansible", tags: ["6+ yrs", "Playbooks", "Tower/AWX"] },
-      { name: "CloudFormation", tags: ["Nested stacks", "Custom resources"] },
-      { name: "Pulumi", tags: ["TypeScript", "Python", "State mgmt"] }
+      { name: "CloudFormation", tags: ["Nested stacks", "Custom resources"] }
     ]
   },
   {
@@ -179,7 +177,7 @@ export const SERVICES: Service[] = [
     title: "Kubernetes Ops",
     icon: Server,
     description: "Production-grade Kubernetes management. From cluster zero to service mesh hero.",
-    features: ["Cluster Hardening", "Helm Management", "Istio/Linkerd", "Auto-scaling"]
+    features: ["Cluster Hardening", "Helm Management", "Service Mesh", "Auto-scaling"]
   },
   {
     id: "SVC_CICD",
@@ -208,13 +206,6 @@ export const SERVICES: Service[] = [
     icon: Lock,
     description: "Embedding security into every stage of the lifecycle. Shift-left security for modern stacks.",
     features: ["Container Scanning", "Compliance Checks", "IAM Hardening", "Network Policies"]
-  },
-  {
-    id: "SVC_IOT",
-    title: "IoT Systems",
-    icon: Cpu,
-    description: "Architecting reliable backends for large-scale IoT networks with real-time data processing.",
-    features: ["MQTT Brokers", "Edge Computing", "Device Management", "Real-time Telemetry"]
   }
 ];
 
@@ -261,5 +252,5 @@ export const DOCK_ITEMS = [
   { icon: Mail, label: 'Contact', href: 'mailto:nitheesbalaji@gmail.com' },
   { icon: Github, label: 'GitHub', href: 'https://github.com/nitheesb', external: true },
   { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/nithees-balaji', external: true },
-  { icon: FileText, label: 'Resume', href: 'https://drive.google.com/file/d/1oU43XtO0xSjEs0uk-5vBNXsn5FRsXbI_/view?usp=sharing', external: true },
+  { icon: FileText, label: 'Resume', href: '/resume.pdf', external: true },
 ];

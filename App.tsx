@@ -1,19 +1,23 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Suspense, lazy } from 'react';
 import {
   motion, AnimatePresence, useScroll, useTransform,
   useSpring, useInView, useMotionValue
 } from 'framer-motion';
 import {
   Terminal as TerminalIcon, Download, Mail, Github, Linkedin, MapPin,
-  ArrowUpRight, Send, Shield, Cpu, ChevronDown, Menu, X,
+  ArrowUpRight, Send, Shield, ChevronDown, Menu, X,
   Cloud, ArrowRight
 } from 'lucide-react';
-import Terminal from './components/Terminal';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AudioProvider } from './components/AudioProvider';
 import { useAudioFeedback } from './hooks/useAudioFeedback';
 import CursorCanvas from './components/CursorCanvas';
+import GlitchButton from './components/GlitchButton';
 import { PROJECTS, SERVICES, SKILL_CATEGORIES, TECH_STACK } from './constants';
+
+// Heavy, conditionally-rendered overlay — lazy loaded so it (and MatrixRain) don't
+// ship in the initial bundle.
+const Terminal = lazy(() => import('./components/Terminal'));
 
 const MotionDiv = motion.div as any;
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -34,6 +38,7 @@ function AnimChars({ text, className, delay = 0, stagger = 0.025 }: {
           transition={{ delay: delay + i * stagger, duration: 0.6, ease }}
           className="inline-block"
           style={{ transformOrigin: 'bottom' }}
+          aria-hidden="true"
         >
           {ch === ' ' ? String.fromCharCode(160) : ch}
         </motion.span>
@@ -626,7 +631,7 @@ function AboutSection() {
               transition={{ duration: 0.6, delay: 0.15, ease }} className="card p-6 rounded-2xl">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-primary/20 shadow-lg shadow-primary/10">
-                  <img src="https://i.ibb.co/mCwSdtvZ/profile.png" alt="Nithees Balaji Mohan" className="w-full h-full object-cover object-top" />
+                  <img src="/profile.webp" alt="Nithees Balaji Mohan" className="w-full h-full object-cover object-top" />
                 </div>
                 <div>
                   <div className="font-display font-bold text-secondary text-base">Nithees Balaji Mohan</div>
@@ -841,10 +846,7 @@ function ServicesSection() {
 // CONTACT — Console form + CTA
 // ═══════════════════════════════════════════════════════════
 function ContactSection() {
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const { playClick } = useAudioFeedback();
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); playClick(); setStatus('sending'); setTimeout(() => setStatus('sent'), 2500); };
 
   return (
     <section className="pt-6 pb-10 md:pt-10 md:pb-14 relative">
@@ -885,51 +887,22 @@ function ContactSection() {
               <span className="font-mono text-[9px] text-secondary/25 tracking-widest">Signal_Composer.v1</span>
               <Shield size={11} className="text-primary/30" />
             </div>
-            <AnimatePresence mode="wait">
-              {status === 'idle' ? (
-                <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  onSubmit={handleSubmit} className="p-6 md:p-7 space-y-5">
-                  {[
-                    { label: 'Source_ID', type: 'text', placeholder: 'Your name', key: 'name' as const },
-                    { label: 'Return_Address', type: 'email', placeholder: 'email@domain.com', key: 'email' as const },
-                  ].map(field => (
-                    <div key={field.key}>
-                      <label className="text-[10px] font-mono text-primary/60 font-semibold tracking-[0.15em] block mb-2 uppercase">{field.label}</label>
-                      <input required type={field.type} placeholder={field.placeholder}
-                        className="w-full bg-white border border-black/10 rounded-xl px-4 py-3.5 text-secondary text-sm focus:border-primary/40 focus:bg-white outline-none transition-all placeholder:text-secondary/30"
-                        onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })} />
-                    </div>
-                  ))}
-                  <div>
-                    <label className="text-[10px] font-mono text-primary/60 font-semibold tracking-[0.15em] block mb-2 uppercase">Message_Payload</label>
-                    <textarea required rows={4} placeholder="Describe the mission..."
-                      className="w-full bg-white border border-black/10 rounded-xl px-4 py-3.5 text-secondary text-sm focus:border-primary/40 focus:bg-white outline-none transition-all resize-none placeholder:text-secondary/30"
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })} />
-                  </div>
-                  <button type="submit" className="w-full btn-primary font-mono text-xs py-4 rounded-xl flex items-center justify-center gap-3 tracking-[0.15em] uppercase">
-                    <Send size={14} /> Transmit Signal
-                  </button>
-                </motion.form>
-              ) : status === 'sending' ? (
-                <motion.div key="sending" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-16 flex flex-col items-center justify-center space-y-6">
-                  <div className="relative">
-                    <Cpu size={36} className="text-primary animate-pulse" />
-                    <motion.div animate={{ scale: [1, 2], opacity: [0.4, 0] }} transition={{ repeat: Infinity, duration: 1.5 }} className="absolute inset-0 border border-primary rounded-full" />
-                  </div>
-                  <div className="font-mono text-xs text-primary/60 tracking-[0.2em]">UPLOADING DATA PACKETS...</div>
-                  <div className="w-40 h-[2px] bg-black/5 rounded-full overflow-hidden">
-                    <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: 2.2, ease: 'easeInOut' }} className="h-full bg-gradient-to-r from-primary to-primaryLight" />
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div key="sent" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-16 flex flex-col items-center justify-center space-y-5 text-center">
-                  <div className="w-14 h-14 rounded-full bg-green-500/10 flex items-center justify-center border border-green-500/20"><Shield size={24} className="text-green-500" /></div>
-                  <h3 className="text-xl font-display font-bold text-secondary">Signal Received</h3>
-                  <p className="text-sm text-secondary/40 max-w-[220px]">Your transmission reaches the architect. Stand by for response.</p>
-                  <button onClick={() => setStatus('idle')} className="mt-2 px-5 py-2.5 border border-black/10 rounded-xl text-secondary/50 text-[11px] font-medium hover:border-primary/30 hover:text-primary transition-all">Close Channel</button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div className="p-10 md:p-12 flex flex-col items-center justify-center text-center space-y-6">
+              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+                <Mail size={24} className="text-primary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-display font-bold text-secondary mb-2">Direct Channel</h3>
+                <p className="text-sm text-secondary/40 max-w-[260px]">Skip the middleman. Open your mail client and transmit directly.</p>
+              </div>
+              <GlitchButton
+                text="SEND_TRANSMISSION →"
+                href="mailto:nitheesbalaji@gmail.com"
+                onClick={playClick}
+                className="text-sm px-6 py-3.5"
+                icon={<Send size={16} />}
+              />
+            </div>
           </MotionDiv>
         </div>
       </div>
@@ -982,6 +955,16 @@ function App() {
   const { playClick } = useAudioFeedback();
   const onLoaded = useCallback(() => setIsLoading(false), []);
 
+  // Escape closes the terminal overlay
+  useEffect(() => {
+    if (!isTerminalOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsTerminalOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isTerminalOpen]);
+
   return (
     <ErrorBoundary>
       <AudioProvider>
@@ -1018,7 +1001,11 @@ function App() {
               className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[60] w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-surface border border-black/[0.06] flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:shadow-[0_0_30px_rgba(255,94,0,0.3)] transition-all duration-300 group">
               <TerminalIcon size={18} className="group-hover:rotate-12 transition-transform" />
             </motion.button>
-            <Terminal isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} onAction={(cmd) => console.log(cmd)} />
+            <Suspense fallback={null}>
+              {isTerminalOpen && (
+                <Terminal isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} onAction={(cmd) => console.log(cmd)} />
+              )}
+            </Suspense>
           </div>
         )}
       </AudioProvider>

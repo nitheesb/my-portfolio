@@ -19,6 +19,7 @@ const GlitchText: React.FC<GlitchTextProps> = ({ text, className = '', as: Compo
         <Component
             className={`relative inline-block ${className} cursor-default`}
             onMouseEnter={handleMouseEnter}
+            aria-label={text}
         >
             <motion.span
                 className="relative z-10"
@@ -27,6 +28,7 @@ const GlitchText: React.FC<GlitchTextProps> = ({ text, className = '', as: Compo
                     y: [0, 1, -1, 2, -2, 0],
                 } : {}}
                 transition={{ duration: 0.3, repeat: isGlitching ? 2 : 0 }}
+                aria-hidden="true"
             >
                 {text}
             </motion.span>
